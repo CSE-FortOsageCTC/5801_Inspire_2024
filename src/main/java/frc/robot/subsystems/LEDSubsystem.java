@@ -7,8 +7,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDSubsystem extends SubsystemBase {
 
   private final Spark blinkin;
+  private static LEDSubsystem ledSubsystem;
 
-  public LEDSubsystem() {
+    public static LEDSubsystem getInstance() {
+        if (ledSubsystem == null) {
+            ledSubsystem = new LEDSubsystem();
+        }
+        return ledSubsystem;
+    }
+
+  private LEDSubsystem() {
     blinkin = new Spark(3);
   }
 

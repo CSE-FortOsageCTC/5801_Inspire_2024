@@ -15,13 +15,21 @@ public class Limelight extends SubsystemBase {
     private NetworkTable table;
     private NetworkTableEntry tid, tv, tx, ty, ta, ts;
     public NetworkTableEntry ts0, ts1, ts2;
+    private static Limelight limelight;
+
+    public static Limelight getInstance() {
+        if (limelight == null) {
+            limelight = new Limelight();
+        }
+        return limelight;
+    }
 
     /**
      * Constructs Limelight Class
      */
-    public Limelight(boolean isCone) {
+    private Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
-        table.getEntry("pipeline").setNumber(isCone ? Constants.conePipeline: Constants.cubePipeline);
+        table.getEntry("pipeline").setNumber(1);
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
