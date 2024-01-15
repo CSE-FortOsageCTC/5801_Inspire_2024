@@ -68,11 +68,11 @@ dependencies {
     simulationRelease wpi.sim.enableRelease()
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
-    useJUnitPlatform()
+    //useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
