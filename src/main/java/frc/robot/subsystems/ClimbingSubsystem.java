@@ -8,10 +8,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbingSubsystem extends SubsystemBase {
   /** Creates a new ClimbingSubsystem. */
-  public ClimbingSubsystem() {}
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  private static ClimbingSubsystem climbingSubsystem;
+
+    public static ClimbingSubsystem getInstance(){
+      if (climbingSubsystem == null){
+          climbingSubsystem = new ClimbingSubsystem();
+      }
+      return (climbingSubsystem);
+  }
+
+  public void climbingExtension(){
+    System.out.print("Climbing Extension");
+  }
+
+  public void climbingRetraction(){
+    System.out.print("Climbing Retraction");
   }
 }
