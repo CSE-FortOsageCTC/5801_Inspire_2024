@@ -26,11 +26,6 @@ public class RobotContainer {
   private final JoystickButton climbExtension = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
 
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
- 
-
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
   private Swerve s_Swerve;
@@ -38,7 +33,7 @@ public class RobotContainer {
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
-    s_Swerve = Swerve.getInstance();
+    //s_Swerve = Swerve.getInstance();
     configureBindings();
   }
 

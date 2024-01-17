@@ -19,10 +19,10 @@ public class ClimbingSubsystem extends SubsystemBase {
   }
 
   public void climbingExtension(){
-    System.out.print("Climbing Extension");
+    System.out.println("Climbing Extension");
   }
 
   public void climbingRetraction(){
-    System.out.print("Climbing Retraction");
+    System.out.println("Climbing Retraction");
   }
 }
