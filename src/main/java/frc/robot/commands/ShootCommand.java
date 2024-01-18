@@ -16,6 +16,6 @@ public class ShootCommand extends Command {
 
     @Override
     public void execute(){
-
+        m_ShooterSubsystem.shoot();
     }
 }
