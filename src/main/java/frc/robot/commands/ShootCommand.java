@@ -7,8 +7,8 @@ public class ShootCommand extends Command {
 
     private final ShooterSubsystem m_ShooterSubsystem;
 
-    public ShootCommand(ShooterSubsystem m_ShooterSubsystem){
-        this.m_ShooterSubsystem = m_ShooterSubsystem;
+    public ShootCommand(){
+        m_ShooterSubsystem = ShooterSubsystem.getInstance();
 
         addRequirements(m_ShooterSubsystem);
         //initializes this command with the ShooterSubsystem as a requirement
