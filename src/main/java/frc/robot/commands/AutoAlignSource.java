@@ -19,6 +19,7 @@ public class AutoAlignSource extends Command{
     private Limelight s_Limelight;
     private AutoRotateUtil autoUtil;
 
+    public AutoAlignSource() {
         this.s_Limelight = Limelight.getInstance();
         this.s_Swerve = Swerve.getInstance();
         this.autoUtil = new AutoRotateUtil(s_Swerve, 0);
