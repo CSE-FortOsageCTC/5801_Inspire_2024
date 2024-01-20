@@ -18,10 +18,6 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void intakeIn(){
-        System.out.print("intake in");
+        System.out.println("intake in");
     } 
-
-    public void intakeOut(){
-        System.out.print("intake out");
-    }
 }
