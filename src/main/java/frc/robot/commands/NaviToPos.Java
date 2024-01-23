@@ -18,29 +18,27 @@ public class NaviToPos extends CommandBase {
 
     private PIDController yTranslationPidController;
     private PIDController xTranslationPidController;
-    private PIDController xTranslationConeController;
-    private PIDController rotationPidController;
-
+    
     private Swerve s_Swerve;
     private Limelight limelight;
     private AutoRotateUtil autoUtil;
     private double targetX;
     private double targetY;
-
+    private double targetRot;
 
     /**
      * Constructer for NaviToPos
      * 
      * @param s_Swerve swerve subsystem to be aligned with the april tag
      */
-    public NaviToPos(  double targetX, double targetY) {
+    public NaviToPos(  double targetX, double targetY, double targetRot) {
         
-        this.s_Swerve = s_Swerve;
-        this.autoUtil = new AutoRotateUtil(s_Swerve, 0);
+        this.s_Swerve = Swerve.getInstance();
+        this.targetRot = targetRot;
+        this.autoUtil = new AutoRotateUtil(targetRot);
         addRequirements(s_Swerve);
         this.targetX = targetX;
         this.targetY = targetY;
-
         // creating yTranslationPidController and setting the toleance and setpoint
         yTranslationPidController = new PIDController(0, 0, 0);
         yTranslationPidController.setTolerance(1);
@@ -48,26 +46,17 @@ public class NaviToPos extends CommandBase {
         
         // creating xTranslationPidController and setting the toleance and setpoint
         xTranslationPidController = new PIDController(0, 0, 0);
-        //xTranslationPidController.setTolerance(isCone? .1 : 2);//5);
+        xTranslationPidController.setTolerance(1);//5);
         xTranslationPidController.setSetpoint(0);
         
-        xTranslationConeController = new PIDController(1.75, 0, 0.0007);
-        xTranslationConeController.setSetpoint(0);
         
-        rotationPidController = new PIDController(0, 0, 0);
-        rotationPidController.setTolerance(2);
-        rotationPidController.setSetpoint(0);
+    
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
         SmartDashboard.putNumber("AlignP", 0.07);
         SmartDashboard.putNumber("AlignI", 0);
         SmartDashboard.putNumber("AlignD", 0.00035);
-
-        //SmartDashboard.putNumber("RotationP", 0.035);
-        //SmartDashboard.putNumber("RotationI", 0);
-        //SmartDashboard.putNumber("RotationD", 0.00035);
-
     }
 
 
@@ -89,7 +78,7 @@ public class NaviToPos extends CommandBase {
         xTranslationPidController.setPID(kP, kI, kD);
         xTranslationPidController.setPID(kP, kI, kD);
 
-        rotationPidController.setPID(rotationkP, rotationkI, rotationkD);
+       
 
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
@@ -120,17 +109,17 @@ public class NaviToPos extends CommandBase {
         // Calculates the x and y speed values for the translation movement
         double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(botY - targetY), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
         ySpeed = yTranslationPidController.atSetpoint() ? 0 : ySpeed;
-        double xSpeed = MathUtil.clamp(xTranslationConeController.calculate(botX - targetX), -1, 1);//TODO:should be changed to max speed at some point
+        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(botX - targetX), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
         xSpeed = xTranslationPidController.atSetpoint() ? 0 : xSpeed;
-        //double angularSpeed = autoUtil.calculateRotationSpeed();
-        //angularSpeed = autoUtil.isFinished() ? 0: angularSpeed;
+        double angularSpeed = autoUtil.calculateRotationSpeed();
+        angularSpeed = autoUtil.isFinished() ? 0: angularSpeed;
         
         SmartDashboard.putNumber("AlignXSpeed", xSpeed);
         SmartDashboard.putNumber("AlignYSpeed", ySpeed);
 
         // moves the swerve subsystem
         Translation2d translation = new Translation2d(-xSpeed, -ySpeed).times(Constants.Swerve.maxSpeed); 
-        //double rotation = angularSpeed * Constants.Swerve.maxAngularVelocity;
+        double rotation = angularSpeed * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, true, true);
 
     }
@@ -141,6 +130,7 @@ public class NaviToPos extends CommandBase {
 
         //checks if the Swerve subsystem is within the given position tolerance
         SmartDashboard.putBoolean("AtSetPoint", yTranslationPidController.atSetpoint());
+        SmartDashboard.putBoolean("AtSetPoint", xTranslationPidController.atSetpoint());
         return yTranslationPidController.atSetpoint() && xTranslationPidController.atSetpoint(); // && autoUtil.isFinished();
     }
 
