@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import org.opencv.dnn.Net;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -12,6 +16,7 @@ import frc.robot.Constants;
  */
 public class SkyLimelight extends SubsystemBase {
 
+    private NetworkTableEntry botPoseEntry;
     private NetworkTable table;
     private NetworkTableEntry tid, tv, tx, ty, ta, ts;
     public NetworkTableEntry ts0, ts1, ts2;
@@ -30,6 +35,7 @@ public class SkyLimelight extends SubsystemBase {
     private SkyLimelight() {
         table = NetworkTableInstance.getDefault().getTable("skyLimelight");
         table.getEntry("pipeline").setNumber(1);
+        botPoseEntry = table.getEntry("botpose");
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
@@ -126,4 +132,10 @@ public class SkyLimelight extends SubsystemBase {
         
     }
     
+    public Pose2d getBotPose(){
+        botPoseEntry = table.getEntry("botpose");
+        double[] botpose = botPoseEntry.getDoubleArray(new double [6]);
+        Pose2d visionPose = new Pose2d(botpose[0],botpose[1], new Rotation2d(botpose[5]));
+        return visionPose;
+    }
 }
