@@ -10,16 +10,16 @@ import frc.robot.Constants;
 /**
  * this class retrieves limelight values from the networktable
  */
-public class Limelight extends SubsystemBase {
+public class FloorLimelight extends SubsystemBase {
 
     private NetworkTable table;
     private NetworkTableEntry tid, tv, tx, ty, ta, ts;
     public NetworkTableEntry ts0, ts1, ts2;
-    private static Limelight limelight;
+    private static FloorLimelight limelight;
 
-    public static Limelight getInstance() {
+    public static FloorLimelight getInstance() {
         if (limelight == null) {
-            limelight = new Limelight();
+            limelight = new FloorLimelight();
         }
         return limelight;
     }
@@ -27,8 +27,8 @@ public class Limelight extends SubsystemBase {
     /**
      * Constructs Limelight Class
      */
-    private Limelight() {
-        table = NetworkTableInstance.getDefault().getTable("limelight");
+    private FloorLimelight() {
+        table = NetworkTableInstance.getDefault().getTable("floorLimelight");
         table.getEntry("pipeline").setNumber(1);
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
@@ -45,19 +45,19 @@ public class Limelight extends SubsystemBase {
      * Retrieving the april tag ID value
      * @return April tag ID value
      */
-    public int getAprilValue(){
-        tid = table.getEntry("tid");
-        return (int) tid.getDouble(0.0);
-    }
+    //public int getAprilValue(){
+        //tid = table.getEntry("tid");
+        //return (int) tid.getDouble(0.0);
+    //}
 
     /**
      * Checks if the April tag is detected
      * @return <code>true</code> when april tag is detected, <code>false</code> otherwise
      */
-    public boolean hasTag() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-        tv = table.getEntry("tv");
-        return tv.getDouble(0.0) == 1.0;
-    }
+    //public boolean hasTag() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+        //tv = table.getEntry("tv");
+        //return tv.getDouble(0.0) == 1.0;
+    //}
 
     /**
      * Retrieves Horizontal Offset From Crosshair To Target
@@ -111,14 +111,14 @@ public class Limelight extends SubsystemBase {
      */
     public void outputValues(){
         table = NetworkTableInstance.getDefault().getTable("limelight");
-        System.out.println(getAprilValue());
-        System.out.println(hasTag());
+        //System.out.println(getAprilValue());
+        //System.out.println(hasTag());
         System.out.println(getX());
         System.out.println(getY());
         System.out.println(getSkew());
         System.out.println(getArea());
-        SmartDashboard.putNumber("April Tag  Value", getAprilValue());
-        SmartDashboard.putBoolean("has Tag  ", hasTag());
+        //SmartDashboard.putNumber("April Tag  Value", getAprilValue());
+        //SmartDashboard.putBoolean("has Tag  ", hasTag());
         SmartDashboard.putNumber("X value   ", getX());
         SmartDashboard.putNumber("Y value ", getY());
         SmartDashboard.putNumber("Skew Value ", getSkew());
