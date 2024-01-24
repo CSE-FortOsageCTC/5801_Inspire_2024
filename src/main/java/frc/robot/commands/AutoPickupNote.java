@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 public class AutoPickupNote extends Command{
     public Limelight limelight;
     public Swerve swerve;
@@ -35,17 +36,14 @@ public class AutoPickupNote extends Command{
 
         // creating yTranslationPidController and setting the toleance and setpoint
         yTranslationPidController = new PIDController(0, 0, 0);
-        yTranslationPidController.setTolerance(1);
         yTranslationPidController.setSetpoint(0);
-        
+    
         // creating xTranslationPidController and setting the toleance and setpoint
         xTranslationPidController = new PIDController(0, 0, 0);
-        xTranslationPidController.setTolerance(0);
         xTranslationPidController.setSetpoint(0);
         
         // creating rotationPidController and setting the toleance and setpoint
         rotationPidController = new PIDController(0, 0, 0);
-        rotationPidController.setTolerance(2);
         rotationPidController.setSetpoint(0);
 
         // puts the value of P,I and D onto the SmartDashboard
@@ -60,18 +58,16 @@ public class AutoPickupNote extends Command{
     private boolean NoteSeen(){
         return limelight.hasTag();
     }
-
-    public double newY(){
-        return limelight.getY() > 0 ? 1.0 : 0;
+    private double RadiansToDegrees(double rads){
+        return rads * (180/Math.PI);
     }
-    public double newRotation(){
-        if (limelight.getX() > 0){
-        return yaw.getDegrees() - 1.0;}
-        else if(limelight.getX() < 0){
-            return yaw.getDegrees() + 1.0;}
-        else{
-            return 0;
-        }}
+
+
+    private double getDistanceMeters(){
+        double focalLength =  2.9272781257541 / 1000;
+        double d = (14 * .0254 * focalLength)/limelight.getArea();
+        return d;
+    }
 
     @Override
     public void execute(){
@@ -80,6 +76,7 @@ public class AutoPickupNote extends Command{
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew(); 
+        double distance = getDistanceMeters();
 
         kP = SmartDashboard.getNumber("AlignP", 0);
         kI = SmartDashboard.getNumber("AlignI", 0);
@@ -96,15 +93,15 @@ public class AutoPickupNote extends Command{
         if (debouncer.calculate(NoteSeen())){
             System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
-            double ySpeed = yTranslationPidController.calculate(xValue);
-            double xSpeed = xTranslationPidController.calculate(areaValue);
+            double ySpeed = yTranslationPidController.calculate(distance * RadiansToDegrees(Math.cos(angularValue)));
+            double xSpeed = xTranslationPidController.calculate(distance * RadiansToDegrees(Math.sin(angularValue)));
             double angularSpeed = autoUtil.calculateRotationSpeed() * Constants.Swerve.maxAngularVelocity;
             
 
             // moves the swerve subsystem
             Translation2d translation = new Translation2d(xSpeed, ySpeed).times(Constants.Swerve.maxSpeed);
             double rotation = angularSpeed * Constants.Swerve.maxAngularVelocity;
-            swerve.drive(translation, rotation, true, true);
+            swerve.drive(translation, rotation, false, true);
         }
     }
    
@@ -112,5 +109,6 @@ public class AutoPickupNote extends Command{
         swerve.drive(new Translation2d(0,0), 0, true, true);
         xTranslationPidController.reset();
         yTranslationPidController.reset();
+        rotationPidController.reset();
     }
 } 
