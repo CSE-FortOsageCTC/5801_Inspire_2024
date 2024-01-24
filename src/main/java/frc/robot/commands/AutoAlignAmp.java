@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.SkyLimelight;
 import frc.robot.subsystems.Swerve;
 
 public class AutoAlignAmp extends Command{
@@ -16,13 +16,13 @@ public class AutoAlignAmp extends Command{
     private PIDController rotationPidController;
 
     private Swerve s_Swerve;
-    private Limelight s_Limelight;
+    private SkyLimelight s_Limelight;
     private AutoRotateUtil autoUtil;
 
     public AutoAlignAmp() {
-        this.s_Limelight = Limelight.getInstance();
+        this.s_Limelight = SkyLimelight.getInstance();
         this.s_Swerve = Swerve.getInstance();
-        this.autoUtil = new AutoRotateUtil(s_Swerve, 0);
+        this.autoUtil = new AutoRotateUtil(0);
         addRequirements(s_Swerve, s_Limelight);
         
 
@@ -65,14 +65,14 @@ public class AutoAlignAmp extends Command{
 
         double xValue = s_Limelight.getX(); //gets the limelight X Coordinate
         double areaValue = s_Limelight.getArea(); // gets the area percentage from the limelight
-        double angularValue = s_Limelight.getSkew(); 
+        //double angularValue = s_Limelight.getSkew(); 
 
         SmartDashboard.putNumber("Xvalue", xValue);
         SmartDashboard.putNumber("Areavalue", areaValue);
-        SmartDashboard.putNumber("AngularValue", angularValue);
-        SmartDashboard.putNumber("Ts0", s_Limelight.getSkew0());
-        SmartDashboard.putNumber("Ts1", s_Limelight.getSkew1());
-        SmartDashboard.putNumber("Ts2", s_Limelight.getSkew2());
+        //SmartDashboard.putNumber("AngularValue", angularValue);
+        //SmartDashboard.putNumber("Ts0", s_Limelight.getSkew0());
+        //SmartDashboard.putNumber("Ts1", s_Limelight.getSkew1());
+        //SmartDashboard.putNumber("Ts2", s_Limelight.getSkew2());
 
 
         // Calculates the x and y speed values for the translation movement

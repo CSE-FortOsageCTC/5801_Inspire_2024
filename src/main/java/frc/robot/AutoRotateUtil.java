@@ -11,8 +11,8 @@ public class AutoRotateUtil {
 
     private int m_angle;
 
-    public AutoRotateUtil(Swerve s_Swerve, int angle) {
-        this.s_Swerve = s_Swerve;
+    public AutoRotateUtil(int angle) {
+        this.s_Swerve = Swerve.getInstance();
         this.m_angle = angle == 0 ? 360 : angle;
 
         // SmartDashboard.putNumber("Angle", this.m_angle);
