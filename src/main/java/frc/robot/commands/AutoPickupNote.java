@@ -61,7 +61,13 @@ public class AutoPickupNote extends Command{
     private double RadiansToDegrees(double rads){
         return rads * (180/Math.PI);
     }
-
+    private double FixedDistanceCalc(){
+        double objectHeight = 0;
+        double cameraHeight = .5;
+        double yAngle = limelight.getY();
+        double skewAngle = limelight.getSkew();
+        return (objectHeight - cameraHeight) / RadiansToDegrees(Math.tan(yAngle + skewAngle));
+    }
 
     private double getDistanceMeters(){
         double focalLength =  2.9272781257541 / 1000;
@@ -77,6 +83,7 @@ public class AutoPickupNote extends Command{
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew(); 
         double distance = getDistanceMeters();
+        double fixedDistance = FixedDistanceCalc();
 
         kP = SmartDashboard.getNumber("AlignP", 0);
         kI = SmartDashboard.getNumber("AlignI", 0);
@@ -89,7 +96,7 @@ public class AutoPickupNote extends Command{
         SmartDashboard.putNumber("Ts1", limelight.getSkew1());
         SmartDashboard.putNumber("Ts2", limelight.getSkew2());
 
-
+        
         if (debouncer.calculate(NoteSeen())){
             System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
@@ -102,6 +109,9 @@ public class AutoPickupNote extends Command{
             Translation2d translation = new Translation2d(xSpeed, ySpeed).times(Constants.Swerve.maxSpeed);
             double rotation = angularSpeed * Constants.Swerve.maxAngularVelocity;
             swerve.drive(translation, rotation, false, true);
+        }
+        else{
+            System.out.println("Note not found");
         }
     }
    
