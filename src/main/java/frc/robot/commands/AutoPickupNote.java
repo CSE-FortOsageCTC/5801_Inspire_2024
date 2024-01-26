@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AutoRotateUtil;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.SkyLimelight;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.math.filter.Debouncer;
@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class AutoPickupNote extends Command{
-    public Limelight limelight;
+    public SkyLimelight limelight;
     public Swerve swerve;
     public IntakeSubsystem intakeSubsystem;
     public Debouncer debouncer;
@@ -31,7 +31,7 @@ public class AutoPickupNote extends Command{
 
     public AutoPickupNote(){
         swerve = Swerve.getInstance();
-        limelight = Limelight.getInstance();
+        limelight = SkyLimelight.getInstance();
         debouncer = new Debouncer(.5);
 
         // creating yTranslationPidController and setting the toleance and setpoint
