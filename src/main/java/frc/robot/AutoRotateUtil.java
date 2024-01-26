@@ -15,6 +15,7 @@ public class AutoRotateUtil {
     public AutoRotateUtil(int angle) {
         this.s_Swerve = Swerve.getInstance();
 
+
         this.m_angle = angle == 0 ? 360 : angle;
 
         // SmartDashboard.putNumber("Angle", this.m_angle);
@@ -36,6 +37,8 @@ public class AutoRotateUtil {
         double kP = SmartDashboard.getNumber("kP", 0.0);
         double kI = SmartDashboard.getNumber("kI", 0.0);
         double kD = SmartDashboard.getNumber("kD", 0.0);
+
+
 
 
         this.pidController.setP(kP);
@@ -61,4 +64,6 @@ public class AutoRotateUtil {
     }
 
 }
+
+
 
