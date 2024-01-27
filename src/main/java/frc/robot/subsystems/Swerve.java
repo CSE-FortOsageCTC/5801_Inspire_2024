@@ -33,6 +33,8 @@ public class Swerve extends SubsystemBase {
     private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
 
+    public double gyroOffset;
+
     public static Swerve getInstance() {
         if (swerve == null) {
             swerve = new Swerve();
@@ -43,7 +45,7 @@ public class Swerve extends SubsystemBase {
     private Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(0);
+        //gyro.setYaw(0);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -148,11 +150,15 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading){
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
+        Rotation2d gyroYaw = getGyroYaw();
+        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
+        gyroOffset = gyroYaw.getDegrees() - heading.getDegrees();
     }
 
     public void zeroHeading(){
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        Rotation2d gyroYaw = getGyroYaw();
+        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        gyroOffset = gyroYaw.getDegrees();
     }
 
     public Rotation2d getGyroYaw() {

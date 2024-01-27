@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DefaultTeleopSub extends SubsystemBase{
     
 
-    public Swerve s_Swerve;
-    public SkyLimelight s_Limelight;
+
+    public Swerve s_Swerve = Swerve.getInstance();
+    public SkyLimelight s_Limelight = SkyLimelight.getInstance();
+
     private static DefaultTeleopSub autoAlignSwerve;
 
     public static DefaultTeleopSub getInstance() {

@@ -25,12 +25,12 @@ public class AutoRotateUtil {
 
         this.pidController = new PIDController(0, 0, 0);
 
-        pidController.setTolerance(0.675);
-        pidController.setSetpoint(this.m_angle);
-        SmartDashboard.putNumber("kP", 0.0065);
-        SmartDashboard.putNumber("kI", 0.0025);
-        SmartDashboard.putNumber("kD", 0.001);
-    }
+        pidController.setTolerance(0.001);
+        pidController.setSetpoint(0);
+        SmartDashboard.putNumber("kP", 0.01);
+        SmartDashboard.putNumber("kI", 0);
+        SmartDashboard.putNumber("kD", 0);
+   }
 
    public void initialize() {
     pidController.reset();
@@ -50,7 +50,9 @@ public class AutoRotateUtil {
     this.pidController.setP(kP);
     this.pidController.setI(kI);
     this.pidController.setD(kD);
-    double yaw = ((s_Swerve.gyro.getYaw().getValue() % 360) + 360) % 360;
+    double yaw = (((s_Swerve.gyro.getYaw().getValue() - s_Swerve.gyroOffset) % 360) + 360) % 360;
+
+    SmartDashboard.putNumber("Corrected Gyro", yaw);
     double headingError = this.m_angle - yaw;
     if (headingError > 180) {
         headingError -= 360;
@@ -58,18 +60,22 @@ public class AutoRotateUtil {
     if (headingError < -180) {
         headingError += 360;
     }
-    double speed = pidController.calculate(yaw, yaw + headingError);
-    speed = MathUtil.clamp(speed, -1, 1);
+    SmartDashboard.putNumber("Heading Error", headingError);
+    //double speed = pidController.calculate(headingError, 0);
+    double feedForward = 0.5;
+    //speed = MathUtil.clamp(speed, -1, 1);
     //SmartDashboard.putNumber("Speed", speed);
-    return speed;
 
-    
-
+    if (Math.abs(headingError) > 30) {
+        return (headingError < 0) ? feedForward : -feedForward;
+    } else {
+        return MathUtil.clamp(pidController.calculate(headingError, 0), -1, 1);
+    }
    }
 
    public void updateTargetAngle(double angle) {
 
-    m_angle = angle == 0?360:angle;
+    m_angle = angle;
 
    }
 
