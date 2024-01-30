@@ -30,6 +30,7 @@ public class AutoPickupNote extends Command{
 
 
     public AutoPickupNote(){
+        this.autoUtil = new AutoRotateUtil(0);
         swerve = Swerve.getInstance();
         limelight = Limelight.getInstance();
         debouncer = new Debouncer(.5);
@@ -75,8 +76,8 @@ public class AutoPickupNote extends Command{
         
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
-        double angularValue = limelight.getSkew(); 
         double distance = getDistanceMeters();
+        autoUtil.updateTargetAngle(xValue);
 
         kP = SmartDashboard.getNumber("AlignP", 0);
         kI = SmartDashboard.getNumber("AlignI", 0);
@@ -84,17 +85,15 @@ public class AutoPickupNote extends Command{
         
         SmartDashboard.putNumber("Xvalue", xValue);
         SmartDashboard.putNumber("Areavalue", areaValue);
-        SmartDashboard.putNumber("AngularValue", angularValue);
-        SmartDashboard.putNumber("Ts0", limelight.getSkew0());
-        SmartDashboard.putNumber("Ts1", limelight.getSkew1());
-        SmartDashboard.putNumber("Ts2", limelight.getSkew2());
+
+
 
 
         if (debouncer.calculate(NoteSeen())){
             System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
-            double ySpeed = yTranslationPidController.calculate(distance * RadiansToDegrees(Math.cos(angularValue)));
-            double xSpeed = xTranslationPidController.calculate(distance * RadiansToDegrees(Math.sin(angularValue)));
+            double ySpeed = yTranslationPidController.calculate(distance * RadiansToDegrees(Math.cos(xValue)));
+            double xSpeed = xTranslationPidController.calculate(distance * RadiansToDegrees(Math.sin(xValue)));
             double angularSpeed = autoUtil.calculateRotationSpeed() * Constants.Swerve.maxAngularVelocity;
             
 
@@ -109,6 +108,5 @@ public class AutoPickupNote extends Command{
         swerve.drive(new Translation2d(0,0), 0, true, true);
         xTranslationPidController.reset();
         yTranslationPidController.reset();
-        rotationPidController.reset();
     }
 } 
