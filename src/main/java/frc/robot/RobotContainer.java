@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.pathplanner.lib.auto.NamedCommands;
+import frc.robot.commands.ShootCommand;
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -41,10 +43,16 @@ public class RobotContainer {
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
   private Swerve s_Swerve;
+  private ShootCommand shootCommand;
+  private IntakeCommand intakeCommand;
+
+  
  
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
+    NamedCommands.registerCommand("Shoot", shootCommand);
+    NamedCommands.registerCommand("Intake", intakeCommand);
     //s_Swerve = Swerve.getInstance();
     configureBindings();
   }
