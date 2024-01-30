@@ -16,15 +16,6 @@ public class AutoRotateUtil {
         this.m_angle = angle == 0?360:angle;
 
         //SmartDashboard.putNumber("Angle", this.m_angle);
-
-
-    public AutoRotateUtil(int angle) {
-        this.s_Swerve = Swerve.getInstance();
-
-
-        this.m_angle = angle == 0 ? 360 : angle;
-
-        // SmartDashboard.putNumber("Angle", this.m_angle);
         this.pidController = new PIDController(0, 0, 0);
 
         pidController.setTolerance(0.001);
@@ -41,29 +32,6 @@ public class AutoRotateUtil {
    public void reset() {
     pidController.reset();
    }
-
-        double kP = SmartDashboard.getNumber("kP", 0.0);
-        double kI = SmartDashboard.getNumber("kI", 0.0);
-        double kD = SmartDashboard.getNumber("kD", 0.0);
-
-
-
-
-        this.pidController.setP(kP);
-        this.pidController.setI(kI);
-        this.pidController.setD(kD);
-        double yaw = s_Swerve.gyro.getYaw().getValue();
-        double headingError = this.m_angle - yaw;
-        if (headingError > 180) {
-            headingError -= 360;
-        }
-        if (headingError < -180) {
-            headingError += 360;
-        }
-        double speed = pidController.calculate(yaw, yaw + headingError);
-        SmartDashboard.putNumber("Speed", speed);
-        return speed;
-    }
 
 
    public double calculateRotationSpeed () {

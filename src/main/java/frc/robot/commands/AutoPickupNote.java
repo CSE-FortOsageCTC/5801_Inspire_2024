@@ -83,11 +83,9 @@ public class AutoPickupNote extends Command{
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double distance = getDistanceMeters();
-<<<<<<< HEAD
         autoUtil.updateTargetAngle(xValue);
-=======
+
         double fixedDistance = FixedDistanceCalc();
->>>>>>> cdb75668d156dd6f8101fc40a2597f26872f04b1
 
         kP = SmartDashboard.getNumber("AlignP", 0);
         kI = SmartDashboard.getNumber("AlignI", 0);
