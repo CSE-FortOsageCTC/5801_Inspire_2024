@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -21,8 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private String m_autoSelected;
-  private SendableChooser<String> m_chooser;
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
   private Command m_autonomousCommand;
 
@@ -37,10 +37,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
 
-    m_chooser = new SendableChooser<>();
-    m_chooser.setDefaultOption("4 piece path left", "4 piece path left");
-    m_chooser.addOption("6 piece path", "6 piece path");
-    SmartDashboard.putData("Auto choices", m_chooser);
     m_robotContainer = new RobotContainer();
   }
 
@@ -71,8 +67,6 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    System.out.println("Auto selected: " + m_autoSelected);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -82,10 +76,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(m_autoSelected);  
-    AutoBuilder.followPath(path);
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() {

@@ -11,6 +11,8 @@ import javax.swing.JOptionPane;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,6 +32,14 @@ public class RobotContainer {
   
   // The robot's subsystems and commands are defined here...
   private final Joystick driver = new Joystick(0);
+
+  // Sendable Chooser for autos
+  private SendableChooser<Command> autoChooser;
+
+  // Path planner paths
+  private PathPlannerPath sixPiecePath;
+  private PathPlannerPath fourPiecePathLeft;
+
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -56,10 +66,22 @@ public class RobotContainer {
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
+
+    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path left");
+    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path");
+
     NamedCommands.registerCommand("Shoot", shootCommand);
     NamedCommands.registerCommand("Intake", intakeCommand);
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
+    autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     //s_Swerve = Swerve.getInstance();
     configureBindings();
+  }
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
   }
 
   private void configureBindings() {
