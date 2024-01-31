@@ -35,17 +35,15 @@ public class AutoPickupNote extends Command{
         limelight = SkyLimelight.getInstance();
         debouncer = new Debouncer(.5);
 
-        // creating yTranslationPidController and setting the toleance and setpoint
+        // creating yTranslationPidController and setting the tolerance and setpoint
         yTranslationPidController = new PIDController(0, 0, 0);
         yTranslationPidController.setSetpoint(0);
     
-        // creating xTranslationPidController and setting the toleance and setpoint
+        // creating xTranslationPidController and setting the tolerance and setpoint
         xTranslationPidController = new PIDController(0, 0, 0);
         xTranslationPidController.setSetpoint(0);
         
-        // creating rotationPidController and setting the toleance and setpoint
-        rotationPidController = new PIDController(0, 0, 0);
-        rotationPidController.setSetpoint(0);
+
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
