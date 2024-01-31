@@ -104,6 +104,8 @@ public class DefaultTeleop extends Command{
         rotationVal = (isAligning? s_AutoRotateUtil.calculateRotationSpeed():MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband));
 
         SmartDashboard.putBoolean("IsAligning", isAligning);
+        SmartDashboard.putNumber("Translation Val", translationVal);
+        SmartDashboard.putNumber("Strave Val", strafeVal);
         SmartDashboard.putNumber("Rotation Value", rotationVal);
         SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
 

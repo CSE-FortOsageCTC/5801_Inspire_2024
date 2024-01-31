@@ -53,7 +53,7 @@ public class RobotContainer {
   /* Drive Controls */
 
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
-  private Swerve s_Swerve = Swerve.getInstance();
+  private Swerve s_Swerve = new Swerve();
   private final Joystick driver = new Joystick(0);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final int translationAxis = XboxController.Axis.kLeftY.value;
