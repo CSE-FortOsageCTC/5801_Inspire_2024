@@ -16,15 +16,18 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
+
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
+
+  
   // The robot's subsystems and commands are defined here...
   private final Joystick driver = new Joystick(0);
 
@@ -57,10 +60,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", intakeCommand);
     //s_Swerve = Swerve.getInstance();
     configureBindings();
-  }
-  public Command getAutonomousCommand(){
-    PathPlannerPath path = PathPlannerPath.fromPathFile("4 piece auto");
-    return AutoBuilder.followPath(path);
   }
 
   private void configureBindings() {
