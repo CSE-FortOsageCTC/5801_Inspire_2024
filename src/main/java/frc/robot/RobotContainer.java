@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import frc.robot.commands.ShootCommand;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -56,7 +58,10 @@ public class RobotContainer {
     //s_Swerve = Swerve.getInstance();
     configureBindings();
   }
-
+  public Command getAutonomousCommand(){
+    PathPlannerPath path = PathPlannerPath.fromPathFile("4 piece auto");
+    return AutoBuilder.followPath(path);
+  }
 
   private void configureBindings() {
     intake.whileTrue(new IntakeCommand());
@@ -64,12 +69,4 @@ public class RobotContainer {
     climbRetraction.whileTrue(new ClimbRetractionCommand());
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return null;
-  }
 }

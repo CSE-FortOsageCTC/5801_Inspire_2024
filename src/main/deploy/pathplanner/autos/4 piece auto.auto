@@ -5,7 +5,7 @@
       "x": 1.1017816321346934,
       "y": 6.714031713777714
     },
-    "rotation": -124.82448915695691
+    "rotation": 50.86960044301473
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "4 piece auto path"
           }
         }
       ]
