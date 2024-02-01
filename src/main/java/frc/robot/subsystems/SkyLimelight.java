@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import org.opencv.dnn.Net;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,7 +8,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+
 
 /**
  * this class retrieves limelight values from the networktable
@@ -132,10 +131,14 @@ public class SkyLimelight extends SubsystemBase {
         
     }
     
-    public Pose2d getBotPose(){
+
+    /*
+     *  Returns 0 for all values if no Apriltag detected
+     */
+    public Pose2d getBotPose() {
         botPoseEntry = table.getEntry("botpose");
-        double[] botpose = botPoseEntry.getDoubleArray(new double [6]);
-        Pose2d visionPose = new Pose2d(botpose[0],botpose[1], new Rotation2d(botpose[5]));
+        double[] botpose = botPoseEntry.getDoubleArray(new double[6]);
+        Pose2d visionPose = new Pose2d(botpose[0], botpose[1], new Rotation2d(botpose[5]));
         return visionPose;
     }
 }
