@@ -112,4 +112,9 @@ public class DefaultTeleop extends Command{
         s_DefaultTeleop.s_Swerve.drive(new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
 
     }
+
+    @Override
+    public void end(boolean isFinished) {
+        s_AutoRotateUtil.end();
+    }
 }

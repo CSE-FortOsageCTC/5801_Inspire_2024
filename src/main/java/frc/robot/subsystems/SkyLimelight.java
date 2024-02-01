@@ -132,6 +132,9 @@ public class SkyLimelight extends SubsystemBase {
     }
     
 
+    /*
+     *  Returns 0 for all values if no Apriltag detected
+     */
     public Pose2d getBotPose() {
         botPoseEntry = table.getEntry("botpose");
         double[] botpose = botPoseEntry.getDoubleArray(new double[6]);

@@ -18,7 +18,7 @@ public class DefaultTeleopSub extends SubsystemBase{
         return autoAlignSwerve;
     }
 
-    public DefaultTeleopSub() {
+    private DefaultTeleopSub() {
 
 
     }

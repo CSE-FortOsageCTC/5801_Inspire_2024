@@ -85,8 +85,9 @@ public class AutoRotateUtil {
     //return speed < 0.1;
    }
 
-   public void end(boolean isFinished) {
+   public void end() {
     System.out.println("it ended");
+    pidController.reset();
    }
 
 }
