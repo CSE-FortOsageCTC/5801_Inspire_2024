@@ -48,6 +48,12 @@ public class RobotContainer {
   // Path planner paths
   private PathPlannerPath sixPiecePath;
   private PathPlannerPath fourPiecePathLeft;
+  private PathPlannerPath threePiecePathMB;
+  private PathPlannerPath blueCenterScorePath;
+  private PathPlannerPath blueTopStartPath;
+  private PathPlannerPath blueTopScorePath;
+  private PathPlannerPath blueFinishCentralPath;
+
 
 
   /* Drive Controls */
@@ -82,15 +88,26 @@ public class RobotContainer {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
 
+    //Set up PathPlannerPaths
     sixPiecePath = PathPlannerPath.fromPathFile("6 piece path left");
-    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path");
+    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
+    threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
+    blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
+    blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
+    blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
+    blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
 
+    //Register Named Commands
     NamedCommands.registerCommand("Shoot", shootCommand);
     NamedCommands.registerCommand("Intake", intakeCommand);
 
+    //Build, Update, and Close the autoChooser
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
     autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
+    autoChooser.addOption("3 piece auto James", AutoBuilder.buildAuto("3-PieceAuto"));
+    autoChooser.addOption("3 piece auto Matthew", AutoBuilder.buildAuto("3 piece pickup by MB"));
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
     //s_Swerve = Swerve.getInstance();
     configureBindings();

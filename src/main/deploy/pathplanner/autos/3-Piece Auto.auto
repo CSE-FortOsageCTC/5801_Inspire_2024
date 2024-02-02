@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3363329583802028,
+      "y": 7.065858703145978
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Top Start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand.java"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Top Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand.java"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Center Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand.java"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Finish Central"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
