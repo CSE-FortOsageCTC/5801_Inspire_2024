@@ -82,13 +82,13 @@ public class RobotContainer {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
 
-    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path left");
-    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path");
+    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path");
+    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
 
     NamedCommands.registerCommand("Shoot", shootCommand);
     NamedCommands.registerCommand("Intake", intakeCommand);
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = new SendableChooser<>();
     autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
     autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
     SmartDashboard.putData("Auto Chooser", autoChooser);

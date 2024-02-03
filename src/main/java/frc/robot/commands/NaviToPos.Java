@@ -78,19 +78,19 @@ public class NaviToPos extends CommandBase {
         xTranslationPidController.setPID(kP, kI, kD);
         xTranslationPidController.setPID(kP, kI, kD);
 
-       
+
 
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew();
         // sets current position
-        Pose2d botPose = limelight.getBotPose; 
-        double botY = botPose.getX();
-        double botX = botPose.getY();
+        Pose2d botPose = limelight.getBotPose(); 
+        double botX = botPose.getX();
+        double botY = botPose.getY();
         if (botX == 0 && botY == 0){
             botPose = s_Swerve.getEstimatedPosition();
-            botY = botPose.getX();
-            botX = botPose.getY();
+            botX = botPose.getX();
+            botY = botPose.getY();
         }
         else{
             s_Swerve.updateWithVision(botPose, Timestamp.MILLISECONDS_SINCE_EPOCH);
