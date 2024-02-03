@@ -6,6 +6,8 @@ package frc.robot;
 
 
 
+import java.nio.file.Path;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import javax.swing.JOptionPane;
@@ -30,6 +32,7 @@ import frc.robot.subsystems.*;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DefaultTeleopSub;
@@ -43,7 +46,7 @@ public class RobotContainer {
 
 
   // Sendable Chooser for autos
-  private SendableChooser<Command> autoChooser;
+  private SendableChooser<String> autoChooser;
 
   // Path planner paths
   private PathPlannerPath sixPiecePath;
@@ -53,6 +56,8 @@ public class RobotContainer {
   private PathPlannerPath blueTopStartPath;
   private PathPlannerPath blueTopScorePath;
   private PathPlannerPath blueFinishCentralPath;
+  private PathPlannerPath rotatePath;
+  private PathPlannerPath sevenPiecePath;
 
 
 
@@ -87,6 +92,11 @@ public class RobotContainer {
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
+    shootCommand = new ShootCommand();
+
+    //Register Named Commands
+    NamedCommands.registerCommand("Shoot", shootCommand);
+    //NamedCommands.registerCommand("Intake", intakeCommand);
 
     //Set up PathPlannerPaths
     sixPiecePath = PathPlannerPath.fromPathFile("6 piece path");
@@ -96,19 +106,21 @@ public class RobotContainer {
     blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
     blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
     blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
+    rotatePath = PathPlannerPath.fromPathFile("Rotate");
+    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
 
-    //Register Named Commands
-    NamedCommands.registerCommand("Shoot", shootCommand);
-    NamedCommands.registerCommand("Intake", intakeCommand);
+
 
     //Build, Update, and Close the autoChooser
-    autoChooser = new SendableChooser<Command>();
+    autoChooser = new SendableChooser<>();
     //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
-    autoChooser.setDefaultOption("4 piece path left", AutoBuilder.followPath(fourPiecePathLeft));
-    autoChooser.addOption("6 piece path", AutoBuilder.followPath(sixPiecePath));
-    autoChooser.addOption("3 piece auto James", AutoBuilder.buildAuto("3-Piece Auto"));
-    autoChooser.addOption("3 piece auto Matthew", AutoBuilder.buildAuto("3 piece pickup by MB"));
-    autoChooser.addOption("Blue Top Score", AutoBuilder.followPath(blueTopScorePath));
+    autoChooser.setDefaultOption("4 piece path left", "4 piece path left");
+    autoChooser.addOption("6 piece path", "6 piece path");
+    autoChooser.addOption("3 piece auto James", "3-Piece Auto");
+    autoChooser.addOption("3 piece auto Matthew", "3 piece pickup by MB");
+    autoChooser.addOption("Blue Top Score", "Blue Top Score");
+    autoChooser.addOption("Rotate", "Rotate");
+    autoChooser.addOption("7 piece path", "7 piece path");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     //s_Swerve = Swerve.getInstance();
@@ -116,7 +128,31 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    PathPlannerPath path = null;
+    Rotation2d rotation = new Rotation2d(-56.12);
+    s_Swerve.setHeading(rotation);
+    switch (autoChooser.getSelected()) {
+      case "4 piece path left":
+        path = fourPiecePathLeft;
+        break;
+      case "6 piece path":
+        path = sixPiecePath;
+        break;
+      case "3 piece pickup by MB":
+        path = threePiecePathMB;
+        break;
+      case "Blue Top Score":
+        path = blueTopScorePath;
+        break;
+      case "Rotate":
+        path = rotatePath;
+        break;
+      case "7 piece path":
+        path = sevenPiecePath;
+        break;
+    }
+    s_Swerve.setPose(path.getStartingDifferentialPose());
+    return AutoBuilder.followPath(path);
   }
 
   private void configureBindings() {
