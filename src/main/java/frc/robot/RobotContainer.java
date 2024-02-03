@@ -89,7 +89,7 @@ public class RobotContainer {
     climbingSubsystem = ClimbingSubsystem.getInstance();
 
     //Set up PathPlannerPaths
-    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path left");
+    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path");
     fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
     threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
     blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
@@ -102,11 +102,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", intakeCommand);
 
     //Build, Update, and Close the autoChooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
-    autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
-    autoChooser.addOption("3 piece auto James", AutoBuilder.buildAuto("3-PieceAuto"));
+    autoChooser = new SendableChooser<Command>();
+    //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
+    autoChooser.setDefaultOption("4 piece path left", AutoBuilder.followPath(fourPiecePathLeft));
+    autoChooser.addOption("6 piece path", AutoBuilder.followPath(sixPiecePath));
+    autoChooser.addOption("3 piece auto James", AutoBuilder.buildAuto("3-Piece Auto"));
     autoChooser.addOption("3 piece auto Matthew", AutoBuilder.buildAuto("3 piece pickup by MB"));
+    autoChooser.addOption("Blue Top Score", AutoBuilder.followPath(blueTopScorePath));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     //s_Swerve = Swerve.getInstance();
