@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -34,6 +35,7 @@ public class DefaultTeleop extends Command{
     private int translationSup;
     private int strafeSup;
     private int rotationSup;
+    private int throttle;
     private boolean robotCentricSup;
     private Joystick driver;
 
@@ -42,7 +44,10 @@ public class DefaultTeleop extends Command{
     private Pair<Double, Double> speakerCoordinate;
     private boolean bButtonPressed;
 
-    public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup) {
+    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(1.8); 
+    private SlewRateLimiter throttleLimiter = new SlewRateLimiter(2);
+
+    public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup, int throttle) {
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0);
         this.translationSup = translationSup;
@@ -50,6 +55,7 @@ public class DefaultTeleop extends Command{
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
         this.driver = controller;
+        this.throttle = throttle;
         bButtonPressed = bButtonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kB.value));
         addRequirements(s_DefaultTeleop);
 
@@ -126,7 +132,15 @@ public class DefaultTeleop extends Command{
         SmartDashboard.putNumber("Rotation Value", rotationVal);
         SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
 
-        s_DefaultTeleop.s_Swerve.drive(new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        
+
+        double throttleAxis = driver.getRawAxis(throttle);
+
+        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .2 : throttleAxis;
+
+        rotationVal = rotationVal * rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
+
+        s_DefaultTeleop.s_Swerve.drive(new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed).times(throttleLimiter.calculate(throttleAxis) * (5)), rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
     }
 
     @Override

@@ -105,7 +105,7 @@ public class RobotContainer {
     climbExtension.whileTrue(new ClimbExtensionCommand());
     climbRetraction.whileTrue(new ClimbRetractionCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true));
+    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
   }
 
 }

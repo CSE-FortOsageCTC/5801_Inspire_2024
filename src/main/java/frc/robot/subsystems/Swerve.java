@@ -43,8 +43,9 @@ public class Swerve extends SubsystemBase {
 
     private Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
-        gyro.getConfigurator().apply(new Pigeon2Configuration());
-        //gyro.setYaw(0);
+        Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+        pigeonConfig.MountPose.withMountPoseYaw(90);
+        gyro.getConfigurator().apply(pigeonConfig);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -80,6 +81,7 @@ public class Swerve extends SubsystemBase {
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
+        gyro.setYaw(180);
     }
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
@@ -156,7 +158,7 @@ public class Swerve extends SubsystemBase {
 
     public void zeroHeading(){
         Rotation2d gyroYaw = getGyroYaw();
-        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(180)));
         gyroOffset = gyroYaw.getDegrees();
     }
 
