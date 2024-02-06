@@ -58,6 +58,8 @@ public class RobotContainer {
   private PathPlannerPath blueFinishCentralPath;
   private PathPlannerPath rotatePath;
   private PathPlannerPath sevenPiecePath;
+  private PathPlannerPath fourPieceNoTeamPath;
+
 
 
 
@@ -108,6 +110,8 @@ public class RobotContainer {
     blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
     rotatePath = PathPlannerPath.fromPathFile("Rotate");
     sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
+    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
+
 
 
 
@@ -121,6 +125,7 @@ public class RobotContainer {
     autoChooser.addOption("Blue Top Score", "Blue Top Score");
     autoChooser.addOption("Rotate", "Rotate");
     autoChooser.addOption("7 piece path", "7 piece path");
+    autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     //s_Swerve = Swerve.getInstance();
@@ -149,6 +154,9 @@ public class RobotContainer {
         break;
       case "7 piece path":
         path = sevenPiecePath;
+        break;
+      case "4 piece auto no team path":
+        path = fourPieceNoTeamPath;
         break;
     }
     s_Swerve.setPose(path.getStartingDifferentialPose());
