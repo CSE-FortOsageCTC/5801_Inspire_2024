@@ -4,12 +4,6 @@
 
 package frc.robot;
 
-
-
-import java.util.function.DoubleSupplier;
-
-import javax.swing.JOptionPane;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -28,8 +22,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DefaultTeleopSub;
@@ -43,7 +36,7 @@ public class RobotContainer {
 
 
   // Sendable Chooser for autos
-  private SendableChooser<Command> autoChooser;
+  private SendableChooser<String> autoChooser;
 
   // Path planner paths
   private PathPlannerPath sixPiecePath;
@@ -53,6 +46,10 @@ public class RobotContainer {
   private PathPlannerPath blueTopStartPath;
   private PathPlannerPath blueTopScorePath;
   private PathPlannerPath blueFinishCentralPath;
+  private PathPlannerPath rotatePath;
+  private PathPlannerPath sevenPiecePath;
+  private PathPlannerPath fourPieceNoTeamPath;
+
 
 
 
@@ -87,34 +84,73 @@ public class RobotContainer {
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
+    shootCommand = new ShootCommand();
+
+    //Register Named Commands
+    NamedCommands.registerCommand("Shoot", shootCommand);
+    //NamedCommands.registerCommand("Intake", intakeCommand);
 
     //Set up PathPlannerPaths
-    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path left");
+    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path");
     fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
     threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
     blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
     blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
     blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
     blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
+    rotatePath = PathPlannerPath.fromPathFile("Rotate");
+    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
+    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
 
-    //Register Named Commands
-    NamedCommands.registerCommand("Shoot", shootCommand);
-    NamedCommands.registerCommand("Intake", intakeCommand);
+
+
 
     //Build, Update, and Close the autoChooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
-    autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
-    autoChooser.addOption("3 piece auto James", AutoBuilder.buildAuto("3-PieceAuto"));
-    autoChooser.addOption("3 piece auto Matthew", AutoBuilder.buildAuto("3 piece pickup by MB"));
+    autoChooser = new SendableChooser<>();
+    //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
+    autoChooser.setDefaultOption("4 piece path left", "4 piece path left");
+    autoChooser.addOption("6 piece path", "6 piece path");
+    autoChooser.addOption("3 piece auto James", "3-Piece Auto");
+    autoChooser.addOption("3 piece auto Matthew", "3 piece pickup by MB");
+    autoChooser.addOption("Blue Top Score", "Blue Top Score");
+    autoChooser.addOption("Rotate", "Rotate");
+    autoChooser.addOption("7 piece path", "7 piece path");
+    autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    //s_Swerve = Swerve.getInstance();
+    
     configureBindings();
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    PathPlannerPath path = null;
+    Rotation2d rotation = new Rotation2d();
+    s_Swerve.setHeading(rotation);
+    switch (autoChooser.getSelected()) {
+      case "4 piece path left":
+        path = fourPiecePathLeft;
+        break;
+      case "6 piece path":
+        path = sixPiecePath;
+        break;
+      case "3 piece pickup by MB":
+        path = threePiecePathMB;
+        break;
+      case "Blue Top Score":
+        path = blueTopScorePath;
+        break;
+      case "Rotate":
+        path = rotatePath;
+        break;
+      case "7 piece path":
+        path = sevenPiecePath;
+        break;
+      case "4 piece auto no team path":
+        path = fourPieceNoTeamPath;
+        break;
+    }
+    s_Swerve.setPose(path.getStartingDifferentialPose());
+    return AutoBuilder.followPath(path);
   }
 
   private void configureBindings() {
