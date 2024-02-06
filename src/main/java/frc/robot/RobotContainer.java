@@ -4,14 +4,6 @@
 
 package frc.robot;
 
-
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-
-import javax.swing.JOptionPane;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -29,8 +21,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -128,13 +118,13 @@ public class RobotContainer {
     autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    //s_Swerve = Swerve.getInstance();
+    
     configureBindings();
   }
 
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
-    Rotation2d rotation = new Rotation2d(-56.12);
+    Rotation2d rotation = new Rotation2d();
     s_Swerve.setHeading(rotation);
     switch (autoChooser.getSelected()) {
       case "4 piece path left":

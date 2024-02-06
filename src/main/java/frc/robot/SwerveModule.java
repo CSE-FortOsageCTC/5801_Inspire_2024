@@ -93,11 +93,11 @@ public class SwerveModule {
         );
     }
     public SwerveModuleState runSetpoint(SwerveModuleState state){
-        var optomizedState = SwerveModuleState.optimize(state, Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
+        var optimizedState = SwerveModuleState.optimize(state, Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
 
-        angleSetpoint = optomizedState.angle;
-        speedSetpoint = optomizedState.speedMetersPerSecond;
+        angleSetpoint = optimizedState.angle;
+        speedSetpoint = optimizedState.speedMetersPerSecond;
 
-        return optomizedState;
+        return optimizedState;
     }
 }

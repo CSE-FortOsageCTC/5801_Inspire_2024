@@ -16,17 +16,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 
 
 public class Swerve extends SubsystemBase{
@@ -35,7 +32,6 @@ public class Swerve extends SubsystemBase{
     public Pigeon2 gyro;
     private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
-    private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
     public double gyroOffset;
 
     public static Swerve getInstance() {
@@ -181,18 +177,14 @@ public class Swerve extends SubsystemBase{
     }
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
-        //robotRelativeSpeeds.omegaRadiansPerSecond = 0.0;
-        SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
-        
-
+        // SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
+        // SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
 
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
         SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.Swerve.maxSpeed);
 
-        //SwerveModuleState[] optomizedSetpointStates = new SwerveModuleState[4];
         for(int i = 0; i < 4; i++){
             mSwerveMods[i].setDesiredState(setpointStates[i], false);}
     }
