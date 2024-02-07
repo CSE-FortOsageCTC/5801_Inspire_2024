@@ -136,9 +136,9 @@ public class DefaultTeleop extends Command{
 
         double throttleAxis = driver.getRawAxis(throttle);
 
-        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .2 : throttleAxis;
+        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
 
-        rotationVal = rotationVal * rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
+        // rotationVal = rotationVal * rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
 
         s_DefaultTeleop.s_Swerve.drive(new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed).times(throttleLimiter.calculate(throttleAxis) * (5)), rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
     }
