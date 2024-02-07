@@ -10,19 +10,31 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Measure;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import com.ctre.phoenix6.SignalLogger;
+
 
 
 
@@ -33,6 +45,9 @@ public class Swerve extends SubsystemBase{
     private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
     public double gyroOffset;
+    public SysIdRoutine routine;
+    //motor1 just for testing
+    public TalonFX motor1;
 
     public static Swerve getInstance() {
         if (swerve == null) {
@@ -42,11 +57,12 @@ public class Swerve extends SubsystemBase{
     }
 
     private Swerve() {
+        motor1 = new TalonFX(0);
+        SignalLogger.setPath("C:\\Users\\acepm\\Music\\ctre logs");
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         //gyro.setYaw(0);
         
-
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -81,7 +97,14 @@ public class Swerve extends SubsystemBase{
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
-    }
+
+        /*uses https://github.com/wpilibsuite/allwpilib/blob/main/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/sysid/subsystems/Drive.java as a reference. Still need 
+        to figure out logMotors callback*/   
+        routine = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(this::voltageDrive, this::logMotors, this));
+
+        } 
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
     }
@@ -187,6 +210,16 @@ public class Swerve extends SubsystemBase{
 
         for(int i = 0; i < 4; i++){
             mSwerveMods[i].setDesiredState(setpointStates[i], false);}
+    }
+    //need to make this function generic
+    public void voltageDrive(Measure<Voltage> volts){
+        motor1.setVoltage(volts.in(Volts));
+    }
+
+    //this method is just a placeholder and does not do anything yet but I assume it should use the SignalLogger from ctre
+    public void logMotors(SysIdRoutineLog log){
+        SignalLogger.start();
+        
     }
 
     @Override
