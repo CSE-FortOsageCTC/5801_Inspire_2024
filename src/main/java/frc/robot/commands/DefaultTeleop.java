@@ -44,7 +44,7 @@ public class DefaultTeleop extends Command{
     private Pair<Double, Double> speakerCoordinate;
     private boolean bButtonPressed;
 
-    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(1.8); 
+    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(5); 
     private SlewRateLimiter throttleLimiter = new SlewRateLimiter(2);
 
     public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup, int throttle) {
@@ -114,7 +114,7 @@ public class DefaultTeleop extends Command{
         
         if (driver.getRawButtonReleased(XboxController.Button.kB.value)) {
             isAligning = true;
-        } else if (MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) > 0) {
+        } else if (MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) != 0) {
             isAligning = false;
         }
 
@@ -124,7 +124,12 @@ public class DefaultTeleop extends Command{
             isAligning = true;
         }
 
-        rotationVal = (isAligning? s_AutoRotateUtil.calculateRotationSpeed():MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband));
+        double throttleAxis = driver.getRawAxis(throttle);
+
+        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
+        rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? 0 : rotationAxis;
+
+        rotationVal = (isAligning? s_AutoRotateUtil.calculateRotationSpeed():rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis)));
 
         SmartDashboard.putBoolean("IsAligning", isAligning);
         SmartDashboard.putNumber("Translation Val", translationVal);
@@ -134,13 +139,10 @@ public class DefaultTeleop extends Command{
 
         
 
-        double throttleAxis = driver.getRawAxis(throttle);
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleLimiter.calculate(throttleAxis));
 
-        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
 
-        // rotationVal = rotationVal * rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
-
-        s_DefaultTeleop.s_Swerve.drive(new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed).times(throttleLimiter.calculate(throttleAxis) * (5)), rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        s_DefaultTeleop.s_Swerve.drive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
     }
 
     @Override
