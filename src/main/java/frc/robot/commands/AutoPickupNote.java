@@ -117,5 +117,6 @@ public class AutoPickupNote extends Command{
         swerve.drive(new Translation2d(0,0), 0, true, true);
         xTranslationPidController.reset();
         yTranslationPidController.reset();
+        autoUtil.reset();
     }
 } 

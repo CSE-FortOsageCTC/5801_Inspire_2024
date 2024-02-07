@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -29,9 +30,10 @@ public class Swerve extends SubsystemBase{
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
+    private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
     public double gyroOffset;
-
+    
     public static Swerve getInstance() {
         if (swerve == null) {
             swerve = new Swerve();
@@ -43,8 +45,8 @@ public class Swerve extends SubsystemBase{
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         //gyro.setYaw(0);
-        
 
+        
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -79,7 +81,7 @@ public class Swerve extends SubsystemBase{
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
-    }
+        } 
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
     }
@@ -187,7 +189,7 @@ public class Swerve extends SubsystemBase{
         for(int i = 0; i < 4; i++){
             mSwerveMods[i].setDesiredState(setpointStates[i], false);}
     }
-
+    
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
