@@ -30,21 +30,20 @@ public class AutoPickupNote extends Command{
 
 
     public AutoPickupNote(){
+        this.autoUtil = new AutoRotateUtil(0);
         swerve = Swerve.getInstance();
         limelight = SkyLimelight.getInstance();
         debouncer = new Debouncer(.5);
 
-        // creating yTranslationPidController and setting the toleance and setpoint
+        // creating yTranslationPidController and setting the tolerance and setpoint
         yTranslationPidController = new PIDController(0, 0, 0);
         yTranslationPidController.setSetpoint(0);
     
-        // creating xTranslationPidController and setting the toleance and setpoint
+        // creating xTranslationPidController and setting the tolerance and setpoint
         xTranslationPidController = new PIDController(0, 0, 0);
         xTranslationPidController.setSetpoint(0);
         
-        // creating rotationPidController and setting the toleance and setpoint
-        rotationPidController = new PIDController(0, 0, 0);
-        rotationPidController.setSetpoint(0);
+
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
@@ -81,8 +80,9 @@ public class AutoPickupNote extends Command{
         
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
-        double angularValue = limelight.getSkew(); 
         double distance = getDistanceMeters();
+        autoUtil.updateTargetAngle(xValue);
+
         double fixedDistance = FixedDistanceCalc();
 
         kP = SmartDashboard.getNumber("AlignP", 0);
@@ -91,17 +91,15 @@ public class AutoPickupNote extends Command{
         
         SmartDashboard.putNumber("Xvalue", xValue);
         SmartDashboard.putNumber("Areavalue", areaValue);
-        SmartDashboard.putNumber("AngularValue", angularValue);
-        SmartDashboard.putNumber("Ts0", limelight.getSkew0());
-        SmartDashboard.putNumber("Ts1", limelight.getSkew1());
-        SmartDashboard.putNumber("Ts2", limelight.getSkew2());
+
+
 
         
         if (debouncer.calculate(NoteSeen())){
             System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
-            double ySpeed = yTranslationPidController.calculate(distance * RadiansToDegrees(Math.cos(angularValue)));
-            double xSpeed = xTranslationPidController.calculate(distance * RadiansToDegrees(Math.sin(angularValue)));
+            double ySpeed = yTranslationPidController.calculate(distance * RadiansToDegrees(Math.cos(xValue)));
+            double xSpeed = xTranslationPidController.calculate(distance * RadiansToDegrees(Math.sin(xValue)));
             double angularSpeed = autoUtil.calculateRotationSpeed() * Constants.Swerve.maxAngularVelocity;
             
 
@@ -119,6 +117,6 @@ public class AutoPickupNote extends Command{
         swerve.drive(new Translation2d(0,0), 0, true, true);
         xTranslationPidController.reset();
         yTranslationPidController.reset();
-        rotationPidController.reset();
+        autoUtil.reset();
     }
 } 

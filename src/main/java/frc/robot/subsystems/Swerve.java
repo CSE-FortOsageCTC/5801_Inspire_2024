@@ -33,7 +33,7 @@ public class Swerve extends SubsystemBase{
     private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
     public double gyroOffset;
-
+    
     public static Swerve getInstance() {
         if (swerve == null) {
             swerve = new Swerve();
@@ -45,8 +45,8 @@ public class Swerve extends SubsystemBase{
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         //gyro.setYaw(0);
-        
 
+        
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -81,7 +81,7 @@ public class Swerve extends SubsystemBase{
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
-    }
+        } 
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
     }
@@ -91,6 +91,7 @@ public class Swerve extends SubsystemBase{
     public void updateWithVision(Pose2d pose2d, double timestamp){
         swerveEstimator.addVisionMeasurement(pose2d, timestamp);
     }
+
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
@@ -188,7 +189,7 @@ public class Swerve extends SubsystemBase{
         for(int i = 0; i < 4; i++){
             mSwerveMods[i].setDesiredState(setpointStates[i], false);}
     }
-
+    
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
