@@ -177,9 +177,13 @@ public class Swerve extends SubsystemBase{
     }
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
+
+        //robotRelativeSpeeds.omegaRadiansPerSecond = 0.0;
         // SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
         // SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
         // SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
+        
+
 
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
         SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);

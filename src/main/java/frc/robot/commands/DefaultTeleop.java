@@ -3,15 +3,19 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.Timestamp;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +35,7 @@ public class DefaultTeleop extends Command{
     private int translationSup;
     private int strafeSup;
     private int rotationSup;
+    private int throttle;
     private boolean robotCentricSup;
     private Joystick driver;
 
@@ -39,7 +44,10 @@ public class DefaultTeleop extends Command{
     private Pair<Double, Double> speakerCoordinate;
     private boolean bButtonPressed;
 
-    public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup) {
+    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(1.8); 
+    private SlewRateLimiter throttleLimiter = new SlewRateLimiter(2);
+
+    public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup, int throttle) {
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0);
         this.translationSup = translationSup;
@@ -47,6 +55,7 @@ public class DefaultTeleop extends Command{
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
         this.driver = controller;
+        this.throttle = throttle;
         bButtonPressed = bButtonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kB.value));
         addRequirements(s_DefaultTeleop);
 
@@ -74,14 +83,28 @@ public class DefaultTeleop extends Command{
         rotationPidController.setP(kI);
         rotationPidController.setP(kD);
 
+        
+
+        Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); 
+        double botX = botPose.getX();
+        double botY = botPose.getY();
+        if (botX == 0 && botY == 0){
+            botPose = s_DefaultTeleop.s_Swerve.getEstimatedPosition();
+            botX = botPose.getX();
+            botY = botPose.getY();
+        }
+        else{
+            s_DefaultTeleop.s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
+        }
+
         double yAxis = -driver.getRawAxis(translationSup);
         double xAxis = -driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
-        Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); // gets botpose based on approximated position from limelight
-        double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
-        double yDiff = botPose.getY() - speakerCoordinate.getSecond(); // gets distance of y between robot and target
-        SmartDashboard.putNumber("Bot Pose X", botPose.getX());
-        SmartDashboard.putNumber("Bot Pose Y", botPose.getY());
+        
+        double xDiff = botX - speakerCoordinate.getFirst(); // gets distance of x between robot and target
+        double yDiff = botY - speakerCoordinate.getSecond(); // gets distance of y between robot and target
+        SmartDashboard.putNumber("Bot Pose X", botX);
+        SmartDashboard.putNumber("Bot Pose Y", botY);
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
         SmartDashboard.putNumber("Align Swerve Angle", angle);
         s_AutoRotateUtil.updateTargetAngle(angle - 90); // updates pid angle setpoint to the angle that faces towards the target by using arctangent2 (which keeps negative and junk for us so it'll be nice)
@@ -91,7 +114,7 @@ public class DefaultTeleop extends Command{
         
         if (driver.getRawButtonReleased(XboxController.Button.kB.value)) {
             isAligning = true;
-        } else if (MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) > 0) {
+        } else if (MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) != 0) {
             isAligning = false;
         }
 
@@ -101,7 +124,12 @@ public class DefaultTeleop extends Command{
             isAligning = true;
         }
 
-        rotationVal = (isAligning? s_AutoRotateUtil.calculateRotationSpeed():MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband));
+        double throttleAxis = driver.getRawAxis(throttle);
+
+        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
+        rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? .1 : rotationAxis;
+
+        rotationVal = (isAligning? s_AutoRotateUtil.calculateRotationSpeed():rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis)));
 
         SmartDashboard.putBoolean("IsAligning", isAligning);
         SmartDashboard.putNumber("Translation Val", translationVal);
@@ -109,8 +137,12 @@ public class DefaultTeleop extends Command{
         SmartDashboard.putNumber("Rotation Value", rotationVal);
         SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
 
-        s_DefaultTeleop.s_Swerve.drive(new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        
 
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleLimiter.calculate(throttleAxis));
+
+
+        s_DefaultTeleop.s_Swerve.drive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
     }
 
     @Override
