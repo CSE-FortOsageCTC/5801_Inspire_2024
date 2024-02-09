@@ -25,6 +25,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -34,6 +35,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DefaultTeleopSub;
 import frc.robot.subsystems.Swerve;
+
 
 public class RobotContainer {
 
@@ -67,7 +69,7 @@ public class RobotContainer {
   private final JoystickButton spinKicker = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton naviToPos = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton shootButton = new JoystickButton(driver, XboxController.Button.kA.value);
 
@@ -110,6 +112,7 @@ public class RobotContainer {
     spinKicker.whileTrue(new SpinKickerCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
+    naviToPos.whileTrue(new NaviToPos(0.0,0.0,0.0));
   }
 
 }

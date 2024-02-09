@@ -1,26 +1,29 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix6.Timestamp;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.SkyLimelight;
 import frc.robot.subsystems.Swerve;
 
 /**
  * This class detects the "april tag" and positions the robot infront of the node/April Tag
  */
-public class NaviToPos extends CommandBase {
+public class NaviToPos extends Command {
 
     private PIDController yTranslationPidController;
     private PIDController xTranslationPidController;
     
     private Swerve s_Swerve;
-    private Limelight limelight;
+    private SkyLimelight limelight = SkyLimelight.getInstance();
     private AutoRotateUtil autoUtil;
     private double targetX;
     private double targetY;
@@ -40,12 +43,12 @@ public class NaviToPos extends CommandBase {
         this.targetX = targetX;
         this.targetY = targetY;
         // creating yTranslationPidController and setting the toleance and setpoint
-        yTranslationPidController = new PIDController(0, 0, 0);
+        yTranslationPidController = new PIDController(.5, 0, 0);
         yTranslationPidController.setTolerance(1);
         yTranslationPidController.setSetpoint(0);
         
         // creating xTranslationPidController and setting the toleance and setpoint
-        xTranslationPidController = new PIDController(0, 0, 0);
+        xTranslationPidController = new PIDController(.5 , 0, 0);
         xTranslationPidController.setTolerance(1);//5);
         xTranslationPidController.setSetpoint(0);
         
@@ -93,7 +96,7 @@ public class NaviToPos extends CommandBase {
             botY = botPose.getY();
         }
         else{
-            s_Swerve.updateWithVision(botPose, Timestamp.MILLISECONDS_SINCE_EPOCH);
+            s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
         }
         SmartDashboard.putNumber("Limelightta", areaValue);
 
@@ -101,6 +104,8 @@ public class NaviToPos extends CommandBase {
         SmartDashboard.putNumber("Areavalue", areaValue);
         SmartDashboard.putNumber("AngularValue", angularValue);
         SmartDashboard.putNumber("NaviToPosSetpoint", xTranslationPidController.getSetpoint());
+        SmartDashboard.putNumber("Current X", botX);
+        SmartDashboard.putNumber("Current Y", botY);
         //SmartDashboard.putNumber("Ts0", limelight.getSkew0());
         //SmartDashboard.putNumber("Ts1", limelight.getSkew1());
         //SmartDashboard.putNumber("Ts2", limelight.getSkew2());
@@ -140,7 +145,6 @@ public class NaviToPos extends CommandBase {
         // tells the swerve subsystem to stop
         Translation2d translation = new Translation2d(0, 0).times(Constants.Swerve.maxSpeed);
         s_Swerve.drive(translation, 0, true, true);
-        limelight.updateIsCone(false); // Switches pipeline to turn off Green LEDs
         xTranslationPidController.reset();
         yTranslationPidController.reset();
     }
