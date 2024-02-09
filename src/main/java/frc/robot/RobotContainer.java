@@ -25,6 +25,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -32,9 +33,6 @@ import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.DefaultTeleopSub;
-import frc.robot.subsystems.Swerve;
-import frc.robot.commands.DefaultTeleop;
 
 public class RobotContainer {
 
@@ -68,7 +66,7 @@ public class RobotContainer {
   private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton naviToPos = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
 
   private IntakeSubsystem intakeSubsystem;
@@ -106,6 +104,7 @@ public class RobotContainer {
     climbRetraction.whileTrue(new ClimbRetractionCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
+    naviToPos.whileTrue(new NaviToPos(0.0,0.0,0.0));
   }
 
 }
