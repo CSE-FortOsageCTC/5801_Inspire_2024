@@ -34,7 +34,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DefaultTeleopSub;
 import frc.robot.subsystems.Swerve;
-import frc.robot.commands.DefaultTeleop;
 
 public class RobotContainer {
 
@@ -63,18 +62,22 @@ public class RobotContainer {
 
 
   /* Driver Buttons */
-  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton climbExtension = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
+  private final JoystickButton elevatorUpButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton elevatorDownButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+  private final JoystickButton spinKicker = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton shootButton = new JoystickButton(driver, XboxController.Button.kA.value);
+
+ 
 
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
   private ShootCommand shootCommand;
   private IntakeCommand intakeCommand;
+
 
   
  
@@ -101,9 +104,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    intake.whileTrue(new IntakeCommand());
-    climbExtension.whileTrue(new ClimbExtensionCommand());
-    climbRetraction.whileTrue(new ClimbRetractionCommand());
+    shootButton.whileTrue(new ShootCommand());
+    elevatorUpButton.whileTrue(new ElevatorCommand(true));
+    elevatorDownButton.whileTrue(new ElevatorCommand(false));
+    spinKicker.whileTrue(new SpinKickerCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
   }
