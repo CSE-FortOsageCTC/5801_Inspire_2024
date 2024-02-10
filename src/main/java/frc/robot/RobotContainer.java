@@ -26,14 +26,21 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 
 
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
+import frc.robot.commands.AutoPickupNote;
+import frc.robot.commands.DefaultTeleop;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.NaviToPos;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.SpinKickerCommand;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DefaultTeleopSub;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
 
 
@@ -68,7 +75,7 @@ public class RobotContainer {
   private final JoystickButton elevatorDownButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton spinKicker = new JoystickButton(driver, XboxController.Button.kBack.value);
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton autoPickupNoteButton = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton naviToPos = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton shootButton = new JoystickButton(driver, XboxController.Button.kA.value);
@@ -97,7 +104,9 @@ public class RobotContainer {
     autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
     autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    //s_Swerve = Swerve.getInstance();
+
+    s_Swerve.setHeading(Rotation2d.fromDegrees(180));
+
     configureBindings();
   }
 
@@ -110,9 +119,10 @@ public class RobotContainer {
     elevatorUpButton.whileTrue(new ElevatorCommand(true));
     elevatorDownButton.whileTrue(new ElevatorCommand(false));
     spinKicker.whileTrue(new SpinKickerCommand());
-    yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    yButton.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
     naviToPos.whileTrue(new NaviToPos(0.0,0.0,0.0));
+    autoPickupNoteButton.whileTrue((new AutoPickupNote()));
   }
 
 }

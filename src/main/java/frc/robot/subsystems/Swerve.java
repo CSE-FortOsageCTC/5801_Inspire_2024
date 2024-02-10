@@ -25,15 +25,15 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 
-public class Swerve extends SubsystemBase {
+
+public class Swerve extends SubsystemBase{
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
     private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
-
     public double gyroOffset;
-
+    
     public static Swerve getInstance() {
         if (swerve == null) {
             swerve = new Swerve();
@@ -43,10 +43,10 @@ public class Swerve extends SubsystemBase {
 
     private Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
-        Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
-        pigeonConfig.MountPose.withMountPoseYaw(90);
-        gyro.getConfigurator().apply(pigeonConfig);
+        gyro.getConfigurator().apply(new Pigeon2Configuration());
+        //gyro.setYaw(0);
 
+        
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
             new SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -60,11 +60,11 @@ public class Swerve extends SubsystemBase {
          AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
                 this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                () -> Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD ), // Translation PID constants
-                        new PIDConstants(Constants.Swerve.angleKP, Constants.Swerve.angleKI, Constants.Swerve.angleKD), // Rotation PID constants
+                        new PIDConstants(.5,0,0 ), // Translation PID constants
+                        new PIDConstants(.08,0,0), // Rotation PID constants
                         Constants.Swerve.maxSpeed, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -81,8 +81,9 @@ public class Swerve extends SubsystemBase {
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
-        gyro.setYaw(180);
-    }
+        //gyro.setYaw(90);
+        
+        } 
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
     }
@@ -92,6 +93,7 @@ public class Swerve extends SubsystemBase {
     public void updateWithVision(Pose2d pose2d, double timestamp){
         swerveEstimator.addVisionMeasurement(pose2d, timestamp);
     }
+
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
@@ -139,6 +141,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
+        SmartDashboard.putNumber("Estimated x Pose", swerveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Estimated y Pose", swerveOdometry.getPoseMeters().getY());
         return swerveOdometry.getPoseMeters();
     }
 
@@ -158,7 +162,7 @@ public class Swerve extends SubsystemBase {
 
     public void zeroHeading(){
         Rotation2d gyroYaw = getGyroYaw();
-        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d(180)));
+        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
         gyroOffset = gyroYaw.getDegrees();
     }
 
@@ -176,28 +180,28 @@ public class Swerve extends SubsystemBase {
     }
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
-        var states = Constants.Swerve.swerveKinematics.toSwerveModuleStates(robotRelativeSpeeds);
-    
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Swerve.maxSpeed);
-    
-        setModuleStates(states);
-    }
+        // SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
+        // SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
 
+        ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
+        SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.Swerve.maxSpeed);
+
+        for(int i = 0; i < 4; i++){
+            mSwerveMods[i].setDesiredState(setpointStates[i], false);}
+    }
+    
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+
+        updatePoseEstimator();
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
-
-        double odometryX = swerveOdometry.getPoseMeters().getX();
-        double odometryY = swerveOdometry.getPoseMeters().getY();
-        SmartDashboard.putNumber("Odometry X", odometryX);
-        SmartDashboard.putNumber("Odometry Y", odometryY);
-
-        updatePoseEstimator();
     }
 }

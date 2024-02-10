@@ -4,6 +4,7 @@ import com.ctre.phoenix6.Timestamp;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,6 +30,9 @@ public class NaviToPos extends Command {
     private double targetY;
     private double targetRot;
 
+    private SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
+    private SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
+
     /**
      * Constructer for NaviToPos
      * 
@@ -42,14 +46,14 @@ public class NaviToPos extends Command {
         addRequirements(s_Swerve);
         this.targetX = targetX;
         this.targetY = targetY;
-        // creating yTranslationPidController and setting the toleance and setpoint
-        yTranslationPidController = new PIDController(.5, 0, 0);
-        yTranslationPidController.setTolerance(1);
+        // creating yTranslationPidController and setting the tolerance and setpoint
+        yTranslationPidController = new PIDController(.7, 0, 0);
+        yTranslationPidController.setTolerance(.05);
         yTranslationPidController.setSetpoint(0);
         
-        // creating xTranslationPidController and setting the toleance and setpoint
-        xTranslationPidController = new PIDController(.5 , 0, 0);
-        xTranslationPidController.setTolerance(1);//5);
+        // creating xTranslationPidController and setting the tolerance and setpoint
+        xTranslationPidController = new PIDController(.7 , 0, 0);
+        xTranslationPidController.setTolerance(.05);//5);
         xTranslationPidController.setSetpoint(0);
         
         
@@ -57,7 +61,7 @@ public class NaviToPos extends Command {
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
-        SmartDashboard.putNumber("AlignP", 0.07);
+        SmartDashboard.putNumber("AlignP", 0.3);
         SmartDashboard.putNumber("AlignI", 0);
         SmartDashboard.putNumber("AlignD", 0.00035);
     }
@@ -79,7 +83,7 @@ public class NaviToPos extends Command {
         // sets the PID values for the PIDControllers
         yTranslationPidController.setPID(kP, kI, kD);
         xTranslationPidController.setPID(kP, kI, kD);
-        xTranslationPidController.setPID(kP, kI, kD);
+        // xTranslationPidController.setPID(kP, kI, kD);
 
 
 
@@ -94,9 +98,12 @@ public class NaviToPos extends Command {
             botPose = s_Swerve.getEstimatedPosition();
             botX = botPose.getX();
             botY = botPose.getY();
+
         }
         else{
             s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
+            SmartDashboard.putNumber("Current X", botX);
+            SmartDashboard.putNumber("Current Y", botY); 
         }
         SmartDashboard.putNumber("Limelightta", areaValue);
 
@@ -104,8 +111,6 @@ public class NaviToPos extends Command {
         SmartDashboard.putNumber("Areavalue", areaValue);
         SmartDashboard.putNumber("AngularValue", angularValue);
         SmartDashboard.putNumber("NaviToPosSetpoint", xTranslationPidController.getSetpoint());
-        SmartDashboard.putNumber("Current X", botX);
-        SmartDashboard.putNumber("Current Y", botY);
         //SmartDashboard.putNumber("Ts0", limelight.getSkew0());
         //SmartDashboard.putNumber("Ts1", limelight.getSkew1());
         //SmartDashboard.putNumber("Ts2", limelight.getSkew2());
@@ -114,8 +119,10 @@ public class NaviToPos extends Command {
         // Calculates the x and y speed values for the translation movement
         double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(botY - targetY), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
         ySpeed = yTranslationPidController.atSetpoint() ? 0 : ySpeed;
+        ySpeed = ySpeedLimiter.calculate(ySpeed);
         double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(botX - targetX), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
         xSpeed = xTranslationPidController.atSetpoint() ? 0 : xSpeed;
+        xSpeed = xSpeedLimiter.calculate(xSpeed);
         double angularSpeed = autoUtil.calculateRotationSpeed();
         angularSpeed = autoUtil.isFinished() ? 0: angularSpeed;
         
