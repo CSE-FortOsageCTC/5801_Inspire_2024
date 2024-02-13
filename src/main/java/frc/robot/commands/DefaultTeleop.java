@@ -45,7 +45,7 @@ public class DefaultTeleop extends Command{
     private boolean bButtonPressed;
 
     private SlewRateLimiter rotationLimiter = new SlewRateLimiter(5); 
-    private SlewRateLimiter throttleLimiter = new SlewRateLimiter(2);
+    private SlewRateLimiter throttleLimiter = new SlewRateLimiter(1);
 
     public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup, int throttle) {
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
@@ -137,9 +137,11 @@ public class DefaultTeleop extends Command{
         SmartDashboard.putNumber("Rotation Value", rotationVal);
         SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
 
-        
+        double throttleCalc = throttleLimiter.calculate(throttleAxis);
 
-        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleLimiter.calculate(throttleAxis));
+        SmartDashboard.putNumber("throttle calculation", throttleCalc);
+
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleCalc);
 
 
         s_DefaultTeleop.s_Swerve.drive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);

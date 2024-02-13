@@ -49,6 +49,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setElevatorSpeed(double speed){
         rightElevator.set(speed);
+        
     }
     public void spinKicker(double percent){
         kicker.set(ControlMode.PercentOutput, percent);
