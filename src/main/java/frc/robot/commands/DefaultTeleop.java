@@ -1,21 +1,16 @@
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 import frc.robot.subsystems.DefaultTeleopSub;
@@ -26,41 +21,43 @@ public class DefaultTeleop extends Command{
     private DefaultTeleopSub s_DefaultTeleop;
     private AutoRotateUtil s_AutoRotateUtil;
 
-    private Debouncer bButtonDebouncer = new Debouncer(0.25);
+    private Debouncer buttonDebouncer = new Debouncer(0.25);
 
     private int translationSup;
     private int strafeSup;
     private int rotationSup;
     private boolean robotCentricSup;
     private Joystick driver;
+    private Joystick operator;
 
     private PIDController rotationPidController = new PIDController(0, 0, 0);
     public boolean isAligning = false;
-    private Pair<Double, Double> speakerCoordinate;
+    private Pose2d alignPose;
     private boolean bButtonPressed;
+    private boolean aButtonPressed;
+    private boolean xButtonPressed;
+    private boolean yButtonPressed;
 
-    public DefaultTeleop(Joystick controller, int translationSup, int strafeSup, int rotationSup, boolean robotCentricSup) {
+    public DefaultTeleop(Joystick driver, Joystick operator) {
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
-        s_AutoRotateUtil = new AutoRotateUtil(0);
-        this.translationSup = translationSup;
-        this.strafeSup = strafeSup;
-        this.rotationSup = rotationSup;
-        this.robotCentricSup = robotCentricSup;
-        this.driver = controller;
-        bButtonPressed = bButtonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kB.value));
+        s_AutoRotateUtil = new AutoRotateUtil(0); 
+        this.driver = driver;
+        this.operator = operator;
+        translationSup = XboxController.Axis.kLeftY.value;
+        strafeSup = XboxController.Axis.kLeftX.value;
+        rotationSup = XboxController.Axis.kRightX.value;
+        robotCentricSup = true;
+        bButtonPressed = buttonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kB.value));
+        aButtonPressed = buttonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kA.value));
+        xButtonPressed = buttonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kX.value));
+        yButtonPressed = buttonDebouncer.calculate(driver.getRawButtonReleased(XboxController.Button.kY.value));
         addRequirements(s_DefaultTeleop);
 
     }
 
     @Override
     public void initialize() {
-
-        if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-            speakerCoordinate = new Pair<Double, Double>(8.0, 1.5);
-        } else {
-            speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
-        }
-            
+        
     } 
     
 
@@ -78,8 +75,8 @@ public class DefaultTeleop extends Command{
         double xAxis = -driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
         Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); // gets botpose based on approximated position from limelight
-        double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
-        double yDiff = botPose.getY() - speakerCoordinate.getSecond(); // gets distance of y between robot and target
+        double xDiff = botPose.getX() - alignPose.getX(); // gets distance of x between robot and target
+        double yDiff = botPose.getY() - alignPose.getY(); // gets distance of y between robot and target
         SmartDashboard.putNumber("Bot Pose X", botPose.getX());
         SmartDashboard.putNumber("Bot Pose Y", botPose.getY());
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
@@ -88,18 +85,20 @@ public class DefaultTeleop extends Command{
         double translationVal = MathUtil.applyDeadband(yAxis, Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(xAxis, Constants.stickDeadband);
         double rotationVal;
-        
-        if (driver.getRawButtonReleased(XboxController.Button.kB.value)) {
-            isAligning = true;
-        } else if (MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) > 0) {
+
+        if ((isAligning && MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) != 0) || isAligning && ((bButtonPressed || xButtonPressed || yButtonPressed || aButtonPressed))) {
             isAligning = false;
+        } else if (!isAligning && (bButtonPressed || xButtonPressed || yButtonPressed || aButtonPressed)) {
+            isAligning = true;
         }
 
-        if ((MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband) > 0 && isAligning) || (bButtonPressed && isAligning)) {
-            isAligning = false;
-        } else if (bButtonPressed && isAligning == false) {
-            isAligning = true;
-        }
+        if (bButtonPressed) {
+            AlignPosition.setPosition(AlignPosition.AmpPos);
+        } else if (aButtonPressed) {
+            AlignPosition.setPosition(AlignPosition.ClimbPos);
+        } else if (xButtonPressed) {
+            AlignPosition.setPosition(AlignPosition.SpeakerPos);
+        } // find a way to bind each source side to a button scheme that works
 
         rotationVal = (isAligning? s_AutoRotateUtil.calculateRotationSpeed():MathUtil.applyDeadband(rotationAxis, Constants.stickDeadband));
 

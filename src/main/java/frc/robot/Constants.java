@@ -4,11 +4,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -20,6 +23,8 @@ public final class Constants {
     public static final double cubeLimelightAreaSetpoint = 10;
     public static final int conePipeline = 1;
     public static final int cubePipeline = 2;
+
+    public static final boolean isRedAlliance = DriverStation.getAlliance().get().equals(Alliance.Red) ? true : false;
 
     public static final class Swerve {
         public static final int pigeonID = 10;
@@ -149,6 +154,34 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+        public static Pair<Double, Double> alignCoordinates;
+
+        public enum AlignPosition {
+            AmpPos(isRedAlliance ? 6.35 : -6.45,4.1),
+            SpeakerPos(isRedAlliance ? 8.3 : -8.3,isRedAlliance ? 1.45 : 1.45),
+            LeftSourcePos(isRedAlliance ? -7 : 7.8,isRedAlliance ? -3.3 : -3.8),
+            RightSourcePos(isRedAlliance ? -7.9 : 6.95, isRedAlliance ? -3.8 : -3.3),
+            ClimbPos(isRedAlliance ? 3.4 : -3.4,0.0);
+
+            private static AlignPosition alignPosition;
+
+            public static AlignPosition getPosition(){
+                if(alignPosition == null){
+                    return AlignPosition.SpeakerPos;
+                }
+
+                return alignPosition;
+            }
+
+            public static void setPosition(AlignPosition alignPos){
+                alignPosition = alignPos;
+            }
+                
+            AlignPosition(double xPos, double yPos){
+                alignCoordinates = new Pair<Double, Double>(xPos,yPos);
+            }
+        }
     }
 
 }
