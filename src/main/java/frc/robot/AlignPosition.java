@@ -13,7 +13,6 @@ public enum AlignPosition {
             private static AlignPosition alignPosition;
             public static Pose2d alignPose;
 
-
             public static AlignPosition getPosition(){
                 if(alignPose == null){
                     boolean isRed = Constants.isRedAlliance;
