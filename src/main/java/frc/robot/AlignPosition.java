@@ -8,10 +8,12 @@ public enum AlignPosition {
             SpeakerPos(),
             LeftSourcePos(),
             RightSourcePos(),
-            ClimbPos();
+            ClimbPos(),
+            AutoPickup(),
+            Manual();
 
             private static AlignPosition alignPosition;
-            public static Pose2d alignPose;
+            private static Pose2d alignPose;
 
             public static AlignPosition getPosition(){
                 if(alignPose == null){
@@ -32,11 +34,24 @@ public enum AlignPosition {
                         case ClimbPos:
                             alignPose = isRed? new Pose2d(3.4, 0, null): new Pose2d(-3.4, 0, null);
                             break;
+                        case AutoPickup:
+                            alignPose = null;
+                            break;
+                        case Manual:
+                            alignPose = null;
+                            break;
                     }
-                    return AlignPosition.SpeakerPos;
+                }
+
+                if (alignPosition == null) {
+                    return SpeakerPos;
                 }
 
                 return alignPosition;
+            }
+
+            public static Pose2d getAlignPose() {
+                return alignPose;
             }
 
             public static void setPosition(AlignPosition alignPos){

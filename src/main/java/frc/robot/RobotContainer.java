@@ -20,9 +20,6 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.DefaultTeleopSub;
-import frc.robot.subsystems.Swerve;
-import frc.robot.commands.DefaultTeleop;
 
 public class RobotContainer {
 
@@ -54,6 +51,7 @@ public class RobotContainer {
   private Swerve s_Swerve = Swerve.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
+  private final int throttle = XboxController.Axis.kRightTrigger.value;
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
 
@@ -150,7 +148,7 @@ public class RobotContainer {
     climbExtension.whileTrue(new ClimbExtensionCommand());
     climbRetraction.whileTrue(new ClimbRetractionCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
+    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator, throttle));
   }
 
 }

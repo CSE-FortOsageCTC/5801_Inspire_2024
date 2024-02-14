@@ -199,5 +199,12 @@ public class Swerve extends SubsystemBase{
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+        
+        double odometryX = swerveOdometry.getPoseMeters().getX();
+        double odometryY = swerveOdometry.getPoseMeters().getY();
+        SmartDashboard.putNumber("Odometry X", odometryX);
+        SmartDashboard.putNumber("Odometry Y", odometryY);
+
+        updatePoseEstimator();
     }
 }

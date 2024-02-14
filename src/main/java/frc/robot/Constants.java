@@ -90,7 +90,7 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 10; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
 
@@ -154,34 +154,6 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-
-        public static Pair<Double, Double> alignCoordinates;
-
-        public enum AlignPosition {
-            AmpPos(isRedAlliance ? 6.35 : -6.45,4.1),
-            SpeakerPos(isRedAlliance ? 8.3 : -8.3,isRedAlliance ? 1.45 : 1.45),
-            LeftSourcePos(isRedAlliance ? -7 : 7.8,isRedAlliance ? -3.3 : -3.8),
-            RightSourcePos(isRedAlliance ? -7.9 : 6.95, isRedAlliance ? -3.8 : -3.3),
-            ClimbPos(isRedAlliance ? 3.4 : -3.4,0.0);
-
-            private static AlignPosition alignPosition;
-
-            public static AlignPosition getPosition(){
-                if(alignPosition == null){
-                    return AlignPosition.SpeakerPos;
-                }
-
-                return alignPosition;
-            }
-
-            public static void setPosition(AlignPosition alignPos){
-                alignPosition = alignPos;
-            }
-                
-            AlignPosition(double xPos, double yPos){
-                alignCoordinates = new Pair<Double, Double>(xPos,yPos);
-            }
-        }
     }
 
 }
