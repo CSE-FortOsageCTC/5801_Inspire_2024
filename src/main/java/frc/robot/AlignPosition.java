@@ -16,6 +16,11 @@ public enum AlignPosition {
             private static Pose2d alignPose;
 
             public static AlignPosition getPosition(){
+                
+                if (alignPosition == null) {
+                    alignPosition = SpeakerPos;
+                }
+
                 if(alignPose == null){
                     boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
@@ -43,9 +48,7 @@ public enum AlignPosition {
                     }
                 }
 
-                if (alignPosition == null) {
-                    return SpeakerPos;
-                }
+                
 
                 return alignPosition;
             }
