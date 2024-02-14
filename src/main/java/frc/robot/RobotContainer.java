@@ -116,8 +116,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     shootButton.whileTrue(new ShootCommand());
-    elevatorUpButton.whileTrue(new ElevatorCommand(true));
-    elevatorDownButton.whileTrue(new ElevatorCommand(false));
+    elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
+    elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
     spinKicker.whileTrue(new SpinKickerCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
