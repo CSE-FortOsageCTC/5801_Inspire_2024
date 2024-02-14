@@ -4,30 +4,28 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.DefaultTeleopSub;
-import frc.robot.subsystems.Swerve;
+import frc.robot.commands.ClimbExtensionCommand;
+import frc.robot.commands.ClimbRetractionCommand;
 import frc.robot.commands.DefaultTeleop;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.subsystems.DefaultTeleopSub;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
 
@@ -67,6 +65,8 @@ public class RobotContainer {
 
   /* Driver Buttons */
   private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+  private final JoystickButton elevatorUpButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton elevatorDownButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton climbExtension = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
@@ -155,6 +155,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     intake.whileTrue(new IntakeCommand());
+    elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
+    elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
     climbExtension.whileTrue(new ClimbExtensionCommand());
     climbRetraction.whileTrue(new ClimbRetractionCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
