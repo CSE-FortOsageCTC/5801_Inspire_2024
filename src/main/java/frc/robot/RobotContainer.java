@@ -51,7 +51,6 @@ public class RobotContainer {
   private Swerve s_Swerve = Swerve.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
-  private final int throttle = XboxController.Axis.kRightTrigger.value;
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
 
@@ -148,7 +147,7 @@ public class RobotContainer {
     climbExtension.whileTrue(new ClimbExtensionCommand());
     climbRetraction.whileTrue(new ClimbRetractionCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator, throttle));
+    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
   }
 
 }

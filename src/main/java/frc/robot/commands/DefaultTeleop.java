@@ -38,12 +38,12 @@ public class DefaultTeleop extends Command{
     private PIDController rotationPidController = new PIDController(0, 0, 0);
     private Pose2d alignPose;
 
-    public DefaultTeleop(Joystick driver, Joystick operator, int throttle) {
+    public DefaultTeleop(Joystick driver, Joystick operator) {
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0); 
         this.driver = driver;
         this.operator = operator;
-        this.throttle = throttle;
+        throttle = XboxController.Axis.kRightTrigger.value;
         translationSup = XboxController.Axis.kLeftY.value;
         strafeSup = XboxController.Axis.kLeftX.value;
         rotationSup = XboxController.Axis.kRightX.value;
