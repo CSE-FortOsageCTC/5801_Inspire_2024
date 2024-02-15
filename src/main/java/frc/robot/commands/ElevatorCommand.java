@@ -22,7 +22,7 @@ public class ElevatorCommand extends Command{
         SmartDashboard.putNumber("Up P", 0);
         SmartDashboard.putNumber("Up I", 0);
         SmartDashboard.putNumber("Up D", 0);
-        
+
         downPidController.setTolerance(5);
         downPidController.setSetpoint(20);
         SmartDashboard.putNumber("Down P", 0);
@@ -43,16 +43,13 @@ public class ElevatorCommand extends Command{
 
     @Override
     public void execute(){
-        if (up == true){shooterSubsystem.setElevatorSpeed(.2);}
-        else{shooterSubsystem.setElevatorSpeed(-.2);}
-        
+        shooterSubsystem.setElevatorSpeed(.2);
+
     }
     @Override
     public void end(boolean end){
         shooterSubsystem.setElevatorSpeed(0);
         upPidController.reset();
         downPidController.reset();
-    }
-        
-    
+    }   
 }
