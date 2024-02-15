@@ -234,7 +234,7 @@ public class Swerve extends SubsystemBase{
         
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
         
-        s_AutoRotateUtil.updateTargetAngle(angle - 90);
+        s_AutoRotateUtil.updateTargetAngle(angle - 90); //why are we subtracting 90?
         
         return s_AutoRotateUtil.calculateRotationSpeed();
     }
