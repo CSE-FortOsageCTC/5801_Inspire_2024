@@ -8,17 +8,13 @@ import frc.robot.subsystems.Swerve;
 
 public class AutoRotateUtil {
 
-
-    private final Swerve s_Swerve;
     private final PIDController pidController;
 
     private double m_angle;
 
 
     public AutoRotateUtil(double angle) {
-        this.s_Swerve = Swerve.getInstance();
-
-
+    
         this.m_angle = angle == 0 ? 360 : angle;
 
         // SmartDashboard.putNumber("Angle", this.m_angle);
@@ -50,10 +46,11 @@ public class AutoRotateUtil {
     this.pidController.setP(kP);
     this.pidController.setI(kI);
     this.pidController.setD(kD);
-    double yaw = (((s_Swerve.gyro.getYaw().getValue() - s_Swerve.gyroOffset) % 360) + 360) % 360;
+    Swerve swerve = Swerve.getInstance();
+    double yaw = (((swerve.gyro.getYaw().getValue() - swerve.gyroOffset) % 360) + 360) % 360;
 
     SmartDashboard.putNumber("Corrected Gyro", yaw);
-    double headingError = this.m_angle - yaw;
+    double headingError = this.m_angle; //TODO Change this in main
     if (headingError > 180) {
         headingError -= 360;
     }
@@ -72,7 +69,9 @@ public class AutoRotateUtil {
         return MathUtil.clamp(pidController.calculate(headingError, 0), -1, 1);
     }
    }
-
+   /**
+    * Updates degrees robot needs to rotate
+    */ 
    public void updateTargetAngle(double angle) {
 
     m_angle = angle;

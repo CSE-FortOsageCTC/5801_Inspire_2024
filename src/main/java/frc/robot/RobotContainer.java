@@ -4,12 +4,6 @@
 
 package frc.robot;
 
-
-
-import java.util.function.DoubleSupplier;
-
-import javax.swing.JOptionPane;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,37 +19,32 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 
-
-import frc.robot.commands.AutoPickupNote;
-import frc.robot.commands.DefaultTeleop;
-import frc.robot.commands.ElevatorCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.NaviToPos;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.SpinKickerCommand;
-
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DefaultTeleopSub;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
-
+import frc.robot.commands.DefaultTeleop;
 
 public class RobotContainer {
 
-  
-  // The robot's subsystems and commands are defined here...
-
 
   // Sendable Chooser for autos
-  private SendableChooser<Command> autoChooser;
+  private SendableChooser<String> autoChooser;
 
   // Path planner paths
   private PathPlannerPath sixPiecePath;
   private PathPlannerPath fourPiecePathLeft;
+  private PathPlannerPath threePiecePathMB;
+  private PathPlannerPath blueCenterScorePath;
+  private PathPlannerPath blueTopStartPath;
+  private PathPlannerPath blueTopScorePath;
+  private PathPlannerPath blueFinishCentralPath;
+  private PathPlannerPath rotatePath;
+  private PathPlannerPath sevenPiecePath;
+  private PathPlannerPath fourPieceNoTeamPath;
 
 
   /* Drive Controls */
@@ -71,58 +60,101 @@ public class RobotContainer {
 
 
   /* Driver Buttons */
-  private final JoystickButton elevatorUpButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton elevatorDownButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton spinKicker = new JoystickButton(driver, XboxController.Button.kBack.value);
+  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+  private final JoystickButton climbExtension = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton autoPickupNoteButton = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton naviToPos = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton shootButton = new JoystickButton(driver, XboxController.Button.kA.value);
-
- 
 
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
   private ShootCommand shootCommand;
   private IntakeCommand intakeCommand;
 
-
   
  
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
+    shootCommand = new ShootCommand();
 
+    //Register Named Commands
+    //NamedCommands.registerCommand("Shoot", shootCommand);
+    //NamedCommands.registerCommand("Intake", intakeCommand);
+
+    //Set up PathPlannerPaths
     sixPiecePath = PathPlannerPath.fromPathFile("6 piece path");
     fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
+    threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
+    blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
+    blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
+    blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
+    blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
+    rotatePath = PathPlannerPath.fromPathFile("Rotate");
+    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
+    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
 
-    NamedCommands.registerCommand("Shoot", shootCommand);
-    NamedCommands.registerCommand("Intake", intakeCommand);
 
+
+
+    //Build, Update, and Close the autoChooser
     autoChooser = new SendableChooser<>();
-    autoChooser.addOption("4 piece path left", AutoBuilder.followPath(sixPiecePath));
-    autoChooser.addOption("6 piece path", AutoBuilder.followPath(fourPiecePathLeft));
+    //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
+    autoChooser.setDefaultOption("4 piece path left", "4 piece path left");
+    autoChooser.addOption("6 piece path", "6 piece path");
+    autoChooser.addOption("3 piece auto James", "3-Piece Auto");
+    autoChooser.addOption("3 piece auto Matthew", "3 piece pickup by MB");
+    autoChooser.addOption("Blue Top Score", "Blue Top Score");
+    autoChooser.addOption("Rotate", "Rotate");
+    autoChooser.addOption("7 piece path", "7 piece path");
+    autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    s_Swerve.setHeading(Rotation2d.fromDegrees(180));
-
+    
     configureBindings();
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    PathPlannerPath path = null;
+    Rotation2d rotation = Rotation2d.fromDegrees(180);
+  
+    switch (autoChooser.getSelected()) {
+      case "4 piece path left":
+        path = fourPiecePathLeft;
+        break;
+      case "6 piece path":
+        path = sixPiecePath;
+        break;
+      case "3 piece pickup by MB":
+        path = threePiecePathMB;
+        break;
+      case "Blue Top Score":
+        path = blueTopScorePath;
+        break;
+      case "Rotate":
+        path = rotatePath;
+        break;
+      case "7 piece path":
+        path = sevenPiecePath;
+        break;
+      case "4 piece auto no team path":
+        path = fourPieceNoTeamPath;
+        break;
+    }
+    Pose2d startingPose = path.getStartingDifferentialPose();
+    s_Swerve.setPose(startingPose);
+    s_Swerve.setHeading(rotation);
+    return AutoBuilder.followPath(path);
   }
 
   private void configureBindings() {
-    shootButton.whileTrue(new ShootCommand());
-    elevatorUpButton.whileTrue(new ElevatorCommand(true));
-    elevatorDownButton.whileTrue(new ElevatorCommand(false));
-    spinKicker.whileTrue(new SpinKickerCommand());
+    intake.whileTrue(new IntakeCommand());
+    climbExtension.whileTrue(new ClimbExtensionCommand());
+    climbRetraction.whileTrue(new ClimbRetractionCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
-    naviToPos.whileTrue(new NaviToPos(0.0,0.0,0.0));
-    autoPickupNoteButton.whileTrue((new AutoPickupNote()));
   }
 
 }

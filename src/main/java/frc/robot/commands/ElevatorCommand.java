@@ -13,8 +13,8 @@ public class ElevatorCommand extends Command{
     }
     @Override
     public void execute(){
-        if (up == true){shooterSubsystem.setElevatorSpeed(.2);}
-        else{shooterSubsystem.setElevatorSpeed(-.2);}
+        if (up == true){shooterSubsystem.setElevatorSpeed(.3);}
+        else{shooterSubsystem.setElevatorSpeed(-.3);}
         
     }
     @Override

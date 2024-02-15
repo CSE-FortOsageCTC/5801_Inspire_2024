@@ -69,7 +69,9 @@ public class FloorLimelight extends SubsystemBase {
      */
     public double getX() {
         tx = table.getEntry("tx");
-        return tx.getDouble(0.0);
+        double x = tx.getDouble(0.0);
+        //SmartDashboard.putNumber("Limelight X", x);
+        return x;
     }
 
     /**

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
+import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.DefaultTeleopSub;
 
 public class DefaultTeleop extends Command{
@@ -143,8 +144,11 @@ public class DefaultTeleop extends Command{
 
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleCalc);
 
+        double rotationSpeed = s_DefaultTeleop.s_Swerve.rotateToNote();
+        SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
+        s_DefaultTeleop.s_Swerve.drive(translation,  rotationSpeed * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        // s_DefaultTeleop.s_Swerve.drive(translation, s_DefaultTeleop.s_Swerve.rotateToSpeaker() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
 
-        s_DefaultTeleop.s_Swerve.drive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
     }
 
     @Override
