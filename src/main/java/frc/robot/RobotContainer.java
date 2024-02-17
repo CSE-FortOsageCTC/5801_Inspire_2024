@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -21,9 +18,13 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+
 
 public class RobotContainer {
 
@@ -49,23 +50,28 @@ public class RobotContainer {
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
   private Swerve s_Swerve = Swerve.getInstance();
   private final Joystick driver = new Joystick(0);
+  private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final int translationAxis = XboxController.Axis.kLeftY.value;
-  private final int strafeAxis = XboxController.Axis.kLeftX.value;
-  private final int rotationAxis = XboxController.Axis.kRightX.value;
-  private final int throttle = XboxController.Axis.kRightTrigger.value;
 
 
   /* Driver Buttons */
-  private final JoystickButton elevatorUpButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton elevatorDownButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton spinKicker = new JoystickButton(driver, XboxController.Button.kBack.value);
-  private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
-  private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton shootButton = new JoystickButton(driver, XboxController.Button.kA.value);
+
+  private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  
+
+  /* Operator Buttons */
+  private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
+  private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final JoystickButton spinKicker = new JoystickButton(operator, XboxController.Button.kA.value);
+  // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
+  // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
+
+
 
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
@@ -80,7 +86,11 @@ public class RobotContainer {
     shootCommand = new ShootCommand();
 
     //Register Named Commands
+
     //NamedCommands.registerCommand("Shoot", shootCommand);
+
+    NamedCommands.registerCommand("Shoot", shootCommand);
+
     //NamedCommands.registerCommand("Intake", intakeCommand);
 
     //Set up PathPlannerPaths
@@ -117,8 +127,10 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
-    Rotation2d rotation = Rotation2d.fromDegrees(180);
-  
+
+    Rotation2d rotation = new Rotation2d();
+    s_Swerve.setHeading(rotation);
+
     switch (autoChooser.getSelected()) {
       case "4 piece path left":
         path = fourPiecePathLeft;
@@ -142,19 +154,26 @@ public class RobotContainer {
         path = fourPieceNoTeamPath;
         break;
     }
+
     Pose2d startingPose = path.getStartingDifferentialPose();
     s_Swerve.setPose(startingPose);
     s_Swerve.setHeading(rotation);
+
     return AutoBuilder.followPath(path);
   }
 
   private void configureBindings() {
+
     shootButton.whileTrue(new ShootCommand());
     elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
     spinKicker.whileTrue(new SpinKickerCommand());
-    yButton.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
-    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, translationAxis, strafeAxis, rotationAxis, true, throttle));
+    zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
+    elevatorUpButton.whileTrue(new IntakeCommand());
+    // climbExtension.whileTrue(new ClimbExtensionCommand());
+    // climbRetraction.whileTrue(new ClimbRetractionCommand());
+    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
+
   }
 
 }

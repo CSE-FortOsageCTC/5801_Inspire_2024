@@ -47,6 +47,7 @@ public class Swerve extends SubsystemBase{
     public AutoRotateUtil s_AutoRotateUtil;
     private Pair<Double, Double> speakerCoordinate;
     public Debouncer pieceSeenDebouncer;
+
     public static Swerve getInstance() {
         if (swerve == null) {
             swerve = new Swerve();
@@ -62,6 +63,7 @@ public class Swerve extends SubsystemBase{
         s_Limelight = SkyLimelight.getInstance();
         f_Limelight = FloorLimelight.getInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0);
+
         
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -97,8 +99,7 @@ public class Swerve extends SubsystemBase{
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
-        //gyro.setYaw(90);
-        
+
         } 
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
@@ -198,6 +199,7 @@ public class Swerve extends SubsystemBase{
     }
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
+
         SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
         SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
@@ -255,7 +257,7 @@ public class Swerve extends SubsystemBase{
     public void resetAutoRotateUtil(){
         s_AutoRotateUtil.end();
     }
-
+    
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
@@ -267,5 +269,12 @@ public class Swerve extends SubsystemBase{
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+        
+        double odometryX = swerveOdometry.getPoseMeters().getX();
+        double odometryY = swerveOdometry.getPoseMeters().getY();
+        SmartDashboard.putNumber("Odometry X", odometryX);
+        SmartDashboard.putNumber("Odometry Y", odometryY);
+
+        updatePoseEstimator();
     }
 }

@@ -85,8 +85,6 @@ public class NaviToPos extends Command {
         xTranslationPidController.setPID(kP, kI, kD);
         // xTranslationPidController.setPID(kP, kI, kD);
 
-
-
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew();
@@ -98,9 +96,7 @@ public class NaviToPos extends Command {
             botPose = s_Swerve.getEstimatedPosition();
             botX = botPose.getX();
             botY = botPose.getY();
-
-        }
-        else{
+        } else {
             s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Current X", botX);
             SmartDashboard.putNumber("Current Y", botY); 

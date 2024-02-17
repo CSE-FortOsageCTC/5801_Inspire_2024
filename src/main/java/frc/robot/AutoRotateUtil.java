@@ -1,6 +1,7 @@
 package frc.robot;
 
 
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -8,16 +9,18 @@ import frc.robot.subsystems.Swerve;
 
 public class AutoRotateUtil {
 
+    private final Swerve s_Swerve;
+
     private final PIDController pidController;
 
     private double m_angle;
 
-
     public AutoRotateUtil(double angle) {
-    
-        this.m_angle = angle == 0 ? 360 : angle;
 
-        // SmartDashboard.putNumber("Angle", this.m_angle);
+        s_Swerve = Swerve.getInstance();
+        this.m_angle = angle == 0?360:angle;
+
+        //SmartDashboard.putNumber("Angle", this.m_angle);
 
         this.pidController = new PIDController(0, 0, 0);
 

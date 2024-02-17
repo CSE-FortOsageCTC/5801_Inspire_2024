@@ -8,6 +8,9 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -41,6 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void shoot(double speed){
         topShooter.set(speed);
+
     }
     public Command setAngle(double angle){
         elevatorPID.setSetpoint(angle);
