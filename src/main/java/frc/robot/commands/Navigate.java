@@ -6,12 +6,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+
 import frc.robot.AlignPosition;
+
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 import frc.robot.subsystems.SkyLimelight;
@@ -20,7 +24,9 @@ import frc.robot.subsystems.Swerve;
 /**
  * This class detects the "april tag" and positions the robot infront of the node/April Tag
  */
+
 public class Navigate extends Command {
+
 
     private PIDController yTranslationPidController;
     private PIDController xTranslationPidController;
@@ -90,8 +96,6 @@ public class Navigate extends Command {
         xTranslationPidController.setPID(kP, kI, kD);
         // xTranslationPidController.setPID(kP, kI, kD);
 
-
-
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew();
@@ -104,8 +108,8 @@ public class Navigate extends Command {
             botX = botPose.getX();
             botY = botPose.getY();
 
-        }
-        else{
+        }else{
+
             s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Current X", botX);
             SmartDashboard.putNumber("Current Y", botY); 

@@ -21,12 +21,14 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class RobotContainer {
 
-  
-  // The robot's subsystems and commands are defined here...
+public class RobotContainer {
 
 
   // Sendable Chooser for autos
@@ -45,8 +47,6 @@ public class RobotContainer {
   private PathPlannerPath fourPieceNoTeamPath;
 
 
-
-
   /* Drive Controls */
 
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
@@ -57,13 +57,23 @@ public class RobotContainer {
 
 
   /* Driver Buttons */
-  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton climbExtension = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton climbRetraction = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
-  private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton yButton = new JoystickButton(driver, XboxController.Button.kY.value);
+
+  private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  
+
+  /* Operator Buttons */
+  private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
+  private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final JoystickButton spinKicker = new JoystickButton(operator, XboxController.Button.kA.value);
+  // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
+  // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
+
+
 
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
@@ -82,7 +92,11 @@ public class RobotContainer {
     shootCommand = new ShootCommand();
 
     //Register Named Commands
+
+    //NamedCommands.registerCommand("Shoot", shootCommand);
+
     NamedCommands.registerCommand("Shoot", shootCommand);
+
     //NamedCommands.registerCommand("Intake", intakeCommand);
 
     //Set up PathPlannerPaths
@@ -119,8 +133,10 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
+
     Rotation2d rotation = new Rotation2d();
     s_Swerve.setHeading(rotation);
+
     switch (autoChooser.getSelected()) {
       case "4 piece path left":
         path = fourPiecePathLeft;
@@ -144,17 +160,27 @@ public class RobotContainer {
         path = fourPieceNoTeamPath;
         break;
     }
-    s_Swerve.setPose(path.getStartingDifferentialPose());
+
+    Pose2d startingPose = path.getStartingDifferentialPose();
+    s_Swerve.setPose(startingPose);
+    s_Swerve.setHeading(rotation);
+
     return AutoBuilder.followPath(path);
   }
 
   private void configureBindings() {
+
+    shootButton.whileTrue(new ShootCommand());
+    elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
+    elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
+    spinKicker.whileTrue(new SpinKickerCommand());
+    zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     intake.whileTrue(new IntakeCommand());
-    yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
-    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
+  
   }
 
 }

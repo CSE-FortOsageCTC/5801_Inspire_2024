@@ -1,8 +1,14 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.Timestamp;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -14,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
+import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.DefaultTeleopSub;
 import com.ctre.phoenix6.Timestamp;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -37,6 +44,7 @@ public class DefaultTeleop extends Command{
 
     private PIDController rotationPidController = new PIDController(0, 0, 0);
     private Pose2d alignPose;
+
 
     public DefaultTeleop(Joystick driver, Joystick operator) {
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
@@ -68,9 +76,8 @@ public class DefaultTeleop extends Command{
         rotationPidController.setP(kI);
         rotationPidController.setP(kD);
 
-        double yAxis = -driver.getRawAxis(translationSup);
-        double xAxis = -driver.getRawAxis(strafeSup);
-        double rotationAxis = driver.getRawAxis(rotationSup);
+        
+
         Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); 
         double botX = botPose.getX();
         double botY = botPose.getY();
@@ -82,6 +89,10 @@ public class DefaultTeleop extends Command{
         else{
             s_DefaultTeleop.s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
         }
+        
+        double yAxis = -driver.getRawAxis(translationSup);
+        double xAxis = -driver.getRawAxis(strafeSup);
+        double rotationAxis = driver.getRawAxis(rotationSup);
 
         double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
         double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
@@ -92,6 +103,7 @@ public class DefaultTeleop extends Command{
         // double yDiff = botPose.getY() - alignPose.getY(); // gets distance of y between robot and target
         SmartDashboard.putNumber("Bot Pose X", botPose.getX());
         SmartDashboard.putNumber("Bot Pose Y", botPose.getY());
+
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
         SmartDashboard.putNumber("Align Swerve Angle", angle);
         s_AutoRotateUtil.updateTargetAngle(angle - 90); // updates pid angle setpoint to the angle that faces towards the target by using arctangent2 (which keeps negative and junk for us so it'll be nice)
@@ -113,14 +125,24 @@ public class DefaultTeleop extends Command{
 
         
         
+
         SmartDashboard.putNumber("Translation Val", translationVal);
         SmartDashboard.putNumber("Strave Val", strafeVal);
         SmartDashboard.putNumber("Rotation Value", rotationVal);
         SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
 
-        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleLimiter.calculate(throttleAxis));
+        double throttleCalc = throttleLimiter.calculate(throttleAxis);
 
-        s_DefaultTeleop.s_Swerve.drive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        SmartDashboard.putNumber("throttle calculation", throttleCalc);
+
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleCalc);
+
+        double rotationSpeed = s_DefaultTeleop.s_Swerve.rotateToNote();
+        SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
+
+        s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        // s_DefaultTeleop.s_Swerve.drive(translation, s_DefaultTeleop.s_Swerve.rotateToSpeaker() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+
 
     }
 
