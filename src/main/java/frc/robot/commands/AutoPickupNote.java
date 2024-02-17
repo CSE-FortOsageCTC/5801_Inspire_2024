@@ -29,7 +29,7 @@ public class AutoPickupNote extends Command{
     public Rotation2d yaw;
     private AutoRotateUtil autoUtil;
 
-    public PIDController yTranslationPidController, xTranslationPidController, rotationPidController;
+    public PIDController yTranslationPidController, xTranslationPidController;
     public double kP;
     public double kI; 
     public double kD;
@@ -56,13 +56,6 @@ public class AutoPickupNote extends Command{
         xTranslationPidController = new PIDController(0, 0, 0);
         xTranslationPidController.setTolerance(0);
         xTranslationPidController.setSetpoint(0);
-        
-        // creating rotationPidController and setting the toleance and setpoint
-        rotationPidController = new PIDController(0, 0, 0);
-
-        rotationPidController.setTolerance(2);
-
-        rotationPidController.setSetpoint(0);
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
@@ -116,6 +109,8 @@ public class AutoPickupNote extends Command{
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew(); 
 
+        autoUtil.updateTargetAngle(xValue);
+
         kP = SmartDashboard.getNumber("AlignP", 0);
         kI = SmartDashboard.getNumber("AlignI", 0);
         kD = SmartDashboard.getNumber("AlignD", 0);
@@ -154,7 +149,7 @@ public class AutoPickupNote extends Command{
 
         xTranslationPidController.reset();
         yTranslationPidController.reset();
-        rotationPidController.reset();
+        autoUtil.reset();
 
     }
 } 

@@ -176,13 +176,11 @@ public class RobotContainer {
     spinKicker.whileTrue(new SpinKickerCommand());
     zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     intake.whileTrue(new IntakeCommand());
-    // climbExtension.whileTrue(new ClimbExtensionCommand());
-    // climbRetraction.whileTrue(new ClimbRetractionCommand());
+    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
-    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-
+  
   }
 
 }
