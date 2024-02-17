@@ -14,7 +14,7 @@ public class AutoBalanceClimb extends Command{
     }
 
     @Override
-    public void execute(){
+    public void execute(){ // add a counter later guys :)
         if(s_climbingSubsystem.s_Swerve.getGyroRoll() < -5){
             // left climber is going go negative in speed, right will be positive
             leftSpeed = (s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
@@ -23,8 +23,8 @@ public class AutoBalanceClimb extends Command{
             leftSpeed = -(s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
             rightSpeed = (s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
         } else {
-            leftSpeed = 0;
-            rightSpeed = 0;
+            leftSpeed = 0.75;
+            rightSpeed = 0.75;
         }
 
         s_climbingSubsystem.climbControl(leftSpeed, rightSpeed);

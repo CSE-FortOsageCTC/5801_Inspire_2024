@@ -169,7 +169,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public double getGyroRoll() {
-        return gyro.getYaw().getValueAsDouble();
+        return gyro.getRoll().getValueAsDouble();
     }
 
     public void resetModulesToAbsolute(){

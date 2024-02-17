@@ -152,8 +152,8 @@ public class RobotContainer {
     intake.whileTrue(new IntakeCommand());
     yButton.whileTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
-    upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
-    downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
+    // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
+    // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
   }
 
