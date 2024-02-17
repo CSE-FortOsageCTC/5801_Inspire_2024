@@ -6,10 +6,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import frc.robot.AlignPosition;
+
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 import frc.robot.subsystems.SkyLimelight;
@@ -18,7 +24,9 @@ import frc.robot.subsystems.Swerve;
 /**
  * This class detects the "april tag" and positions the robot infront of the node/April Tag
  */
-public class NaviToPos extends Command {
+
+public class Navigate extends Command {
+
 
     private PIDController yTranslationPidController;
     private PIDController xTranslationPidController;
@@ -28,7 +36,7 @@ public class NaviToPos extends Command {
     private AutoRotateUtil autoUtil;
     private double targetX;
     private double targetY;
-    private double targetRot;
+    private Rotation2d targetRot;
 
     private SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
     private SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -38,14 +46,10 @@ public class NaviToPos extends Command {
      * 
      * @param s_Swerve swerve subsystem to be aligned with the april tag
      */
-    public NaviToPos(  double targetX, double targetY, double targetRot) {
-        
+    public Navigate(){
         this.s_Swerve = Swerve.getInstance();
-        this.targetRot = targetRot;
-        this.autoUtil = new AutoRotateUtil(targetRot);
         addRequirements(s_Swerve);
-        this.targetX = targetX;
-        this.targetY = targetY;
+
         // creating yTranslationPidController and setting the tolerance and setpoint
         yTranslationPidController = new PIDController(.7, 0, 0);
         yTranslationPidController.setTolerance(.05);
@@ -72,6 +76,13 @@ public class NaviToPos extends Command {
     public void execute() {
         // gets value of P,I and D from smartdashboard
         // will be removed
+        Pose2d pose = AlignPosition.getAlignPose();
+        this.targetRot = pose.getRotation();
+        if (this.targetRot != null){
+            this.autoUtil = new AutoRotateUtil(targetRot.getDegrees());
+        }
+        this.targetX = pose.getX();
+        this.targetY = pose.getY();
         double kP = SmartDashboard.getNumber("AlignP", 0);
         double kI = SmartDashboard.getNumber("AlignI", 0);
         double kD = SmartDashboard.getNumber("AlignD", 0);
@@ -96,7 +107,9 @@ public class NaviToPos extends Command {
             botPose = s_Swerve.getEstimatedPosition();
             botX = botPose.getX();
             botY = botPose.getY();
-        } else {
+
+        }else{
+
             s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
             SmartDashboard.putNumber("Current X", botX);
             SmartDashboard.putNumber("Current Y", botY); 
@@ -127,7 +140,7 @@ public class NaviToPos extends Command {
 
         // moves the swerve subsystem
         Translation2d translation = new Translation2d(-xSpeed, -ySpeed).times(Constants.Swerve.maxSpeed); 
-        double rotation = angularSpeed * Constants.Swerve.maxAngularVelocity;
+        double rotation = this.targetRot == null ? 0: angularSpeed * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, true, true);
 
     }

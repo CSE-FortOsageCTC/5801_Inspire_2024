@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -78,7 +80,11 @@ public class RobotContainer {
   private ShootCommand shootCommand;
   private IntakeCommand intakeCommand;
 
-  
+  // Operator Buttons
+  private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kB.value);
+  private final POVButton upDPad = new POVButton(operator, 0);
+  private final POVButton downDPad = new POVButton(operator, 180);
+
  
   public RobotContainer() {
     intakeSubsystem = IntakeSubsystem.getInstance();
@@ -169,10 +175,13 @@ public class RobotContainer {
     elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
     spinKicker.whileTrue(new SpinKickerCommand());
     zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
-    elevatorUpButton.whileTrue(new IntakeCommand());
+    intake.whileTrue(new IntakeCommand());
     // climbExtension.whileTrue(new ClimbExtensionCommand());
     // climbRetraction.whileTrue(new ClimbRetractionCommand());
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
+    // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
+    // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
+    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
 
   }
 
