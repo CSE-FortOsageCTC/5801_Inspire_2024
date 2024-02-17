@@ -168,6 +168,10 @@ public class Swerve extends SubsystemBase{
         return Rotation2d.fromDegrees(gyro.getYaw().getValue());
     }
 
+    public double getGyroRoll() {
+        return gyro.getYaw().getValueAsDouble();
+    }
+
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
