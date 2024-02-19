@@ -51,6 +51,7 @@ public class RobotContainer {
 
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
   private Swerve s_Swerve = Swerve.getInstance();
+  private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -62,7 +63,8 @@ public class RobotContainer {
   private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton intake = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   
 
   /* Operator Buttons */
@@ -78,7 +80,8 @@ public class RobotContainer {
   private IntakeSubsystem intakeSubsystem;
   private ClimbingSubsystem climbingSubsystem;
   private ShootCommand shootCommand;
-  private IntakeCommand intakeCommand;
+  private IntakeInCommand intakeInCommand;
+  private IntakeOutCommand intakeOutCommand;
 
   // Operator Buttons
   private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kB.value);
@@ -87,29 +90,30 @@ public class RobotContainer {
 
  
   public RobotContainer() {
+    AlignPosition.setPosition(AlignPosition.Manual);
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
-    shootCommand = new ShootCommand();
+    shootCommand = new ShootCommand(operator);
 
     //Register Named Commands
 
     //NamedCommands.registerCommand("Shoot", shootCommand);
 
-    NamedCommands.registerCommand("Shoot", shootCommand);
+    // NamedCommands.registerCommand("Shoot", shootCommand);
 
     //NamedCommands.registerCommand("Intake", intakeCommand);
 
     //Set up PathPlannerPaths
-    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path");
-    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
-    threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
-    blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
-    blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
-    blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
-    blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
-    rotatePath = PathPlannerPath.fromPathFile("Rotate");
-    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
-    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
+    // sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
+    // fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
+    // threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
+    // blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
+    // blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
+    // blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
+    // blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
+    // rotatePath = PathPlannerPath.fromPathFile("Rotate");
+    // sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
+    // fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
 
 
 
@@ -170,14 +174,16 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    shootButton.whileTrue(new ShootCommand());
+    shootButton.whileTrue(new ShootCommand(operator));
     elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
     spinKicker.whileTrue(new SpinKickerCommand());
     zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
-    intake.whileTrue(new IntakeCommand());
+    intakeIn.whileTrue(new IntakeInCommand());
+    intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
+    s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
   

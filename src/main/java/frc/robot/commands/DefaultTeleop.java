@@ -39,7 +39,7 @@ public class DefaultTeleop extends Command{
     private Joystick driver;
     private Joystick operator;
 
-    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(1.8); 
+    private SlewRateLimiter rotationLimiter = new SlewRateLimiter(5.0); 
     private SlewRateLimiter throttleLimiter = new SlewRateLimiter(2);
 
     private PIDController rotationPidController = new PIDController(0, 0, 0);
@@ -93,20 +93,24 @@ public class DefaultTeleop extends Command{
         double yAxis = -driver.getRawAxis(translationSup);
         double xAxis = -driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
+        alignPose = AlignPosition.getAlignPose();
 
-        double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
-        double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
-        SmartDashboard.putNumber("Bot Pose X", botX);
-        SmartDashboard.putNumber("Bot Pose Y", botY);
-        // Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); // gets botpose based on approximated position from limelight
-        // double xDiff = botPose.getX() - alignPose.getX(); // gets distance of x between robot and target
-        // double yDiff = botPose.getY() - alignPose.getY(); // gets distance of y between robot and target
-        SmartDashboard.putNumber("Bot Pose X", botPose.getX());
-        SmartDashboard.putNumber("Bot Pose Y", botPose.getY());
+        if(alignPose != null){
+            double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
+            double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
+            SmartDashboard.putNumber("Bot Pose X", botX);
+            SmartDashboard.putNumber("Bot Pose Y", botY);
+            // Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); // gets botpose based on approximated position from limelight
+            // double xDiff = botPose.getX() - alignPose.getX(); // gets distance of x between robot and target
+            // double yDiff = botPose.getY() - alignPose.getY(); // gets distance of y between robot and target
+            SmartDashboard.putNumber("Bot Pose X", botPose.getX());
+            SmartDashboard.putNumber("Bot Pose Y", botPose.getY());
 
-        double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
-        SmartDashboard.putNumber("Align Swerve Angle", angle);
-        s_AutoRotateUtil.updateTargetAngle(angle - 90); // updates pid angle setpoint to the angle that faces towards the target by using arctangent2 (which keeps negative and junk for us so it'll be nice)
+            double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
+            SmartDashboard.putNumber("Align Swerve Angle", angle);
+            s_AutoRotateUtil.updateTargetAngle(angle - 90); // updates pid angle setpoint to the angle that faces towards the target by using arctangent2 (which keeps negative and junk for us so it'll be nice)
+        }
+
         double translationVal = MathUtil.applyDeadband(yAxis, Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(xAxis, Constants.stickDeadband);
         double rotationVal;
@@ -115,7 +119,7 @@ public class DefaultTeleop extends Command{
         double throttleAxis = driver.getRawAxis(throttle);
 
         throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
-        rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? .1 : rotationAxis;
+        rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? 0 : rotationAxis;
 
         if (AlignPosition.getPosition() == AlignPosition.Manual) {
             rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));

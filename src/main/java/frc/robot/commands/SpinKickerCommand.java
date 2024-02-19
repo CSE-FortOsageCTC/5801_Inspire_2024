@@ -11,11 +11,11 @@ public class SpinKickerCommand extends Command{
     }
     @Override
     public void execute(){
-        shooterSubsystem.spinKicker(-.5);
+        shooterSubsystem.setFlyWheels(-1);
 
     }
     @Override
     public void end(boolean end){
-        shooterSubsystem.spinKicker(0);
+        shooterSubsystem.setFlyWheels(0);
     }
 }
