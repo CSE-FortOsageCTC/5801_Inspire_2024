@@ -23,22 +23,6 @@
         "x": 2.4482516934958682,
         "y": 6.93871330599804
       },
-      "nextControl": {
-        "x": 2.4189327777151797,
-        "y": 6.909394390217353
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.2211290254423093,
-        "y": 5.53650223579517
-      },
-      "prevControl": {
-        "x": 1.6787539106168916,
-        "y": 6.290906661897256
-      },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
@@ -57,7 +41,38 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

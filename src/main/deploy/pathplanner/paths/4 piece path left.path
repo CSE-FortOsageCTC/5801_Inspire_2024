@@ -64,16 +64,16 @@
     },
     {
       "anchor": {
-        "x": 3.7991218839628966,
-        "y": 6.831307376907747
+        "x": 5.406548487515581,
+        "y": 6.582096592764614
       },
       "prevControl": {
-        "x": 5.98463689726357,
-        "y": 6.982032550274528
+        "x": 7.592063500816255,
+        "y": 6.732821766131396
       },
       "nextControl": {
-        "x": 3.3739976051380682,
-        "y": 6.801988461119779
+        "x": 4.981424208690752,
+        "y": 6.552777676976647
       },
       "isLocked": false,
       "linkedName": null
@@ -96,12 +96,12 @@
     },
     {
       "anchor": {
-        "x": 3.7991218839628966,
-        "y": 6.831307376907747
+        "x": 5.406548487515581,
+        "y": 6.582096592764614
       },
       "prevControl": {
-        "x": 5.954062193843516,
-        "y": 7.549620813534621
+        "x": 7.5614887973962,
+        "y": 7.300410029391489
       },
       "nextControl": null,
       "isLocked": false,
@@ -149,7 +149,7 @@
   "eventMarkers": [
     {
       "name": "Shoot",
-      "waypointRelativePos": 3.7,
+      "waypointRelativePos": 4.1,
       "command": {
         "type": "sequential",
         "data": {
@@ -161,6 +161,66 @@
               }
             }
           ]
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 2.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 3.3000000000000003,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 5.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 6.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
         }
       }
     }

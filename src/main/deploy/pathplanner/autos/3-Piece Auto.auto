@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Top Start"
+            "pathName": null
           }
         },
         {
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Top Score"
+            "pathName": "2 Piece auto"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Finish Central"
+            "pathName": null
           }
         }
       ]
