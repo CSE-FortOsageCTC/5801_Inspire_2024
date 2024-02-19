@@ -93,7 +93,6 @@ public class RobotContainer {
     AlignPosition.setPosition(AlignPosition.Manual);
     intakeSubsystem = IntakeSubsystem.getInstance();
     climbingSubsystem = ClimbingSubsystem.getInstance();
-    shootCommand = new ShootCommand(operator);
 
     //Register Named Commands
 
@@ -174,10 +173,9 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    shootButton.whileTrue(new ShootCommand(operator));
     elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
-    spinKicker.whileTrue(new SpinKickerCommand());
+    spinKicker.whileTrue(new FlyWheelCommand());
     zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());

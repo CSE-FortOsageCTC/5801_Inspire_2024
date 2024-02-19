@@ -10,7 +10,7 @@ public enum AlignPosition {
             RightSourcePos(),
             ClimbPos(),
             AutoPickup(),
-            Manual();
+            Manual(), speakerPos;
 
             private static AlignPosition alignPosition;
             private static Pose2d alignPose;
@@ -59,7 +59,6 @@ public enum AlignPosition {
 
             public static void setPosition(AlignPosition alignPos){
                 alignPosition = alignPos;
-                System.out.println("yup and you're banned and youre silly, and youre doxxed, and youre doing too much, and youre... yeah that's enough. Well no its not enough because anyone who has seen this code knows that we can't write two lines of code because NOOOO that would be 2 ez. We have to account for every flippin variable on the field and that everything has to be perfect. and then we have to run it by brandon and then then then... error 404 couldn't find the rest of this rant");
 
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){

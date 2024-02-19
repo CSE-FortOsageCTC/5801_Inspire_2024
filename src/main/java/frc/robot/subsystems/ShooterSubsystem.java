@@ -38,8 +38,6 @@ public class ShooterSubsystem extends SubsystemBase {
         topShooter = new CANSparkMax(20, MotorType.kBrushless);
         bottomShooter = new CANSparkMax(21, MotorType.kBrushless);
         rightElevator = new CANSparkMax(25, MotorType.kBrushless);
-        // leftElevator = new CANSparkMax(26, MotorType.kBrushless);
-        // kicker = new VictorSPX(19);
         bottomShooter.follow(topShooter, true);
         topShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
         bottomShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -81,7 +79,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
     public void setFlyWheels(double percent){
-        // kicker.set(ControlMode.PercentOutput, percent);
         topShooter.set(percent);
     }
    

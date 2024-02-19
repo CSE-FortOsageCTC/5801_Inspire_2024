@@ -95,7 +95,7 @@ public class DefaultTeleop extends Command{
         double rotationAxis = driver.getRawAxis(rotationSup);
         alignPose = AlignPosition.getAlignPose();
 
-        if(alignPose != null){
+        if(alignPose != null && AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
             double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
             double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
             SmartDashboard.putNumber("Bot Pose X", botX);
