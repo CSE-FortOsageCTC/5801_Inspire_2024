@@ -9,7 +9,7 @@ import frc.robot.subsystems.Swerve;
 
 public class AutoRotateUtil {
 
-    private final Swerve s_Swerve;
+    private final Swerve s_Swerve = null;
 
     private final PIDController pidController;
 
@@ -17,7 +17,6 @@ public class AutoRotateUtil {
 
     public AutoRotateUtil(double angle) {
 
-        s_Swerve = Swerve.getInstance();
         this.m_angle = angle == 0?360:angle;
 
         //SmartDashboard.putNumber("Angle", this.m_angle);
