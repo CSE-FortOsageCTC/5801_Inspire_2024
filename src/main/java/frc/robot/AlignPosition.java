@@ -10,7 +10,8 @@ public enum AlignPosition {
             RightSourcePos(),
             ClimbPos(),
             AutoPickup(),
-            Manual(), speakerPos;
+            Manual(), 
+            TrapPos();
 
             private static AlignPosition alignPosition;
             private static Pose2d alignPose;
