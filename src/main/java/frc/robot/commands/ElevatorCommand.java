@@ -28,6 +28,7 @@ public class ElevatorCommand extends Command{
         SmartDashboard.putNumber("Down P", 0);
         SmartDashboard.putNumber("Down I", 0);
         SmartDashboard.putNumber("Down D", 0);
+        addRequirements(shooterSubsystem);
     }
 
     // public void updateSetPoint(double setPoint){
@@ -43,13 +44,45 @@ public class ElevatorCommand extends Command{
 
     @Override
     public void execute(){
-        shooterSubsystem.setElevatorSpeed(.2);
+
+
+    double upP = SmartDashboard.getNumber("Up P", 0.0);
+    double upI = SmartDashboard.getNumber("Up I", 0.0);
+    double upD = SmartDashboard.getNumber("Up D", 0.0);
+
+    double downP = SmartDashboard.getNumber("Down P", 0.0);
+    double downI = SmartDashboard.getNumber("Down I", 0.0);
+    double downD = SmartDashboard.getNumber("Down D", 0.0);
+
+    this.upPidController.setP(upP);
+    this.upPidController.setI(upI);
+    this.upPidController.setD(upD);
+
+    this.downPidController.setP(downP);
+    this.downPidController.setI(downI);
+    this.downPidController.setD(downD);
+
+    double elevatorValue = shooterSubsystem.getElevatorValue();
+    double speed = 0;
+
+    if  (elevatorValue < upPidController.getSetpoint()) {
+        speed = upPidController.calculate(shooterSubsystem.getElevatorValue(), setPoint);
 
     }
+    else {
+        speed = downPidController.calculate(shooterSubsystem.getElevatorValue(), setPoint);
+    }
+    speed = MathUtil.clamp(speed, -.3, .3);
+    SmartDashboard.putNumber(("Elevator Speed"), speed);
+    shooterSubsystem.setElevatorSpeed(speed);
+
+    }
+
     @Override
     public void end(boolean end){
         shooterSubsystem.setElevatorSpeed(0);
         upPidController.reset();
         downPidController.reset();
-    }   
+
+    }
 }

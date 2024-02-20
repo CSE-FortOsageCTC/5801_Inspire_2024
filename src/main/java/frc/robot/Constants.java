@@ -100,7 +100,6 @@ public final class Constants {
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
-
         public static final double minElevatorValue = 20;
         public static final double maxElevatorValue = 500;
 
