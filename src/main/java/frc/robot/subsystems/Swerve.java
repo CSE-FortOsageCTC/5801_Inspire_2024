@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,12 +12,19 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,7 +41,13 @@ public class Swerve extends SubsystemBase{
     private SwerveDrivePoseEstimator swerveEstimator;
     private static Swerve swerve;
     public double gyroOffset;
-    
+    public PIDController rotationPidController;
+    public SkyLimelight s_Limelight;
+    public FloorLimelight f_Limelight;
+    public AutoRotateUtil s_AutoRotateUtil;
+    private Pair<Double, Double> speakerCoordinate;
+    public Debouncer pieceSeenDebouncer;
+
     public static Swerve getInstance() {
         if (swerve == null) {
             swerve = new Swerve();
@@ -42,9 +56,13 @@ public class Swerve extends SubsystemBase{
     }
 
     private Swerve() {
+        pieceSeenDebouncer = new Debouncer(.1, Debouncer.DebounceType.kBoth);
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         //gyro.setYaw(0);
+        s_Limelight = SkyLimelight.getInstance();
+        f_Limelight = FloorLimelight.getInstance();
+        s_AutoRotateUtil = new AutoRotateUtil(0);
 
         
         mSwerveMods = new SwerveModule[] {
@@ -81,13 +99,16 @@ public class Swerve extends SubsystemBase{
                     return false;
                 },
                 this); // Reference to this subsystem to set requirements
+
         } 
     public void updatePoseEstimator() {
         swerveEstimator.update(getGyroYaw(), getModulePositions());
     }
+
     public Pose2d getEstimatedPosition(){
         return swerveEstimator.getEstimatedPosition();
     }
+
     public void updateWithVision(Pose2d pose2d, double timestamp){
         swerveEstimator.addVisionMeasurement(pose2d, timestamp);
     }
@@ -168,6 +189,10 @@ public class Swerve extends SubsystemBase{
         return Rotation2d.fromDegrees(gyro.getYaw().getValue());
     }
 
+    public double getGyroRoll() {
+        return gyro.getRoll().getValueAsDouble();
+    }
+
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
@@ -178,9 +203,11 @@ public class Swerve extends SubsystemBase{
     }
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
-        // SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
-        // SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
-        // SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
+
+        SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
+        robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
 
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
         SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);
@@ -189,15 +216,69 @@ public class Swerve extends SubsystemBase{
         for(int i = 0; i < 4; i++){
             mSwerveMods[i].setDesiredState(setpointStates[i], false);}
     }
+
+    public double rotateToSpeaker(){
+        if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+            speakerCoordinate = new Pair<Double, Double>(8.0, 1.5);
+        } else {
+            speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
+        }
+        Pose2d botPose = s_Limelight.getBotPose(); 
+        double botX = botPose.getX();
+        double botY = botPose.getY();
+        if (botX == 0 && botY == 0){
+            botPose = getEstimatedPosition();
+            botX = botPose.getX();
+            botY = botPose.getY();
+        }
+        else{
+            updateWithVision(botPose, Timer.getFPGATimestamp());
+        }
+
+        double xDiff = botX - speakerCoordinate.getFirst(); // gets distance of x between robot and target
+        double yDiff = botY - speakerCoordinate.getSecond();
+        
+        double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
+        
+        s_AutoRotateUtil.updateTargetAngle(angle - 90); //why are we subtracting 90?
+        
+        return s_AutoRotateUtil.calculateRotationSpeed();
+    }
+
+    public double rotateToNote(){
+        boolean noteInView = f_Limelight.hasTag();
+
+        noteInView = pieceSeenDebouncer.calculate(noteInView);
+
+        if (noteInView){
+            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX()/2);
+            return s_AutoRotateUtil.calculateRotationSpeed();
+        }
+        
+        return 0;
+    }
+
+    public void resetAutoRotateUtil(){
+        s_AutoRotateUtil.end();
+    }
     
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+
+        updatePoseEstimator();
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+        
+        double odometryX = swerveOdometry.getPoseMeters().getX();
+        double odometryY = swerveOdometry.getPoseMeters().getY();
+        SmartDashboard.putNumber("Odometry X", odometryX);
+        SmartDashboard.putNumber("Odometry Y", odometryY);
+
+        updatePoseEstimator();
     }
 }

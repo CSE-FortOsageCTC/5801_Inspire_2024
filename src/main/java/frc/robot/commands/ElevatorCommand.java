@@ -44,6 +44,7 @@ public class ElevatorCommand extends Command{
     @Override
     public void execute(){
 
+
     double upP = SmartDashboard.getNumber("Up P", 0.0);
     double upI = SmartDashboard.getNumber("Up I", 0.0);
     double upD = SmartDashboard.getNumber("Up D", 0.0);
@@ -75,10 +76,12 @@ public class ElevatorCommand extends Command{
     shooterSubsystem.setElevatorSpeed(speed);
 
     }
+
     @Override
     public void end(boolean end){
         shooterSubsystem.setElevatorSpeed(0);
         upPidController.reset();
         downPidController.reset();
+        
     }
 }
