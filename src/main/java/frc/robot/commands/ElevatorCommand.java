@@ -28,6 +28,7 @@ public class ElevatorCommand extends Command{
         SmartDashboard.putNumber("Down P", 0);
         SmartDashboard.putNumber("Down I", 0);
         SmartDashboard.putNumber("Down D", 0);
+        addRequirements(shooterSubsystem);
     }
 
     // public void updateSetPoint(double setPoint){
@@ -82,6 +83,6 @@ public class ElevatorCommand extends Command{
         shooterSubsystem.setElevatorSpeed(0);
         upPidController.reset();
         downPidController.reset();
-        
+
     }
 }
