@@ -26,17 +26,17 @@ public class AutoAlignAmp extends Command{
         addRequirements(s_Swerve, s_Limelight);
         
 
-        // creating yTranslationPidController and setting the toleance and setpoint
+        // creating yTranslationPidController and setting the tolerance and setpoint
         yTranslationPidController = new PIDController(0, 0, 0);
         yTranslationPidController.setTolerance(1);
         yTranslationPidController.setSetpoint(0);
         
-        // creating xTranslationPidController and setting the toleance and setpoint
+        // creating xTranslationPidController and setting the tolerance and setpoint
         xTranslationPidController = new PIDController(0, 0, 0);
         xTranslationPidController.setTolerance(0);
         xTranslationPidController.setSetpoint(0);
         
-        // creating rotationPidController and setting the toleance and setpoint
+        // creating rotationPidController and setting the tolerance and setpoint
         rotationPidController = new PIDController(0, 0, 0);
         rotationPidController.setTolerance(2);
         rotationPidController.setSetpoint(0);

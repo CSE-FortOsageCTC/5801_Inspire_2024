@@ -96,11 +96,9 @@ public class RobotContainer {
 
     //Register Named Commands
 
-    //NamedCommands.registerCommand("Shoot", shootCommand);
+    NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
 
-    // NamedCommands.registerCommand("Shoot", shootCommand);
-
-    //NamedCommands.registerCommand("Intake", intakeCommand);
+    NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
 
     //Set up PathPlannerPaths
     // sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
@@ -180,6 +178,9 @@ public class RobotContainer {
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
+    autoAlignShooterSpeaker.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
+    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AmpPos)));
+    autoAlignNote.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
