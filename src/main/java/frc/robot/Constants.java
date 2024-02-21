@@ -26,6 +26,8 @@ public final class Constants {
 
     public static final boolean isRedAlliance = DriverStation.getAlliance().get().equals(Alliance.Red) ? true : false;
 
+    public static final double feedForwardAngle = 30;
+
     public static final class Swerve {
         public static final int pigeonID = 10;
 
@@ -99,7 +101,6 @@ public final class Constants {
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-
 
         public static final double minElevatorValue = 20;
         public static final double maxElevatorValue = 500;

@@ -16,6 +16,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
     private static ShooterSubsystem shooterSubsystem;
@@ -26,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax leftElevator;
     private VictorSPX kicker;
     private PIDController elevatorPID;
+
     private DoubleSolenoid shooterSolenoid;
 
     public static ShooterSubsystem getInstance(){
@@ -38,6 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
         topShooter = new CANSparkMax(20, MotorType.kBrushless);
         bottomShooter = new CANSparkMax(21, MotorType.kBrushless);
         rightElevator = new CANSparkMax(25, MotorType.kBrushless);
+
         bottomShooter.follow(topShooter, true);
         topShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
         bottomShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -51,12 +58,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setKicker(){
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
     }
+
     public void resetKicker(){
         shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
-    public Command setAngle(double angle){
-        elevatorPID.setSetpoint(angle);
-        return run(()->rightElevator.set(elevatorPID.calculate(angle)));
     }
 
     public double getElevatorValue(){
