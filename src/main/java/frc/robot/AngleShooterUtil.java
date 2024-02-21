@@ -5,11 +5,11 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class AngleShooterUtil {
     
-    private final ShooterSubsystem s_ShooterSubsystem;
+    private final ElevatorSubsystem s_ElevatorSubsystem;
 
     private double m_encoderDiff;
     private final PIDController upPidController;
@@ -17,7 +17,7 @@ public class AngleShooterUtil {
 
     public AngleShooterUtil(double encoderDiff) {
 
-        s_ShooterSubsystem = ShooterSubsystem.getInstance();
+        s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
         this.m_encoderDiff = encoderDiff;
 
         this.upPidController = new PIDController(0, 0, 0);

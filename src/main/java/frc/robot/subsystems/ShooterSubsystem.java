@@ -43,15 +43,13 @@ public class ShooterSubsystem extends SubsystemBase {
     private ShooterSubsystem(){
         topShooter = new CANSparkMax(20, MotorType.kBrushless);
         bottomShooter = new CANSparkMax(21, MotorType.kBrushless);
-        rightElevator = new CANSparkMax(25, MotorType.kBrushless);
 
         bottomShooter.follow(topShooter, true);
         topShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
         bottomShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
         topShooter.burnFlash();
         bottomShooter.burnFlash();
-        // leftElevator.follow(rightElevator);
-        elevatorPID = new PIDController(0, 0, 0);
+        
         shooterSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
         
     }
@@ -63,25 +61,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public double getElevatorValue(){
-        return rightElevator.getEncoder().getPosition();
-    }
-
-    public void setElevatorSpeed(double speed){
-        double elevatorValue = getElevatorValue();
-        if (elevatorValue < Constants.Swerve.minElevatorValue && speed < 0){
-            speed = 0;
-        }
-
-        else if (elevatorValue > Constants.Swerve.maxElevatorValue && speed > 0){
-            speed = 0;
-        }
-        rightElevator.set(speed);
-
-
-        SmartDashboard.putNumber("Encoder Value", rightElevator.getEncoder().getPosition());
-
-    }
     public void setFlyWheels(double percent){
         topShooter.set(percent);
     }

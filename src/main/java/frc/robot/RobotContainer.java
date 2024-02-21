@@ -182,7 +182,7 @@ public class RobotContainer {
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    autoAlignShooterSpeaker.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
+    //autoAlignShooterSpeaker.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
     autoAlignAmp.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AmpPos)));
     autoAlignNote.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
