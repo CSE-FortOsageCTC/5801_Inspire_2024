@@ -29,7 +29,7 @@ public class AutoIntakeCommand extends Command{
     @Override
     public void end(boolean isFinished) {
         intakeSubsystem.intakeStop();
-        AutoAlignMethods.scheduleShoot();
+        AlignmentTransitions.scheduleShoot();
     }
 
 }
