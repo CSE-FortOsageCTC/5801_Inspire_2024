@@ -6,12 +6,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public enum AlignPosition {
             AmpPos(),
             SpeakerPos(),
-            LeftSourcePos(),
-            RightSourcePos(),
+            SourcePos(),
             ClimbPos(),
             AutoPickup(),
             Manual(), 
-            TrapPos();
+            TrapPos1(),
+            TrapPos2(),
+            TrapPos3();
 
             private static AlignPosition alignPosition;
             private static Pose2d alignPose;
@@ -31,11 +32,8 @@ public enum AlignPosition {
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(8.3, 1.45, null): new Pose2d(-8.3, 1.45, null);
                             break;
-                        case LeftSourcePos:
+                        case SourcePos:
                             alignPose = isRed? new Pose2d(-7, -3.3, Rotation2d.fromDegrees(-145)): new Pose2d(7.8, -3.8, Rotation2d.fromDegrees(-55));
-                            break;
-                        case RightSourcePos:
-                            alignPose = isRed? new Pose2d(-7.9, -3.8, Rotation2d.fromDegrees(-145)): new Pose2d(6.95, -3.3, Rotation2d.fromDegrees(-55));
                             break;
                         case ClimbPos:
                             alignPose = isRed? new Pose2d(3.4, 0, null): new Pose2d(-3.4, 0, null);
@@ -45,6 +43,15 @@ public enum AlignPosition {
                             break;
                         case Manual:
                             alignPose = null;
+                            break;
+                        case TrapPos1:
+                            alignPose = isRed? new Pose2d(3.85, -0.85, new Rotation2d().fromDegrees(240)): new Pose2d(-3.9, 0.78, new Rotation2d().fromDegrees(60));
+                            break;
+                        case TrapPos2:
+                            alignPose = isRed? new Pose2d(3.85, 0.78, new Rotation2d().fromDegrees(120)): new Pose2d(-3.9, -0.85, new Rotation2d().fromDegrees(300));
+                            break;
+                        case TrapPos3:
+                            alignPose = isRed? new Pose2d(2.45, 0, new Rotation2d().fromDegrees(0)): new Pose2d(-2.45, 0, new Rotation2d().fromDegrees(180));
                             break;
                     }
                 }
@@ -69,11 +76,8 @@ public enum AlignPosition {
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(8.3, 1.45, null): new Pose2d(-8.3, 1.45, null);
                             break;
-                        case LeftSourcePos:
+                        case SourcePos:
                             alignPose = isRed? new Pose2d(-7, -3.3, Rotation2d.fromDegrees(-145)): new Pose2d(7.8, -3.8, Rotation2d.fromDegrees(-55));
-                            break;
-                        case RightSourcePos:
-                            alignPose = isRed? new Pose2d(-7.9, -3.8, Rotation2d.fromDegrees(-145)): new Pose2d(6.95, -3.3, Rotation2d.fromDegrees(-55));
                             break;
                         case ClimbPos:
                             alignPose = isRed? new Pose2d(3.4, 0, null): new Pose2d(-3.4, 0, null);
