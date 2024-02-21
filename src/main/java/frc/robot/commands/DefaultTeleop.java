@@ -144,18 +144,7 @@ public class DefaultTeleop extends Command{
         double rotationSpeed = s_DefaultTeleop.s_Swerve.rotateToNote();
         SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
 
-        if (AlignPosition.getPosition() == AlignPosition.SpeakerPos){
-            s_DefaultTeleop.s_Swerve.drive(translation,  s_DefaultTeleop.s_Swerve.rotateToSpeaker() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
-        }
-        
-        else if (AlignPosition.getPosition() == AlignPosition.AutoPickup){
-            s_DefaultTeleop.s_Swerve.drive(translation,  s_DefaultTeleop.s_Swerve.rotateToNote() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
-        }
-
-        else if (AlignPosition.getPosition() == AlignPosition.Manual)
-        {
-            s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
-        }
+        s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
         // s_DefaultTeleop.s_Swerve.drive(translation, s_DefaultTeleop.s_Swerve.rotateToSpeaker() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
 
 

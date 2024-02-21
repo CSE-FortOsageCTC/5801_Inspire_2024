@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 
@@ -42,6 +43,8 @@ public class Swerve extends SubsystemBase{
     private static Swerve swerve;
     public double gyroOffset;
     public PIDController rotationPidController;
+    public PIDController yTranslationPidController;
+    public PIDController xTranslationPidController;
     public SkyLimelight s_Limelight;
     public FloorLimelight f_Limelight;
     public AutoRotateUtil s_AutoRotateUtil;
@@ -207,8 +210,19 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
         SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
-        robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
+        // robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
+        if (AlignPosition.getPosition() == AlignPosition.SpeakerPos){
+            robotRelativeSpeeds.omegaRadiansPerSecond =  rotateToSpeaker();
+        }
+        
+        else if (AlignPosition.getPosition() == AlignPosition.AutoPickup){
+            robotRelativeSpeeds.omegaRadiansPerSecond =  rotateToNote();        
+        }
 
+        else
+        {
+            robotRelativeSpeeds.omegaRadiansPerSecond =  0;
+        }
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
         SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.Swerve.maxSpeed);
@@ -256,6 +270,33 @@ public class Swerve extends SubsystemBase{
         }
         
         return 0;
+    }
+    public Translation2d noteTranslation(){
+        double xValue = f_Limelight.getX(); //gets the limelight X Coordinate
+        double areaValue = f_Limelight.getArea();
+         // creating yTranslationPidController and setting the toleance and setpoint
+         yTranslationPidController = new PIDController(0, 0, 0);
+         yTranslationPidController.setTolerance(1);
+         yTranslationPidController.setSetpoint(0);
+         
+         // creating xTranslationPidController and setting the toleance and setpoint
+         xTranslationPidController = new PIDController(0, 0, 0);
+         xTranslationPidController.setTolerance(0);
+         xTranslationPidController.setSetpoint(0);
+ 
+        if (pieceSeenDebouncer.calculate(f_Limelight.hasTag())){
+
+            // Calculates the x and y speed values for the translation movement
+            double ySpeed = yTranslationPidController.calculate(xValue);
+            double xSpeed = xTranslationPidController.calculate(areaValue);
+            
+            Translation2d translation = new Translation2d(xSpeed, ySpeed).times(Constants.Swerve.maxSpeed);
+
+            return translation;
+        }
+        else{
+            return new Translation2d(0,0);
+        }
     }
 
     public void resetAutoRotateUtil(){

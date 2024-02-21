@@ -48,7 +48,7 @@ public class RobotContainer {
 
 
   /* Drive Controls */
-
+  private AutoAlignMethods autoAlignMethods;
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
   private Swerve s_Swerve = Swerve.getInstance();
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
@@ -96,9 +96,9 @@ public class RobotContainer {
 
     //Register Named Commands
 
-    NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
+    NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AutoAlignMethods.scheduleShoot()));
 
-    NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
+    NamedCommands.registerCommand("Intake", new InstantCommand(() -> AutoAlignMethods.scheduleIntake()));
 
     //Set up PathPlannerPaths
     // sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 

@@ -167,7 +167,7 @@
     },
     {
       "name": "Intake",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "sequential",
         "data": {
@@ -184,7 +184,7 @@
     },
     {
       "name": "Shoot",
-      "waypointRelativePos": 2.0,
+      "waypointRelativePos": 1.75,
       "command": {
         "type": "sequential",
         "data": {
@@ -207,7 +207,7 @@
     },
     {
       "name": "Intake",
-      "waypointRelativePos": 3.0,
+      "waypointRelativePos": 2.65,
       "command": {
         "type": "sequential",
         "data": {
@@ -224,7 +224,7 @@
     },
     {
       "name": "Shoot",
-      "waypointRelativePos": 3.5,
+      "waypointRelativePos": 3.4499999999999997,
       "command": {
         "type": "sequential",
         "data": {
@@ -247,7 +247,7 @@
     },
     {
       "name": "Intake",
-      "waypointRelativePos": 4.9,
+      "waypointRelativePos": 4.45,
       "command": {
         "type": "sequential",
         "data": {
@@ -264,7 +264,7 @@
     },
     {
       "name": "Shoot",
-      "waypointRelativePos": 5.5,
+      "waypointRelativePos": 5.6,
       "command": {
         "type": "sequential",
         "data": {
