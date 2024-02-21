@@ -26,6 +26,8 @@ public final class Constants {
 
     public static final boolean isRedAlliance = DriverStation.getAlliance().get().equals(Alliance.Red) ? true : false;
 
+    public static final double feedForwardAngle = 30;
+
     public static final class Swerve {
         public static final int pigeonID = 10;
 

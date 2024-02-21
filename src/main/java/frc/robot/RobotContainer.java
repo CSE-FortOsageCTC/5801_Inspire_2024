@@ -65,9 +65,9 @@ public class RobotContainer {
   /* Driver Buttons */
 
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton autoAlignShooterSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton autoAlignSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
   private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   
@@ -76,7 +76,7 @@ public class RobotContainer {
   private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
   private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-  private final JoystickButton spinKicker = new JoystickButton(operator, XboxController.Button.kA.value);
+  private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
   // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
 
@@ -180,13 +180,16 @@ public class RobotContainer {
 
     elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
-    spinKicker.whileTrue(new FlyWheelCommand());
+    flyWheel.whileTrue(new FlyWheelCommand());
     zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
+    autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
+    autoAlignAmp.onTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AmpPos)));
+    autoAlignNote.onTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
   

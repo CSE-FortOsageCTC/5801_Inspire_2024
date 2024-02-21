@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 
@@ -239,8 +240,25 @@ public class Swerve extends SubsystemBase{
         double yDiff = botY - speakerCoordinate.getSecond();
         
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
+        double yaw = (((gyro.getYaw().getValue() - gyroOffset) % 360) + 360) % 360;
         
-        s_AutoRotateUtil.updateTargetAngle(angle - 90); //why are we subtracting 90?
+        s_AutoRotateUtil.updateTargetAngle(angle - yaw - 90); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯
+        
+        return s_AutoRotateUtil.calculateRotationSpeed();
+    }
+
+    public double rotateToAmp() {
+        double headingError = getGyroYaw().getDegrees() - AlignPosition.getAlignPose().getRotation().getDegrees();
+
+        s_AutoRotateUtil.updateTargetAngle(headingError);
+        
+        return s_AutoRotateUtil.calculateRotationSpeed();
+    }
+
+    public double rotateToSource() {
+        double headingError = getGyroYaw().getDegrees() - AlignPosition.getAlignPose().getRotation().getDegrees();
+
+        s_AutoRotateUtil.updateTargetAngle(headingError);
         
         return s_AutoRotateUtil.calculateRotationSpeed();
     }
@@ -278,7 +296,5 @@ public class Swerve extends SubsystemBase{
         double odometryY = swerveOdometry.getPoseMeters().getY();
         SmartDashboard.putNumber("Odometry X", odometryX);
         SmartDashboard.putNumber("Odometry Y", odometryY);
-
-        updatePoseEstimator();
     }
 }

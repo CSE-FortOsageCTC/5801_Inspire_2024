@@ -48,11 +48,8 @@ public class AutoRotateUtil {
     this.pidController.setP(kP);
     this.pidController.setI(kI);
     this.pidController.setD(kD);
-    Swerve swerve = Swerve.getInstance();
-    double yaw = (((swerve.gyro.getYaw().getValue() - swerve.gyroOffset) % 360) + 360) % 360;
 
-    SmartDashboard.putNumber("Corrected Gyro", yaw);
-    double headingError = this.m_angle; //TODO Change this in main
+    double headingError = this.m_angle % 360; //TODO Change this in main
     if (headingError > 180) {
         headingError -= 360;
     }
@@ -65,7 +62,7 @@ public class AutoRotateUtil {
     //speed = MathUtil.clamp(speed, -1, 1);
     //SmartDashboard.putNumber("Speed", speed);
 
-    if (Math.abs(headingError) > 30) {
+    if (Math.abs(headingError) > Constants.feedForwardAngle) {
         return (headingError < 0) ? feedForward : -feedForward;
     } else {
         return MathUtil.clamp(pidController.calculate(headingError, 0), -1, 1);
@@ -75,7 +72,7 @@ public class AutoRotateUtil {
     * Updates degrees robot needs to rotate
     */ 
    public void updateTargetAngle(double angle) {
-
+    System.out.println(angle);
     m_angle = angle;
 
    }

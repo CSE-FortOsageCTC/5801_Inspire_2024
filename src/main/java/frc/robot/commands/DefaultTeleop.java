@@ -85,6 +85,8 @@ public class DefaultTeleop extends Command{
             botPose = s_DefaultTeleop.s_Swerve.getEstimatedPosition();
             botX = botPose.getX();
             botY = botPose.getY();
+            SmartDashboard.putNumber("Bot Pose X", botX);
+            SmartDashboard.putNumber("Bot Pose Y", botY);
         }
         else{
             s_DefaultTeleop.s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
@@ -94,22 +96,18 @@ public class DefaultTeleop extends Command{
         double xAxis = -driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
         alignPose = AlignPosition.getAlignPose();
+        
 
-        if(alignPose != null && AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
-            double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
-            double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
-            SmartDashboard.putNumber("Bot Pose X", botX);
-            SmartDashboard.putNumber("Bot Pose Y", botY);
-            // Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); // gets botpose based on approximated position from limelight
-            // double xDiff = botPose.getX() - alignPose.getX(); // gets distance of x between robot and target
-            // double yDiff = botPose.getY() - alignPose.getY(); // gets distance of y between robot and target
-            SmartDashboard.putNumber("Bot Pose X", botPose.getX());
-            SmartDashboard.putNumber("Bot Pose Y", botPose.getY());
-
-            double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
-            SmartDashboard.putNumber("Align Swerve Angle", angle);
-            s_AutoRotateUtil.updateTargetAngle(angle - 90); // updates pid angle setpoint to the angle that faces towards the target by using arctangent2 (which keeps negative and junk for us so it'll be nice)
-        }
+        // if(alignPose != null && AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
+        //     // System.out.println("it got to the speaker pos if >:)");
+        //     double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
+        //     double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
+        //     SmartDashboard.putNumber("AlingPos X Vaule", alignPose.getX());
+        //     SmartDashboard.putNumber("AlingPos Y Vaule", alignPose.getY());
+        //     double angle = Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
+        //     SmartDashboard.putNumber("Align Swerve Angle", angle);
+        //     s_AutoRotateUtil.updateTargetAngle(angle - 90); // updates pid angle setpoint to the angle that faces towards the target by using arctangent2 (which keeps negative and junk for us so it'll be nice)
+        // }
 
         double translationVal = MathUtil.applyDeadband(yAxis, Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(xAxis, Constants.stickDeadband);
@@ -121,10 +119,22 @@ public class DefaultTeleop extends Command{
         throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
         rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? 0 : rotationAxis;
 
+        if (rotationAxis != 0) {
+            AlignPosition.setPosition(AlignPosition.Manual);
+        }
+
         if (AlignPosition.getPosition() == AlignPosition.Manual) {
             rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
+        } else if (AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
+            rotationVal = s_DefaultTeleop.s_Swerve.rotateToSpeaker(); // s_AutoRotateUtil.calculateRotationSpeed();
+        } else if (AlignPosition.getPosition().equals(AlignPosition.AmpPos)) {
+            rotationVal = s_DefaultTeleop.s_Swerve.rotateToAmp();
+        } else if (AlignPosition.getPosition().equals(AlignPosition.AutoPickup)) {
+            rotationVal = s_DefaultTeleop.s_Swerve.rotateToNote();
+        } else if (AlignPosition.getPosition().equals(AlignPosition.SourcePos)) {
+            rotationVal = s_DefaultTeleop.s_Swerve.rotateToSource();
         } else {
-            rotationVal = s_AutoRotateUtil.calculateRotationSpeed();
+            rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
         }
 
         
