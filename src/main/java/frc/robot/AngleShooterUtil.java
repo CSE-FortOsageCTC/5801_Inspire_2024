@@ -11,14 +11,14 @@ public class AngleShooterUtil {
     
     private final ElevatorSubsystem s_ElevatorSubsystem;
 
-    private double m_encoderDiff;
+    private static double m_encoderDiff;
     private final PIDController upPidController;
     private final PIDController downPidController;
 
     public AngleShooterUtil(double encoderDiff) {
 
         s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
-        this.m_encoderDiff = encoderDiff;
+        AngleShooterUtil.m_encoderDiff = encoderDiff;
 
         this.upPidController = new PIDController(0, 0, 0);
         this.downPidController = new PIDController(0, 0, 0);
@@ -88,7 +88,7 @@ public class AngleShooterUtil {
     }
    }
 
-public void updateTargetDiff(double angle) {
+public static void updateTargetDiff(double angle) {
 
     m_encoderDiff = angle;
 

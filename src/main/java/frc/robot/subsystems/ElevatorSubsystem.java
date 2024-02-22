@@ -11,9 +11,10 @@ import frc.robot.Constants;
 public class ElevatorSubsystem extends SubsystemBase{
     private static ElevatorSubsystem elevatorSubsystem;
 
-    private CANSparkMax rightElevator;
-    private CANSparkMax leftElevator;
-    //private PIDController elevatorPID;
+    public SkyLimelight s_Limelight = SkyLimelight.getInstance();
+    public Swerve s_Swerve = Swerve.getInstance();
+
+    private CANSparkMax elevator;
 
     public static ElevatorSubsystem getInstance(){
         if (elevatorSubsystem == null){
@@ -23,28 +24,15 @@ public class ElevatorSubsystem extends SubsystemBase{
     }    
 
     public void elevatorSubsystem(){
-        rightElevator = new CANSparkMax(25, MotorType.kBrushless);
-        leftElevator.follow(rightElevator);
-
-        //elevatorPID = new PIDController(0, 0, 0);
+        elevator = new CANSparkMax(25, MotorType.kBrushless);
     }
 
     public double getElevatorValue(){
-        return rightElevator.getEncoder().getPosition();
+        return elevator.getEncoder().getPosition();
     }
 
     public void setElevatorSpeed(double speed){
-
-        double elevatorValue = getElevatorValue();
-        if (elevatorValue < Constants.Swerve.minElevatorValue && speed < 0){
-            speed = 0;
-        }
-
-        else if (elevatorValue > Constants.Swerve.maxElevatorValue && speed > 0){
-            speed = 0;
-        }
-        rightElevator.set(speed);
-
-        SmartDashboard.putNumber("Encoder Value", rightElevator.getEncoder().getPosition());
+        elevator.set(speed);
+        SmartDashboard.putNumber("Encoder Value", elevator.getEncoder().getPosition());
     }
 }
