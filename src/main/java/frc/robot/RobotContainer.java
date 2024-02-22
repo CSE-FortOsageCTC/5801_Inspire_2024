@@ -56,6 +56,7 @@ public class RobotContainer {
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
   private Swerve s_Swerve = Swerve.getInstance();
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
+  private ClimbingSubsystem s_ClimbingSubsystem = ClimbingSubsystem.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -76,27 +77,18 @@ public class RobotContainer {
   private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
+  private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
+
   // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
 
-
-
-  private IntakeSubsystem intakeSubsystem;
-  private ClimbingSubsystem climbingSubsystem;
-  private ShootCommand shootCommand;
-  private IntakeInCommand intakeInCommand;
-  private IntakeOutCommand intakeOutCommand;
-
-  // Operator Buttons
-  private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kB.value);
+  private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
   private final POVButton upDPad = new POVButton(operator, 0);
   private final POVButton downDPad = new POVButton(operator, 180);
 
  
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
-    intakeSubsystem = IntakeSubsystem.getInstance();
-    climbingSubsystem = ClimbingSubsystem.getInstance();
 
     //Register Named Commands
 
@@ -175,21 +167,21 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    elevatorUpButton.whileTrue(new ElevatorCommand(300)); //setpoint is subject to change.
-    elevatorDownButton.whileTrue(new ElevatorCommand(100)); //setpoint is subject to change
+    elevatorUpButton.whileTrue(new ElevatorCommand(0.2)); //setpoint is subject to change.
+    elevatorDownButton.whileTrue(new ElevatorCommand(-0.2)); //setpoint is subject to change
     flyWheel.whileTrue(new FlyWheelCommand());
     zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    autoAlignShooterSpeaker.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
-    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AmpPos)));
-    autoAlignNote.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
+    autoAlignSpeaker.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
+    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
+    autoAlignNote.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
-    autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
-    autoAlignAmp.onTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AmpPos)));
-    autoAlignNote.onTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
+    //shootButton.whileTrue(new ShootCommand(operator));
+    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
+    resetClimbers.whileTrue(new ClimbReset(-0.75, -0.75));
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
   

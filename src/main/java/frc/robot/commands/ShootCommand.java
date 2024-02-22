@@ -30,7 +30,7 @@ public class ShootCommand extends Command {
     
     @Override
     public void end(boolean end){
-        m_ShooterSubsystem.setKicker();
+        m_ShooterSubsystem.resetKicker();
     }
 
 }
