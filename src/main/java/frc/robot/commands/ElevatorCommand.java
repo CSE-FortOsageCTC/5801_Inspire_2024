@@ -5,16 +5,18 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AngleShooterUtil;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ElevatorCommand extends Command{
-    private final ShooterSubsystem shooterSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
     private double setPoint;
     private AngleShooterUtil angleShooterUtil;
+
     public ElevatorCommand(double setPoint){
         this.setPoint = setPoint;
-        shooterSubsystem = ShooterSubsystem.getInstance();
-        addRequirements(shooterSubsystem);
+        elevatorSubsystem = ElevatorSubsystem.getInstance();
+        addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
     }
 
@@ -25,15 +27,13 @@ public class ElevatorCommand extends Command{
 
     @Override
     public void execute(){
-    double elevatorValue = shooterSubsystem.getElevatorValue();
+    double elevatorValue = elevatorSubsystem.getElevatorValue();
     angleShooterUtil.updateTargetDiff(elevatorValue - setPoint);
-    shooterSubsystem.setElevatorSpeed(setPoint);
-
     }
 
     @Override
     public void end(boolean end){
-        shooterSubsystem.setElevatorSpeed(0);
+        elevatorSubsystem.setElevatorSpeed(0);
         angleShooterUtil.reset();
 
     }
