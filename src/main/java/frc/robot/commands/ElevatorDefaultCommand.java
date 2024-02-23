@@ -42,7 +42,7 @@ public class ElevatorDefaultCommand extends Command{
         }
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();    
-        AngleShooterUtil.updateTargetDiff(elevatorValue - target);
+        angleShooterUtil.updateTargetDiff(elevatorValue - target);
     }
 
     @Override

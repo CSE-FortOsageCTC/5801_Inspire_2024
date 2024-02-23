@@ -23,7 +23,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         return (elevatorSubsystem);
     }    
 
-    public void elevatorSubsystem(){
+    public ElevatorSubsystem(){
         elevator = new CANSparkMax(25, MotorType.kBrushless);
     }
 
