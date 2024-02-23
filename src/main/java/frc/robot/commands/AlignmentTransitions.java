@@ -13,8 +13,6 @@ public class AlignmentTransitions extends Command{
         Swerve.getInstance().resetAutoRotateUtil();
         AlignPosition.setPosition(AlignPosition.SpeakerPos);
         new AutoShootCommand().schedule();
-        
-        
     }
 
     public static void scheduleIntake(){
@@ -22,5 +20,20 @@ public class AlignmentTransitions extends Command{
         AlignPosition.setPosition(AlignPosition.AutoPickup);
         new AutoIntakeCommand().schedule();
         
+    }
+
+    public static void transitionToSpeaker() {
+        Swerve.getInstance().resetAutoRotateUtil();
+        AlignPosition.setPosition(AlignPosition.SpeakerPos);
+    }
+
+    public static void transitionToAmp() {
+        Swerve.getInstance().resetAutoRotateUtil();
+        AlignPosition.setPosition(AlignPosition.AmpPos);
+    }
+
+    public static void transitionToNote() {
+        Swerve.getInstance().resetAutoRotateUtil();
+        AlignPosition.setPosition(AlignPosition.AutoPickup);
     }
 }
