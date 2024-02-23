@@ -99,21 +99,10 @@ public class Navigate extends Command {
         double xValue = limelight.getX(); //gets the limelight X Coordinate
         double areaValue = limelight.getArea(); // gets the area percentage from the limelight
         double angularValue = limelight.getSkew();
+        
         // sets current position
-        Pose2d botPose = limelight.getBotPose(); 
-        double botX = botPose.getX();
-        double botY = botPose.getY();
-        if (botX == 0 && botY == 0){
-            botPose = s_Swerve.getEstimatedPosition();
-            botX = botPose.getX();
-            botY = botPose.getY();
+        Pose2d botPose = s_Swerve.getLimelightBotPose();
 
-        }else{
-
-            s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
-            SmartDashboard.putNumber("Current X", botX);
-            SmartDashboard.putNumber("Current Y", botY); 
-        }
         SmartDashboard.putNumber("Limelightta", areaValue);
 
         SmartDashboard.putNumber("Xvalue", xValue);
@@ -126,10 +115,10 @@ public class Navigate extends Command {
 
 
         // Calculates the x and y speed values for the translation movement
-        double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(botY - targetY), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
+        double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(botPose.getY() - targetY), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
         ySpeed = yTranslationPidController.atSetpoint() ? 0 : ySpeed;
         ySpeed = ySpeedLimiter.calculate(ySpeed);
-        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(botX - targetX), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
+        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(botPose.getX() - targetX), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
         xSpeed = xTranslationPidController.atSetpoint() ? 0 : xSpeed;
         xSpeed = xSpeedLimiter.calculate(xSpeed);
         double angularSpeed = autoUtil.calculateRotationSpeed();

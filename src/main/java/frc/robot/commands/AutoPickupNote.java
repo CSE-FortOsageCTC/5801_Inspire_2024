@@ -66,21 +66,11 @@ public class AutoPickupNote extends Command{
 
         addRequirements(swerve, intakeSubsystem);
     }
+
     private boolean NoteSeen(){
         return limelight.hasTag();
     }
 
-
-    private double RadiansToDegrees(double rads){
-        return rads * (180/Math.PI);
-    }
-    private double FixedDistanceCalc(){
-        double objectHeight = 0;
-        double cameraHeight = .5;
-        double yAngle = limelight.getY();
-        double skewAngle = limelight.getSkew();
-        return (objectHeight - cameraHeight) / RadiansToDegrees(Math.tan(yAngle + skewAngle));
-    }
 
     private double getDistanceMeters(){
         double focalLength =  2.9272781257541 / 1000;
@@ -91,6 +81,7 @@ public class AutoPickupNote extends Command{
     public double newY(){
         return limelight.getY() > 0 ? 1.0 : 0;
     }
+
     public double newRotation(){
         if (limelight.getX() > 0){
         return yaw.getDegrees() - 1.0;}
@@ -98,7 +89,8 @@ public class AutoPickupNote extends Command{
             return yaw.getDegrees() + 1.0;}
         else{
             return 0;
-        }}
+        }
+    }
 
 
     @Override

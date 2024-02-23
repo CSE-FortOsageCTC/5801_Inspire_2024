@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,6 +20,7 @@ public class SkyLimelight extends SubsystemBase {
     private NetworkTable table;
     private NetworkTableEntry tid, tv, tx, ty, ta, ts;
     public NetworkTableEntry ts0, ts1, ts2;
+    private double lastBotPoseTimestamp;
     private static SkyLimelight limelight;
 
     public static SkyLimelight getInstance() {
@@ -137,8 +139,13 @@ public class SkyLimelight extends SubsystemBase {
      */
     public Pose2d getBotPose() {
         botPoseEntry = table.getEntry("botpose");
-        double[] botpose = botPoseEntry.getDoubleArray(new double[6]);
+        double[] botpose = botPoseEntry.getDoubleArray(new double[7]);
         Pose2d visionPose = new Pose2d(botpose[0], botpose[1], new Rotation2d(botpose[5]));
+        this.lastBotPoseTimestamp = Timer.getFPGATimestamp() - botpose[6];
         return visionPose;
+    }
+
+    public double getLastBotPoseTimestamp(){
+        return this.lastBotPoseTimestamp;
     }
 }

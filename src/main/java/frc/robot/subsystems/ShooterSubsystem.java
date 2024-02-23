@@ -6,22 +6,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch.Type;
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
     private static ShooterSubsystem shooterSubsystem;
@@ -29,8 +20,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax topShooter;
     private CANSparkMax bottomShooter;
     private CANSparkMax shooterElevator;
-    private VictorSPX kicker;
-    private PIDController elevatorPID;
 
     private DoubleSolenoid shooterSolenoid;
 
@@ -52,7 +41,6 @@ public class ShooterSubsystem extends SubsystemBase {
         topShooter.burnFlash();
         bottomShooter.burnFlash();
         // leftElevator.follow(rightElevator);
-        elevatorPID = new PIDController(0, 0, 0);
         shooterSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
         shooterElevator.getForwardLimitSwitch(Type.kNormallyClosed);

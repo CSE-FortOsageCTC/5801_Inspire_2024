@@ -49,7 +49,7 @@ public class AutoRotateUtil {
     this.pidController.setI(kI);
     this.pidController.setD(kD);
 
-    double headingError = this.m_angle % 360; //TODO Change this in main
+    double headingError = this.m_angle % 360;
     if (headingError > 180) {
         headingError -= 360;
     }

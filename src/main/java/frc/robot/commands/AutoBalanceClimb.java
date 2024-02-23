@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbingSubsystem;
+import frc.robot.subsystems.Swerve;
 
 public class AutoBalanceClimb extends Command{
     ClimbingSubsystem s_climbingSubsystem;
@@ -15,13 +16,14 @@ public class AutoBalanceClimb extends Command{
 
     @Override
     public void execute(){ // add a counter later guys :)
-        if(s_climbingSubsystem.s_Swerve.getGyroRoll() < -5){
+        double gyroRoll = Swerve.getInstance().getGyroRoll();
+        if(gyroRoll < -5){
             // left climber is going go negative in speed, right will be positive
-            leftSpeed = (s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
-            rightSpeed = -(s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
-        } else if (s_climbingSubsystem.s_Swerve.getGyroRoll() > 5){
-            leftSpeed = -(s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
-            rightSpeed = (s_climbingSubsystem.s_Swerve.getGyroRoll()) / 100;
+            leftSpeed = (gyroRoll) / 100;
+            rightSpeed = -(gyroRoll) / 100;
+        } else if (gyroRoll > 5){
+            leftSpeed = -(gyroRoll) / 100;
+            rightSpeed = (gyroRoll) / 100;
         } else {
             leftSpeed = 0.75;
             rightSpeed = 0.75;
