@@ -16,8 +16,6 @@ public class ElevatorSubsystem extends SubsystemBase{
     public SkyLimelight s_Limelight = SkyLimelight.getInstance();
     public Swerve s_Swerve = Swerve.getInstance();
 
-    private CANSparkMax elevator;
-
     public static ElevatorSubsystem getInstance(){
         if (elevatorSubsystem == null){
             elevatorSubsystem = new ElevatorSubsystem();
@@ -26,7 +24,6 @@ public class ElevatorSubsystem extends SubsystemBase{
     }    
 
     public ElevatorSubsystem(){
-        elevator = new CANSparkMax(25, MotorType.kBrushless);
         shooterElevator = new CANSparkMax(25, MotorType.kBrushless);
         
         shooterElevator.getForwardLimitSwitch(Type.kNormallyClosed);
@@ -35,11 +32,11 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public double getElevatorValue(){
-        return elevator.getEncoder().getPosition();
+        return shooterElevator.getEncoder().getPosition();
     }
 
     public void setElevatorSpeed(double speed){
-        elevator.set(speed);
-        SmartDashboard.putNumber("Encoder Value", elevator.getEncoder().getPosition());
+        shooterElevator.set(speed);
+        SmartDashboard.putNumber("Encoder Value", shooterElevator.getEncoder().getPosition());
     }
 }
