@@ -44,10 +44,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private ShooterSubsystem(){
         topShooter = new CANSparkMax(20, MotorType.kBrushless);
         bottomShooter = new CANSparkMax(21, MotorType.kBrushless);
-<<<<<<< HEAD
-=======
+        
         shooterElevator = new CANSparkMax(25, MotorType.kBrushless);
->>>>>>> main
 
         bottomShooter.follow(topShooter, true);
         topShooter.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -70,8 +68,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-<<<<<<< HEAD
-=======
     public double getElevatorValue(){
         return shooterElevator.getEncoder().getPosition();
     }
@@ -91,7 +87,6 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Encoder Value", shooterElevator.getEncoder().getPosition());
 
     }
->>>>>>> main
     public void setFlyWheels(double percent){
         topShooter.set(percent);
     }

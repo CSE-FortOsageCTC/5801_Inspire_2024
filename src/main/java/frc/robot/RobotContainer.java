@@ -174,15 +174,9 @@ public class RobotContainer {
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-<<<<<<< HEAD
-    //autoAlignShooterSpeaker.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.SpeakerPos)));
-    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AmpPos)));
-    autoAlignNote.whileTrue(new InstantCommand(() -> AlignPosition.setPosition(AlignPosition.AutoPickup)));
-=======
     autoAlignSpeaker.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
     autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
     autoAlignNote.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
->>>>>>> main
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     //shootButton.whileTrue(new ShootCommand(operator));
