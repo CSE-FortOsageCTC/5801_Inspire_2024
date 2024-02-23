@@ -27,7 +27,11 @@ public class ElevatorCommand extends Command{
     public void execute(){
     double elevatorValue = elevatorSubsystem.getElevatorValue();
     angleShooterUtil.updateTargetDiff(elevatorValue - setPoint);
+<<<<<<< HEAD
     elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+=======
+    shooterSubsystem.setElevatorSpeed(setPoint);
+>>>>>>> main
 
     }
 

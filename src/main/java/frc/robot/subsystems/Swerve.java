@@ -195,6 +195,9 @@ public class Swerve extends SubsystemBase{
     public double getGyroRoll() {
         return gyro.getRoll().getValueAsDouble();
     }
+    public double correctedYaw() {
+        return (((gyro.getYaw().getValue() - gyroOffset) % 360) + 360) % 360;
+    }
 
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
@@ -253,19 +256,21 @@ public class Swerve extends SubsystemBase{
         double yDiff = botY - speakerCoordinate.getSecond();
         
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
-        double yaw = (((gyro.getYaw().getValue() - gyroOffset) % 360) + 360) % 360;
         
-        s_AutoRotateUtil.updateTargetAngle(angle - yaw - 90); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯
+        double output = angle - correctedYaw() - 90;
+        SmartDashboard.putNumber("Speaker Diff Output", output);
+
+        s_AutoRotateUtil.updateTargetAngle(output); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯
         
         return s_AutoRotateUtil.calculateRotationSpeed();
     }
 
     public double rotateToAmp() {
-        double headingError = getGyroYaw().getDegrees() - AlignPosition.getAlignPose().getRotation().getDegrees();
+        double headingError = correctedYaw() - AlignPosition.getAlignPose().getRotation().getDegrees();
 
         s_AutoRotateUtil.updateTargetAngle(headingError);
         
-        return s_AutoRotateUtil.calculateRotationSpeed();
+        return -s_AutoRotateUtil.calculateRotationSpeed();
     }
 
     public double rotateToSource() {
