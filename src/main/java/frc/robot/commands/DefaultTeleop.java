@@ -77,21 +77,6 @@ public class DefaultTeleop extends Command{
         rotationPidController.setP(kD);
 
         
-
-        Pose2d botPose = s_DefaultTeleop.s_Limelight.getBotPose(); 
-        double botX = botPose.getX();
-        double botY = botPose.getY();
-        if (botX == 0 && botY == 0){
-            botPose = s_DefaultTeleop.s_Swerve.getEstimatedPosition();
-            botX = botPose.getX();
-            botY = botPose.getY();
-            SmartDashboard.putNumber("Bot Pose X", botX);
-            SmartDashboard.putNumber("Bot Pose Y", botY);
-        }
-        else{
-            s_DefaultTeleop.s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
-        }
-        
         double yAxis = -driver.getRawAxis(translationSup);
         double xAxis = -driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);

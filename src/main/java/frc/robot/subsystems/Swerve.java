@@ -167,6 +167,16 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumber("Estimated y Pose", swerveOdometry.getPoseMeters().getY());
         return swerveOdometry.getPoseMeters();
     }
+    public Pose2d getLimelightBotPose(){
+        Pose2d botPose = s_Limelight.getBotPose(); 
+        Pose2d zero = new Pose2d(0, 0, botPose.getRotation());
+        if (botPose == zero){
+        }
+        else{
+            updateWithVision(botPose, s_Limelight.getLastBotPoseTimestamp());
+        }
+        return botPose;
+    }
 
     public void setPose(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
@@ -226,12 +236,14 @@ public class Swerve extends SubsystemBase{
         {
             robotRelativeSpeeds.omegaRadiansPerSecond =  0;
         }
+
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
         SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.Swerve.maxSpeed);
 
         for(int i = 0; i < 4; i++){
-            mSwerveMods[i].setDesiredState(setpointStates[i], false);}
+            mSwerveMods[i].setDesiredState(setpointStates[i], false);
+        }
     }
 
     public double rotateToSpeaker(){
@@ -240,20 +252,11 @@ public class Swerve extends SubsystemBase{
         } else {
             speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
         }
-        Pose2d botPose = s_Limelight.getBotPose(); 
-        double botX = botPose.getX();
-        double botY = botPose.getY();
-        if (botX == 0 && botY == 0){
-            botPose = getEstimatedPosition();
-            botX = botPose.getX();
-            botY = botPose.getY();
-        }
-        else{
-            updateWithVision(botPose, Timer.getFPGATimestamp());
-        }
 
-        double xDiff = botX - speakerCoordinate.getFirst(); // gets distance of x between robot and target
-        double yDiff = botY - speakerCoordinate.getSecond();
+        Pose2d botPose = getLimelightBotPose();
+
+        double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
+        double yDiff = botPose.getY() - speakerCoordinate.getSecond();
         
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
         

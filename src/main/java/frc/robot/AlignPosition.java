@@ -45,13 +45,13 @@ public enum AlignPosition {
                             alignPose = null;
                             break;
                         case TrapPos1:
-                            alignPose = isRed? new Pose2d(3.85, -0.85, new Rotation2d().fromDegrees(240)): new Pose2d(-3.9, 0.78, new Rotation2d().fromDegrees(60));
+                            alignPose = isRed? new Pose2d(3.85, -0.85, Rotation2d.fromDegrees(240)): new Pose2d(-3.9, 0.78,  Rotation2d.fromDegrees(60));
                             break;
                         case TrapPos2:
-                            alignPose = isRed? new Pose2d(3.85, 0.78, new Rotation2d().fromDegrees(120)): new Pose2d(-3.9, -0.85, new Rotation2d().fromDegrees(300));
+                            alignPose = isRed? new Pose2d(3.85, 0.78, Rotation2d.fromDegrees(120)): new Pose2d(-3.9, -0.85, Rotation2d.fromDegrees(300));
                             break;
                         case TrapPos3:
-                            alignPose = isRed? new Pose2d(2.45, 0, new Rotation2d().fromDegrees(0)): new Pose2d(-2.45, 0, new Rotation2d().fromDegrees(180));
+                            alignPose = isRed? new Pose2d(2.45, 0, Rotation2d.fromDegrees(0)): new Pose2d(-2.45, 0, Rotation2d.fromDegrees(180));
                             break;
                     }
                 }
@@ -87,6 +87,15 @@ public enum AlignPosition {
                             break;
                         case Manual:
                             alignPose = null;
+                            break;
+                        case TrapPos1:
+                            alignPose = isRed? new Pose2d(3.85, -0.85, Rotation2d.fromDegrees(240)): new Pose2d(-3.9, 0.78,  Rotation2d.fromDegrees(60));
+                            break;
+                        case TrapPos2:
+                            alignPose = isRed? new Pose2d(3.85, 0.78, Rotation2d.fromDegrees(120)): new Pose2d(-3.9, -0.85, Rotation2d.fromDegrees(300));
+                            break;
+                        case TrapPos3:
+                            alignPose = isRed? new Pose2d(2.45, 0, Rotation2d.fromDegrees(0)): new Pose2d(-2.45, 0, Rotation2d.fromDegrees(180));
                             break;
                     }
             }
