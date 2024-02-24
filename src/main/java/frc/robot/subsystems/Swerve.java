@@ -169,11 +169,13 @@ public class Swerve extends SubsystemBase{
     }
     public Pose2d getLimelightBotPose(){
         Pose2d botPose = s_Limelight.getBotPose(); 
-        Pose2d zero = new Pose2d(0, 0, botPose.getRotation());
-        if (botPose == zero){
+        double botX = botPose.getX();
+        double botY = botPose.getY();
+        if (botX == 0 && botY == 0){
+            botPose = getEstimatedPosition();
         }
         else{
-            updateWithVision(botPose, s_Limelight.getLastBotPoseTimestamp());
+            updateWithVision(botPose, Timer.getFPGATimestamp());
         }
         return botPose;
     }

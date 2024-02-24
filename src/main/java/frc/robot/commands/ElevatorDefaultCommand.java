@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -39,9 +40,9 @@ public class ElevatorDefaultCommand extends Command{
         SmartDashboard.putNumber("ySpeed", chassisSpeeds.vyMetersPerSecond);
 
         if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-            speakerCoordinate = new Pair<Double, Double>(8.0, 1.5);
+            speakerCoordinate = new Pair<Double, Double>(8.3, 1.45);
         } else {
-            speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
+            speakerCoordinate = new Pair<Double, Double>(-8.3, 1.45);
         }
 
         Pose2d botPose = elevatorSubsystem.s_Limelight.getBotPose(); 
@@ -50,14 +51,17 @@ public class ElevatorDefaultCommand extends Command{
         double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
         double yDiff = botPose.getY() - speakerCoordinate.getSecond();
 
-        double distance = Math.sqrt(yDiff * yDiff + xDiff * xDiff);
+        double distance = Units.metersToInches(Math.sqrt((yDiff * yDiff) + (xDiff * xDiff)));
 
-        double target = -.00384 * distance * distance + 1.17 * distance - 94.8; //NEEDS TO BE REPLACED LATER WITH THE TARGET ANGLE
+        double target = (-.00384 * (distance * distance)) + (1.17 * distance) - 94.8; //NEEDS TO BE REPLACED LATER WITH THE TARGET ANGLE
     
         double elevatorValue = elevatorSubsystem.getElevatorValue();    
         angleShooterUtil.updateTargetDiff(elevatorValue - target);
+        elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+        //SmartDashboard.putNumber("ShooterEncoder", elevatorValue);
+        SmartDashboard.putNumber("distance (inches)", distance);
+        SmartDashboard.putNumber("target", target);
 
-        SmartDashboard.putNumber("ShooterEncoder", elevatorValue);
     }
 
     @Override
