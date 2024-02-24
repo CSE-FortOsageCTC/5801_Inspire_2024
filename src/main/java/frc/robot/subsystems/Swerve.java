@@ -218,6 +218,12 @@ public class Swerve extends SubsystemBase{
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
     
+    public ChassisSpeeds getEstimatedFieldRelativeSpeeds(){
+        ChassisSpeeds speed = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
+        speed = ChassisSpeeds.fromRobotRelativeSpeeds(speed, getHeading());
+        return speed;
+    }
+    
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
 
         SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);

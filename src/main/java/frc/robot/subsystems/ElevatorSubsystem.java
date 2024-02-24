@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import com.revrobotics.SparkLimitSwitch.Type;
@@ -26,6 +27,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     public ElevatorSubsystem(){
         shooterElevator = new CANSparkMax(25, MotorType.kBrushless);
         
+        shooterElevator.setIdleMode(IdleMode.kBrake);
+        shooterElevator.enableVoltageCompensation(10);
         shooterElevator.getForwardLimitSwitch(Type.kNormallyClosed);
         shooterElevator.getReverseLimitSwitch(Type.kNormallyClosed);
         shooterElevator.burnFlash();
@@ -37,6 +40,15 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public void setElevatorSpeed(double speed){
         shooterElevator.set(speed);
+    }
+
+    @Override
+    public void periodic() {
+
+        if (shooterElevator.getForwardLimitSwitch(Type.kNormallyClosed).isPressed()) {
+            shooterElevator.getEncoder().setPosition(0);
+        } 
         SmartDashboard.putNumber("Encoder Value", shooterElevator.getEncoder().getPosition());
+
     }
 }

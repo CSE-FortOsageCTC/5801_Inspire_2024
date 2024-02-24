@@ -1,19 +1,27 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AngleShooterUtil;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
 
     private ElevatorSubsystem elevatorSubsystem;
     private AngleShooterUtil angleShooterUtil;
+    private Swerve s_Swerve;
+    private Pair<Double, Double> speakerCoordinate;
 
     public ElevatorDefaultCommand(){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
+        s_Swerve = Swerve.getInstance();
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
     }
@@ -25,24 +33,31 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){
-        double target = 0; //NEEDS TO BE REPLACED LATER WITH THE TARGET ANGLE
-    
-        Pose2d botPose = elevatorSubsystem.s_Limelight.getBotPose(); 
-        double botX = botPose.getX();
-        double botY = botPose.getY();
-        if (botX == 0 && botY == 0){
-            botPose = elevatorSubsystem.s_Swerve.getEstimatedPosition();
-            botX = botPose.getX();
-            botY = botPose.getY();
-            // SmartDashboard.putNumber("Bot Pose X", botX);
-            // SmartDashboard.putNumber("Bot Pose Y", botY);
-        }
-        else{
-            elevatorSubsystem.s_Swerve.updateWithVision(botPose, Timer.getFPGATimestamp());
+        ChassisSpeeds chassisSpeeds = s_Swerve.getEstimatedFieldRelativeSpeeds();
+        
+        SmartDashboard.putNumber("xSpeed", chassisSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("ySpeed", chassisSpeeds.vyMetersPerSecond);
+
+        if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+            speakerCoordinate = new Pair<Double, Double>(8.0, 1.5);
+        } else {
+            speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
         }
 
+        Pose2d botPose = elevatorSubsystem.s_Limelight.getBotPose(); 
+        botPose = s_Swerve.getLimelightBotPose();
+
+        double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
+        double yDiff = botPose.getY() - speakerCoordinate.getSecond();
+
+        double distance = Math.sqrt(yDiff * yDiff + xDiff * xDiff);
+
+        double target = -.00384 * distance * distance + 1.17 * distance - 94.8; //NEEDS TO BE REPLACED LATER WITH THE TARGET ANGLE
+    
         double elevatorValue = elevatorSubsystem.getElevatorValue();    
         angleShooterUtil.updateTargetDiff(elevatorValue - target);
+
+        SmartDashboard.putNumber("ShooterEncoder", elevatorValue);
     }
 
     @Override
