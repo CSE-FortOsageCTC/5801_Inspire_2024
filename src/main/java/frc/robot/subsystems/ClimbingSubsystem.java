@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbingSubsystem extends SubsystemBase {
@@ -30,6 +31,13 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     leftClimber = new CANSparkMax(22, MotorType.kBrushless);
     rightClimber = new CANSparkMax(23, MotorType.kBrushless);
+
+    leftClimber.setSmartCurrentLimit(10);
+    rightClimber.setSmartCurrentLimit(10);
+
+    rightClimber.burnFlash();
+    leftClimber.burnFlash();
+
   }
 
   public void climbControl(double leftSpeed, double rightSpeed){
@@ -37,5 +45,10 @@ public class ClimbingSubsystem extends SubsystemBase {
     rightClimber.set(rightSpeed);
   }
 
+  @Override
+  public void periodic(){
+    SmartDashboard.putNumber("right Current", rightClimber.getOutputCurrent());
+    SmartDashboard.putNumber("left Current", leftClimber.getOutputCurrent());
+  }
   // make a variable which takes the roll, set point proportional to the yaw
 }

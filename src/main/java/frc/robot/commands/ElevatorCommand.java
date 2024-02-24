@@ -10,11 +10,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ElevatorCommand extends Command{
     private final ElevatorSubsystem elevatorSubsystem;
-    private double setPoint;
+    private double speed;
     private AngleShooterUtil angleShooterUtil;
 
-    public ElevatorCommand(double setPoint){
-        this.setPoint = setPoint;
+    public ElevatorCommand(double speed){
+        this.speed = speed;
         elevatorSubsystem = ElevatorSubsystem.getInstance();
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
@@ -27,8 +27,7 @@ public class ElevatorCommand extends Command{
 
     @Override
     public void execute(){
-    double elevatorValue = elevatorSubsystem.getElevatorValue();
-    angleShooterUtil.updateTargetDiff(elevatorValue - setPoint);
+        elevatorSubsystem.setElevatorSpeed(speed);
     }
 
     @Override
