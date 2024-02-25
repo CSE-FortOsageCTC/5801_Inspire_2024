@@ -182,10 +182,10 @@ public class RobotContainer {
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand());
-    s_CoordsOutputSubsystem.setDefaultCommand(new JsonUpdateCommand());
     //shootButton.whileTrue(new ShootCommand(operator));
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     resetClimbers.whileTrue(new ClimbReset(-0.75, -0.75));
+    new JsonUpdateCommand().schedule();
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
   
