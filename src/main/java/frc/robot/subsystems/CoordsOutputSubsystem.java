@@ -32,7 +32,7 @@ public class CoordsOutputSubsystem extends SubsystemBase{
 
     }
 
-    public void appendJSON(int id, Pose2d value) {
+    public void appendJSON(int id, String value) {
 
         jsonOutput.put(id, value);
 

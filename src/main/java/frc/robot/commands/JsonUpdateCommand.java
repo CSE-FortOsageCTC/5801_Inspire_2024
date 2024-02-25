@@ -36,7 +36,10 @@ public class JsonUpdateCommand extends Command{
         if (timer.hasElapsed(0.5 + timeOffset)) {
 
             Pose2d botPose = s_CoordsOutputSubsystem.s_Swerve.getPose();
-            s_CoordsOutputSubsystem.appendJSON(id, botPose);
+
+            String coordOutput = "(" + botPose.getX() + ", " + botPose.getY() + ")";
+
+            s_CoordsOutputSubsystem.appendJSON(id, coordOutput);
             timeOffset = Timer.getFPGATimestamp();
             id += 1;
 
