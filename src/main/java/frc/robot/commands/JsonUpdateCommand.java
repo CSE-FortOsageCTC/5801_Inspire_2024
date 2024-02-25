@@ -41,7 +41,7 @@ public class JsonUpdateCommand extends Command{
 
             s_CoordsOutputSubsystem.appendJSON(id, coordOutput);
             timeOffset = Timer.getFPGATimestamp();
-            id += 1;
+            id += 0.5;
 
             System.out.println("JSON OUTPUT: " + id + " : " + botPose);
 
