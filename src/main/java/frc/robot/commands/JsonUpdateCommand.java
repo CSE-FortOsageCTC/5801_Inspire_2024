@@ -16,6 +16,8 @@ public class JsonUpdateCommand extends Command{
 
     private int id = 0;
 
+    private boolean isFinished = false;
+
 
     public JsonUpdateCommand() {
 
@@ -37,23 +39,46 @@ public class JsonUpdateCommand extends Command{
 
             Pose2d botPose = s_CoordsOutputSubsystem.s_Swerve.getPose();
 
+            Pose2d botPoseEstimator = s_CoordsOutputSubsystem.s_Swerve.getEstimatedPosition();
+
             String coordOutput = "(" + botPose.getX() + ", " + botPose.getY() + ")";
 
             s_CoordsOutputSubsystem.appendJSON(id, coordOutput);
+
+            coordOutput = "(" + botPoseEstimator.getX() + ", " + botPoseEstimator.getY() + ")";
+
+            s_CoordsOutputSubsystem.appendJSON(id, coordOutput);
+
             timeOffset = Timer.getFPGATimestamp();
-            id += 0.5;
+            id += 1;
 
             System.out.println("JSON OUTPUT: " + id + " : " + botPose);
 
-        } else if (timer.hasElapsed(150)) {
+        }
+    }
 
-            s_CoordsOutputSubsystem.printJSON();
+    @Override
+    public boolean isFinished() {
+        if (timer.hasElapsed(150)) {
+
+            isFinished = true;
+            return isFinished;
+
+        } else {
+
+            isFinished = false;
+            return isFinished;
 
         }
+    }
 
+    @Override
+    public void end(boolean isFinished) {
 
+        s_CoordsOutputSubsystem.printJSON();
 
     }
+
 
 
 }

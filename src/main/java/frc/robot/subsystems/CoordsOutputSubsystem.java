@@ -41,7 +41,7 @@ public class CoordsOutputSubsystem extends SubsystemBase{
     public void printJSON() {
 
         try {
-            FileWriter file = new FileWriter("D:\\JSONOutput\\output.json");
+            FileWriter file = new FileWriter("linux file directory change later");
             file.write(jsonOutput.toJSONString());
             file.close();
         } catch (IOException exception) {
