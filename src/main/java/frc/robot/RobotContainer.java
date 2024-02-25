@@ -58,6 +58,7 @@ public class RobotContainer {
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   private ClimbingSubsystem s_ClimbingSubsystem = ClimbingSubsystem.getInstance();
   private ElevatorSubsystem s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
+  private CoordsOutputSubsystem s_CoordsOutputSubsystem = CoordsOutputSubsystem.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -184,6 +185,7 @@ public class RobotContainer {
     //shootButton.whileTrue(new ShootCommand(operator));
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     resetClimbers.whileTrue(new ClimbReset(-0.75, -0.75));
+    new JsonUpdateCommand().schedule();
     // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
     // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
   
