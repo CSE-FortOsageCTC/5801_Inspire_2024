@@ -113,7 +113,11 @@ public class Swerve extends SubsystemBase{
     }
 
     public void updateWithVision(Pose2d pose2d, double timestamp){
-        swerveEstimator.addVisionMeasurement(pose2d, timestamp);
+        SmartDashboard.putNumber("Rotation", pose2d.getRotation().getDegrees());
+        SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+        //pose2d.getRotation()
+        Pose2d test = new Pose2d(pose2d.getTranslation(), getEstimatedPosition().getRotation());
+        swerveEstimator.addVisionMeasurement(test, timestamp);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -175,7 +179,7 @@ public class Swerve extends SubsystemBase{
             botPose = getEstimatedPosition();
         }
         else{
-            updateWithVision(botPose, Timer.getFPGATimestamp());
+            updateWithVision(botPose, s_Limelight.getLastBotPoseTimestamp());
         }
         return botPose;
     }
@@ -268,7 +272,7 @@ public class Swerve extends SubsystemBase{
         
         double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
         
-        double output = angle - correctedYaw() - 90;
+        double output = (((angle - correctedYaw() - 90)  % 360) + 360) % 360;
         SmartDashboard.putNumber("Speaker Diff Output", output);
 
         s_AutoRotateUtil.updateTargetAngle(output); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯

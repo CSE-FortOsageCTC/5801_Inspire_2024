@@ -116,7 +116,7 @@ public class AutoPickupNote extends Command{
 
 
         if (debouncer.calculate(NoteSeen())){
-            System.out.println("Note in view");
+            //System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
             double ySpeed = yTranslationPidController.calculate(xValue);
             double xSpeed = xTranslationPidController.calculate(areaValue);
@@ -131,7 +131,7 @@ public class AutoPickupNote extends Command{
             swerve.drive(translation, rotation, false, true);
         }
         else{
-            System.out.println("Note not found");
+            //System.out.println("Note not found");
 
         }
     }

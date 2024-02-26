@@ -118,12 +118,12 @@ public class FloorLimelight extends SubsystemBase {
      */
     public void outputValues(){
         table = NetworkTableInstance.getDefault().getTable("limelight-floor");
-        System.out.println(getAprilValue());
-        System.out.println(hasTag());
-        System.out.println(getX());
-        System.out.println(getY());
-        System.out.println(getSkew());
-        System.out.println(getArea());
+        // System.out.println(getAprilValue());
+        // System.out.println(hasTag());
+        // System.out.println(getX());
+        // System.out.println(getY());
+        // System.out.println(getSkew());
+        // System.out.println(getArea());
         SmartDashboard.putNumber("April Tag  Value", getAprilValue());
         SmartDashboard.putBoolean("has Tag  ", hasTag());
         SmartDashboard.putNumber("X value   ", getX());

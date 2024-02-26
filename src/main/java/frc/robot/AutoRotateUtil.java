@@ -72,7 +72,7 @@ public class AutoRotateUtil {
     * Updates degrees robot needs to rotate
     */ 
    public void updateTargetAngle(double angle) {
-    System.out.println(angle);
+    //System.out.println(angle);
     m_angle = angle;
 
    }
@@ -84,7 +84,7 @@ public class AutoRotateUtil {
    }
 
    public void end() {
-    System.out.println("it ended");
+    //System.out.println("it ended");
     pidController.reset();
    }
 

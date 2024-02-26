@@ -84,7 +84,7 @@ public class DefaultTeleop extends Command{
         
 
         // if(alignPose != null && AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
-        //     // System.out.println("it got to the speaker pos if >:)");
+        //     System.out.println("it got to the speaker pos if >:)");
         //     double xDiff = botX - alignPose.getX(); // gets distance of x between robot and target
         //     double yDiff = botY - alignPose.getY(); // gets distance of y between robot and target
         //     SmartDashboard.putNumber("AlingPos X Vaule", alignPose.getX());

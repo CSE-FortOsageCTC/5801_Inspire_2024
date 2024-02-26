@@ -118,12 +118,12 @@ public class SkyLimelight extends SubsystemBase {
      */
     public void outputValues(){
         table = NetworkTableInstance.getDefault().getTable("limelight-sky");
-        System.out.println(getAprilValue());
-        System.out.println(hasTag());
-        System.out.println(getX());
-        System.out.println(getY());
-        System.out.println(getSkew());
-        System.out.println(getArea());
+        // System.out.println(getAprilValue());
+        // System.out.println(hasTag());
+        // System.out.println(getX());
+        // System.out.println(getY());
+        // System.out.println(getSkew());
+        // System.out.println(getArea());
         SmartDashboard.putNumber("April Tag  Value", getAprilValue());
         SmartDashboard.putBoolean("has Tag  ", hasTag());
         SmartDashboard.putNumber("X value   ", getX());
@@ -139,9 +139,17 @@ public class SkyLimelight extends SubsystemBase {
      */
     public Pose2d getBotPose() {
         botPoseEntry = table.getEntry("botpose");
-        double[] botpose = botPoseEntry.getDoubleArray(new double[6]);
-        Pose2d visionPose = new Pose2d(botpose[0], botpose[1], new Rotation2d(botpose[5]));
-        this.lastBotPoseTimestamp = Timer.getFPGATimestamp(); //- botpose[6];
+        double[] botpose = botPoseEntry.getDoubleArray(new double[7]);
+        // System.out.println("=================================");
+        // System.out.println(botpose[0]);
+        // System.out.println(botpose[1]);
+        // System.out.println(botpose[2]);
+        // System.out.println(botpose[3]);
+        // System.out.println(botpose[4]);
+        // System.out.println(botpose[5]);
+        // System.out.println(botpose[6]);
+        Pose2d visionPose = new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5]));
+        this.lastBotPoseTimestamp = Timer.getFPGATimestamp() - botpose[6];
         return visionPose;
     }
 

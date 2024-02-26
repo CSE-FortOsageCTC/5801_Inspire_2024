@@ -53,8 +53,16 @@ public class ElevatorDefaultCommand extends Command{
 
         double distance = Units.metersToInches(Math.sqrt((yDiff * yDiff) + (xDiff * xDiff)));
 
+        
+
         double target = (-.00384 * (distance * distance)) + (1.17 * distance) - 94.8; //NEEDS TO BE REPLACED LATER WITH THE TARGET ANGLE
-    
+
+        if (botPose.getX() < 0 && speakerCoordinate.getFirst() > 0 && target < 0){
+            target *= -1;
+        }
+        if (botPose.getX() > 0 && speakerCoordinate.getFirst() < 0 && target < 0){
+            target *= -1;
+        }
         double elevatorValue = elevatorSubsystem.getElevatorValue();    
         angleShooterUtil.updateTargetDiff(elevatorValue - target);
         elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());

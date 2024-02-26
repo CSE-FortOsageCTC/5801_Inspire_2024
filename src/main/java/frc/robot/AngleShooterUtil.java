@@ -23,15 +23,15 @@ public class AngleShooterUtil {
         this.upPidController = new PIDController(0, 0, 0);
         this.downPidController = new PIDController(0, 0, 0);
 
-        upPidController.setTolerance(5);
+        upPidController.setTolerance(.2);
         upPidController.setSetpoint(300);
-        SmartDashboard.putNumber("Up P", 0);
+        SmartDashboard.putNumber("Up P", .03);
         SmartDashboard.putNumber("Up I", 0);
         SmartDashboard.putNumber("Up D", 0);
 
-        downPidController.setTolerance(5);
+        downPidController.setTolerance(.2);
         downPidController.setSetpoint(20);
-        SmartDashboard.putNumber("Down P", 0);
+        SmartDashboard.putNumber("Down P", .03);
         SmartDashboard.putNumber("Down I", 0);
         SmartDashboard.putNumber("Down D", 0);
    }
@@ -71,21 +71,26 @@ public class AngleShooterUtil {
     double feedForward = 0.5;
     double speed = 0;
 
-    if (m_encoderDiff < 0) {
-        speed = upPidController.calculate(m_encoderDiff, 0);
+    // if (m_encoderDiff < 0) {
+    //     speed = upPidController.calculate(m_encoderDiff, 0);
 
-    }
-    else {
-        speed = downPidController.calculate(m_encoderDiff, 0);
-    }
+    // }
+    // else {
+    //     speed = downPidController.calculate(m_encoderDiff, 0);
+    // }
+    speed = downPidController.calculate(m_encoderDiff, 0);
     speed = MathUtil.clamp(speed, -.5, .5);
     SmartDashboard.putNumber(("Elevator Speed"), speed);
-
-    if (Math.abs(headingError) > 10) {
-        return (headingError < 0) ? -feedForward : feedForward;
-    } else {
-        return speed;
+    if (upPidController.atSetpoint() && downPidController.atSetpoint()){
+        speed = 0;
     }
+
+    // if (Math.abs(headingError) > 10) {
+    //     return (headingError < 0) ? -feedForward : feedForward;
+    // } else {
+    //     return speed;
+    // }
+    return speed;
    }
 
 public void updateTargetDiff(double angle) {
@@ -99,7 +104,7 @@ public void updateTargetDiff(double angle) {
    }
 
    public void end() {
-    System.out.println("it ended");
+    //System.out.println("it ended");
     upPidController.reset();
     downPidController.reset();
    }

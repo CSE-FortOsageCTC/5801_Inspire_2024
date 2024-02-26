@@ -28,6 +28,7 @@ public class ElevatorCommand extends Command{
     @Override
     public void execute(){
         elevatorSubsystem.setElevatorSpeed(speed);
+        SmartDashboard.putNumber("Elevator encoder", elevatorSubsystem.getElevatorValue());
     }
 
     @Override
