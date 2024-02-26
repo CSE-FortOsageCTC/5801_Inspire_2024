@@ -34,7 +34,7 @@ public class SkyLimelight extends SubsystemBase {
      * Constructs Limelight Class
      */
     private SkyLimelight() {
-        table = NetworkTableInstance.getDefault().getTable("skyLimelight");
+        table = NetworkTableInstance.getDefault().getTable("limelight-sky");
         table.getEntry("pipeline").setNumber(1);
         botPoseEntry = table.getEntry("botpose");
         tx = table.getEntry("tx");
@@ -117,7 +117,7 @@ public class SkyLimelight extends SubsystemBase {
      * retrieves limelight values and prints them onto the log and smartdashboard
      */
     public void outputValues(){
-        table = NetworkTableInstance.getDefault().getTable("limelight");
+        table = NetworkTableInstance.getDefault().getTable("limelight-sky");
         System.out.println(getAprilValue());
         System.out.println(hasTag());
         System.out.println(getX());
@@ -140,8 +140,8 @@ public class SkyLimelight extends SubsystemBase {
     public Pose2d getBotPose() {
         botPoseEntry = table.getEntry("botpose");
         double[] botpose = botPoseEntry.getDoubleArray(new double[7]);
-        Pose2d visionPose = new Pose2d(botpose[0], botpose[1], new Rotation2d(botpose[5]));
-        this.lastBotPoseTimestamp = Timer.getFPGATimestamp() - botpose[6];
+        Pose2d visionPose = new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5]));
+        this.lastBotPoseTimestamp = Timer.getFPGATimestamp(); // - (botpose[6] / 1000);
         return visionPose;
     }
 

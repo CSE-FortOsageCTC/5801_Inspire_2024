@@ -169,8 +169,11 @@ public class Swerve extends SubsystemBase{
     }
     public Pose2d getLimelightBotPose(){
         Pose2d botPose = s_Limelight.getBotPose(); 
-        Pose2d zero = new Pose2d(0, 0, botPose.getRotation());
-        if (botPose == zero){
+        double botX = botPose.getX();
+        double botY = botPose.getY();
+
+        if (botX == 0 && botY == 0){
+            botPose = getEstimatedPosition();
         }
         else{
             updateWithVision(botPose, s_Limelight.getLastBotPoseTimestamp());
@@ -253,20 +256,15 @@ public class Swerve extends SubsystemBase{
     }
 
     public double rotateToSpeaker(){
-        if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-            speakerCoordinate = new Pair<Double, Double>(8.0, 1.5);
-        } else {
-            speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
-        }
 
         Pose2d botPose = getLimelightBotPose();
 
-        double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
-        double yDiff = botPose.getY() - speakerCoordinate.getSecond();
+        double xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
+        double yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();
         
-        double angle = Units.radiansToDegrees(Math.atan2(xDiff, yDiff));
+        double angle = Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
         
-        double output = angle - correctedYaw() - 90;
+        double output = (((90 - angle - correctedYaw() - 90) % 360) + 360) % 360;
         SmartDashboard.putNumber("Speaker Diff Output", output);
 
         s_AutoRotateUtil.updateTargetAngle(output); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯
