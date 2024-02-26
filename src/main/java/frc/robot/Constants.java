@@ -28,6 +28,8 @@ public final class Constants {
 
     public static final double feedForwardAngle = 30;
 
+    public static final double speakerHeightMeters = 2.07;
+
     public static final class Swerve {
         public static final int pigeonID = 10;
 
@@ -35,8 +37,8 @@ public final class Constants {
         COTSTalonFXSwerveConstants.SDS.MK4.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4.driveRatios.L2);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(21.73); //TODO: This must be tuned to specific robot
-        public static final double wheelBase = Units.inchesToMeters(21.73); //TODO: This must be tuned to specific robot
+        public static final double trackWidth = Units.inchesToMeters(21.5); //TODO: This must be tuned to specific robot
+        public static final double wheelBase = Units.inchesToMeters(21.5); //TODO: This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /* Swerve Kinematics 

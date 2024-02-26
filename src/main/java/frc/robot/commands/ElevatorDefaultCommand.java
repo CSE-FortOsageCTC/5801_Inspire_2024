@@ -3,13 +3,16 @@ package frc.robot.commands;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.AlignPosition;
 import frc.robot.AngleShooterUtil;
 import frc.robot.subsystems.Swerve;
+import frc.robot.Constants;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
@@ -33,31 +36,39 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){
-        ChassisSpeeds chassisSpeeds = s_Swerve.getEstimatedFieldRelativeSpeeds();
-        
-        SmartDashboard.putNumber("xSpeed", chassisSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("ySpeed", chassisSpeeds.vyMetersPerSecond);
-
-        if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-            speakerCoordinate = new Pair<Double, Double>(8.0, 1.5);
-        } else {
-            speakerCoordinate = new Pair<Double, Double>(-8.0, 1.5);
-        }
-
-        Pose2d botPose = elevatorSubsystem.s_Limelight.getBotPose(); 
-        botPose = s_Swerve.getLimelightBotPose();
-
-        double xDiff = botPose.getX() - speakerCoordinate.getFirst(); // gets distance of x between robot and target
-        double yDiff = botPose.getY() - speakerCoordinate.getSecond();
-
-        double distance = Math.sqrt(yDiff * yDiff + xDiff * xDiff);
-
-        double target = -.00384 * distance * distance + 1.17 * distance - 94.8; //NEEDS TO BE REPLACED LATER WITH THE TARGET ANGLE
     
-        double elevatorValue = elevatorSubsystem.getElevatorValue();    
-        angleShooterUtil.updateTargetDiff(elevatorValue - target);
+        Pose2d botPose = s_Swerve.getLimelightBotPose();
 
-        SmartDashboard.putNumber("ShooterEncoder", elevatorValue);
+        boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red) ? true : false;
+
+        SmartDashboard.putBoolean("Is Red Alliance", isRed);
+
+        double xDiff = botPose.getX() - (isRed? 8.3:-8.3);
+        double yDIff = botPose.getY() - 1.45;
+        double hypotenuse = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
+
+        double feetDistance = Units.metersToFeet(hypotenuse);
+
+        SmartDashboard.putNumber("Hypotenuse", feetDistance);
+
+        double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, hypotenuse));
+
+        SmartDashboard.putNumber("ElevatorDegrees", angle);
+
+        // 29.6 min     59.9 max
+
+        double degreesToEncoderAngle = (angle - 29.6) * -2.03630363036303630363;
+
+        SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
+
+        double elevatorValue = elevatorSubsystem.getElevatorValue();  
+        
+        double target = elevatorValue - degreesToEncoderAngle;
+
+        SmartDashboard.putNumber("Encoder Error", target);
+        
+        angleShooterUtil.updateTargetDiff(target);
+        elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
     }
 
     @Override

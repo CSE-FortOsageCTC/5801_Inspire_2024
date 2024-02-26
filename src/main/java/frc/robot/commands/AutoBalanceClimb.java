@@ -8,10 +8,12 @@ public class AutoBalanceClimb extends Command{
     ClimbingSubsystem s_climbingSubsystem;
     double leftSpeed;
     double rightSpeed;
+    int timer;
 
     public AutoBalanceClimb(){
         s_climbingSubsystem = ClimbingSubsystem.getInstance();
         addRequirements(s_climbingSubsystem);
+        int timer = 0;
     }
 
     @Override
@@ -25,11 +27,12 @@ public class AutoBalanceClimb extends Command{
             leftSpeed = -(gyroRoll) / 100;
             rightSpeed = (gyroRoll) / 100;
         } else {
-            leftSpeed = 0.75;
-            rightSpeed = 0.75;
+            leftSpeed = (timer >= 500) ? 0 : 0.75;
+            rightSpeed = (timer >= 500) ? 0 : 0.75;
         }
 
         s_climbingSubsystem.climbControl(leftSpeed, rightSpeed);
+        timer++;
     }
 
     @Override
