@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
@@ -24,6 +25,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -76,7 +78,9 @@ public class Swerve extends SubsystemBase{
         };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
-        swerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), getPose());
+        swerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d(0, 0, new Rotation2d()));
+
+        swerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.005, 0.005, Units.degreesToRadians(.5)));
 
          AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
@@ -105,15 +109,19 @@ public class Swerve extends SubsystemBase{
 
         } 
     public void updatePoseEstimator() {
-        swerveEstimator.update(getGyroYaw(), getModulePositions());
+        swerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
     }
 
     public Pose2d getEstimatedPosition(){
         return swerveEstimator.getEstimatedPosition();
+        // return swerveOdometry.getPoseMeters();
     }
 
     public void updateWithVision(Pose2d pose2d, double timestamp){
-        swerveEstimator.addVisionMeasurement(pose2d, timestamp);
+        Pose2d test = new Pose2d(pose2d.getTranslation(), Rotation2d.fromDegrees(180));
+        swerveEstimator.addVisionMeasurement(test, timestamp);
+        //setHeading(Rotation2d.fromDegrees(gyroOffset-180));
+        // swerveEstimator.resetPosition(getGyroYaw(), getModulePositions(), test);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -165,39 +173,56 @@ public class Swerve extends SubsystemBase{
     public Pose2d getPose() {
         SmartDashboard.putNumber("Estimated x Pose", swerveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Estimated y Pose", swerveOdometry.getPoseMeters().getY());
-        return swerveOdometry.getPoseMeters();
+        return swerveEstimator.getEstimatedPosition();
+        // return swerveEstimator.getEstimatedPosition();
     }
     public Pose2d getLimelightBotPose(){
-        Pose2d botPose = s_Limelight.getBotPose(); 
-        double botX = botPose.getX();
-        double botY = botPose.getY();
+        if (s_Limelight.getArea() >= 0.15 || RobotState.isDisabled()) {
+            Pose2d currentPose = getEstimatedPosition();
+            Pose2d visionPose = s_Limelight.getBotPose();
 
-        if (botX == 0 && botY == 0){
-            botPose = getEstimatedPosition();
+            // if ((visionPose.getX() != 0 && visionPose.getY() != 0 && Math.abs(currentPose.getX() - visionPose.getX()) < 1 && Math.abs(currentPose.getY() - visionPose.getY()) < 1) || RobotState.isDisabled()) {
+                updateWithVision(visionPose, s_Limelight.getLastBotPoseTimestamp());
+                return visionPose;
+            // } else {
+            //     return currentPose;
+            // }
         }
-        else{
-            updateWithVision(botPose, s_Limelight.getLastBotPoseTimestamp());
-        }
-        return botPose;
+
+        return getEstimatedPosition();
+        // Pose2d botPose = s_Limelight.getBotPose(); 
+        // double botX = botPose.getX();
+        // double botY = botPose.getY();
+
+        // if (botX == 0 && botY == 0){
+        //     botPose = getEstimatedPosition();
+        //     System.out.println(botPose);
+        // }
+        // else{
+        //     updateWithVision(botPose, s_Limelight.getLastBotPoseTimestamp());
+        //     System.out.println(botPose);
+        // }
+        // return botPose;
     }
 
     public void setPose(Pose2d pose) {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        swerveEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        // swerveEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
     public Rotation2d getHeading(){
-        return getPose().getRotation();
+        return swerveEstimator.getEstimatedPosition().getRotation();
     }
 
     public void setHeading(Rotation2d heading){
         Rotation2d gyroYaw = getGyroYaw();
-        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
+        swerveEstimator.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
         gyroOffset = gyroYaw.getDegrees() - heading.getDegrees();
     }
 
     public void zeroHeading(){
         Rotation2d gyroYaw = getGyroYaw();
-        swerveOdometry.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        swerveEstimator.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
         gyroOffset = gyroYaw.getDegrees();
     }
 
@@ -262,9 +287,9 @@ public class Swerve extends SubsystemBase{
         double xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
         double yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();
         
-        double angle = Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
-        
-        double output = (((90 - angle - correctedYaw() - 90) % 360) + 360) % 360;
+        double angle = 180 + Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
+
+        double output = (((angle - correctedYaw() )) + 360) % 360;
         SmartDashboard.putNumber("Speaker Diff Output", output);
 
         s_AutoRotateUtil.updateTargetAngle(output); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯
@@ -334,7 +359,7 @@ public class Swerve extends SubsystemBase{
     
     @Override
     public void periodic(){
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        //swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         updatePoseEstimator();
 

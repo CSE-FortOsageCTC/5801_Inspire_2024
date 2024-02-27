@@ -56,7 +56,7 @@ public class AutoRotateUtil {
     if (headingError < -180) {
         headingError += 360;
     }
-    SmartDashboard.putNumber("Heading Error", headingError);
+    SmartDashboard.putNumber("Heading Error Swerve", headingError);
     //double speed = pidController.calculate(headingError, 0);
     double feedForward = 0.5;
     //speed = MathUtil.clamp(speed, -1, 1);
