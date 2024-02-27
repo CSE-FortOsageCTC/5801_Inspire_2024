@@ -22,9 +22,6 @@ public class ClimbReset extends Command{
 
     @Override
     public void end(boolean isFinished){
-        leftSpeed = 0;
-        rightSpeed = 0;
-
-        s_climbingSubsystem.climbControl(leftSpeed, rightSpeed);
+        s_climbingSubsystem.climbControl(0, 0);
     }
 }

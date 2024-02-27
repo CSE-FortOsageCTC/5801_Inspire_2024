@@ -32,8 +32,8 @@ public class ClimbingSubsystem extends SubsystemBase {
     leftClimber = new CANSparkMax(22, MotorType.kBrushless);
     rightClimber = new CANSparkMax(23, MotorType.kBrushless);
 
-    leftClimber.setSmartCurrentLimit(10);
-    rightClimber.setSmartCurrentLimit(10);
+    leftClimber.setSmartCurrentLimit(20);
+    rightClimber.setSmartCurrentLimit(20);
 
     rightClimber.burnFlash();
     leftClimber.burnFlash();
