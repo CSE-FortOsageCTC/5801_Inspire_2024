@@ -283,16 +283,19 @@ public class Swerve extends SubsystemBase{
     public double rotateToSpeaker(){
 
         Pose2d botPose = getLimelightBotPose();
+        SmartDashboard.putNumber("limelightBotPose X", botPose.getX());
+        SmartDashboard.putNumber("limelightBotPose Y", botPose.getY());
 
         double xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
         double yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();
         
-        double angle = 180 + Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
+        //double angle = 180 + Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
+        double angle = (Units.radiansToDegrees(Math.atan2(yDiff, xDiff))+360)%360;
 
         double output = (((angle - correctedYaw() )) + 360) % 360;
         SmartDashboard.putNumber("Speaker Diff Output", output);
 
-        s_AutoRotateUtil.updateTargetAngle(output); //why are we subtracting 90? idk man it just works ¯\_(ツ)_/¯
+        s_AutoRotateUtil.updateTargetAngle(output); 
         
         return s_AutoRotateUtil.calculateRotationSpeed();
     }
@@ -319,7 +322,7 @@ public class Swerve extends SubsystemBase{
         noteInView = pieceSeenDebouncer.calculate(noteInView);
 
         if (noteInView){
-            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX()/2);
+            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX()/2); //divided by 2 to account for latency
             return s_AutoRotateUtil.calculateRotationSpeed();
         }
         
