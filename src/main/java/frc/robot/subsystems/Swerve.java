@@ -118,7 +118,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public void updateWithVision(Pose2d pose2d, double timestamp){
-        Pose2d test = new Pose2d(pose2d.getTranslation(), Rotation2d.fromDegrees(180));
+        Pose2d test = new Pose2d(pose2d.getTranslation(), Rotation2d.fromDegrees(correctedYaw()));
         swerveEstimator.addVisionMeasurement(test, timestamp);
         //setHeading(Rotation2d.fromDegrees(gyroOffset-180));
         // swerveEstimator.resetPosition(getGyroYaw(), getModulePositions(), test);
@@ -289,8 +289,8 @@ public class Swerve extends SubsystemBase{
         double xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
         double yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();
         
-        //double angle = 180 + Units.radiansToDegrees(Math.atan2(yDiff, xDiff));
-        double angle = (Units.radiansToDegrees(Math.atan2(yDiff, xDiff))+360)%360;
+        double angle = Units.radiansToDegrees(Math.atan2(yDiff, xDiff)) + 0;
+        //double angle = (Units.radiansToDegrees(Math.atan2(yDiff, xDiff)+180)+360)%360;
 
         double output = (((angle - correctedYaw() )) + 360) % 360;
         SmartDashboard.putNumber("Speaker Diff Output", output);
