@@ -134,7 +134,7 @@ public class DefaultTeleop extends Command{
 
         SmartDashboard.putNumber("throttle calculation", throttleCalc);
 
-        Translation2d translation = new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * throttleCalc);
+        Translation2d translation = new Translation2d(translationVal, strafeVal).times(-Constants.Swerve.maxSpeed * throttleCalc);
 
         double rotationSpeed = s_DefaultTeleop.s_Swerve.rotateToNote();
         SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
