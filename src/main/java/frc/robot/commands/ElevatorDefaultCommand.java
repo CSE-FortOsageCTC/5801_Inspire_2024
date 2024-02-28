@@ -39,25 +39,25 @@ public class ElevatorDefaultCommand extends Command{
     
         Pose2d botPose = s_Swerve.getLimelightBotPose();
 
-        boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red) ? true : false;
+        boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
         SmartDashboard.putBoolean("Is Red Alliance", isRed);
 
         double xDiff = botPose.getX() - (isRed? 8.3:-8.3);
         double yDIff = botPose.getY() - 1.45;
-        double hypotenuse = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
+        double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
-        double feetDistance = Units.metersToFeet(hypotenuse);
+        double feetDistance = Units.metersToFeet(distance);
 
-        SmartDashboard.putNumber("Hypotenuse", feetDistance);
+        SmartDashboard.putNumber("Speaker Distance (ft.)", feetDistance);
 
-        double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, hypotenuse));
+        double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
 
         SmartDashboard.putNumber("ElevatorDegrees", angle);
 
         // 29.6 min     59.9 max
 
-        double degreesToEncoderAngle = (angle - 29.6) * -2.03630363036303630363;
+        double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorValue) * Constants.Swerve.degreesToEncoderValue;
 
         SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
 
