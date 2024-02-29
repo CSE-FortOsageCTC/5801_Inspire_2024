@@ -43,9 +43,9 @@ public class AutoAlignAmp extends Command{
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
-        SmartDashboard.putNumber("P", 0);
-        SmartDashboard.putNumber("i", 0);
-        SmartDashboard.putNumber("d", 0);
+        // SmartDashboard.putNumber("P", 0);
+        // SmartDashboard.putNumber("i", 0);
+        // SmartDashboard.putNumber("d", 0);
         //THESE VALUES WILL NEED TO BE MESSED WITH, 0 FOR NOW
     }
 
@@ -67,8 +67,8 @@ public class AutoAlignAmp extends Command{
         double areaValue = s_Limelight.getArea(); // gets the area percentage from the limelight
         //double angularValue = s_Limelight.getSkew(); 
 
-        SmartDashboard.putNumber("Xvalue", xValue);
-        SmartDashboard.putNumber("Areavalue", areaValue);
+        // SmartDashboard.putNumber("Xvalue", xValue);
+        // SmartDashboard.putNumber("Areavalue", areaValue);
         //SmartDashboard.putNumber("AngularValue", angularValue);
         //SmartDashboard.putNumber("Ts0", s_Limelight.getSkew0());
         //SmartDashboard.putNumber("Ts1", s_Limelight.getSkew1());

@@ -48,7 +48,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         if (shooterElevator.getForwardLimitSwitch(Type.kNormallyClosed).isPressed()) {
             shooterElevator.getEncoder().setPosition(0);
         } 
-        SmartDashboard.putNumber("Encoder Value", shooterElevator.getEncoder().getPosition());
+        //SmartDashboard.putNumber("Encoder Value", shooterElevator.getEncoder().getPosition());
 
     }
 }

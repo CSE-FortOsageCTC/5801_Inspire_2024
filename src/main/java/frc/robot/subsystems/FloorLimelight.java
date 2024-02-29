@@ -124,12 +124,12 @@ public class FloorLimelight extends SubsystemBase {
         System.out.println(getY());
         System.out.println(getSkew());
         System.out.println(getArea());
-        SmartDashboard.putNumber("April Tag  Value", getAprilValue());
-        SmartDashboard.putBoolean("has Tag  ", hasTag());
-        SmartDashboard.putNumber("X value   ", getX());
-        SmartDashboard.putNumber("Y value ", getY());
-        SmartDashboard.putNumber("Skew Value ", getSkew());
-        SmartDashboard.putNumber("Area Value ", getArea());
+        // SmartDashboard.putNumber("April Tag  Value", getAprilValue());
+        // SmartDashboard.putBoolean("has Tag  ", hasTag());
+        // SmartDashboard.putNumber("X value   ", getX());
+        // SmartDashboard.putNumber("Y value ", getY());
+        // SmartDashboard.putNumber("Skew Value ", getSkew());
+        // SmartDashboard.putNumber("Area Value ", getArea());
         
     }
     

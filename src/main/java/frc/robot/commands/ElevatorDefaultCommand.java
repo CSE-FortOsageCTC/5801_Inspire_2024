@@ -41,32 +41,35 @@ public class ElevatorDefaultCommand extends Command{
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
-        SmartDashboard.putBoolean("Is Red Alliance", isRed);
+        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
 
         double xDiff = botPose.getX() - (isRed? 8.3:-8.3);
         double yDIff = botPose.getY() - 1.45;
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
+        // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
+        // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
+        // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
+
+
         double feetDistance = Units.metersToFeet(distance);
 
-        SmartDashboard.putNumber("Speaker Distance (ft.)", feetDistance);
+        //SmartDashboard.putNumber("Speaker Distance (ft.)", feetDistance);
 
         double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
 
-        SmartDashboard.putNumber("ElevatorDegrees", angle);
+        //SmartDashboard.putNumber("ElevatorDegrees", angle);
 
-        // 29.6 min     59.9 max
+        double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorAngle) * Constants.Swerve.degreesToEncoderValue;
 
-        double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorValue) * Constants.Swerve.degreesToEncoderValue;
-
-        SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
+        //SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();  
         
         double target = elevatorValue - degreesToEncoderAngle;
 
-        SmartDashboard.putNumber("Encoder Error", target);
-        
+        //SmartDashboard.putNumber("Encoder Error", target);
+    
         angleShooterUtil.updateTargetDiff(target);
         elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
     }

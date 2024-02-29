@@ -59,9 +59,9 @@ public class AutoPickupNote extends Command{
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
-        SmartDashboard.putNumber("P", 0);
-        SmartDashboard.putNumber("i", 0);
-        SmartDashboard.putNumber("d", 0);
+        // SmartDashboard.putNumber("P", 0);
+        // SmartDashboard.putNumber("i", 0);
+        // SmartDashboard.putNumber("d", 0);
         //THESE VALUES WILL NEED TO BE MESSED WITH, 0 FOR NOW
 
         addRequirements(swerve, intakeSubsystem);
@@ -107,12 +107,12 @@ public class AutoPickupNote extends Command{
         kI = SmartDashboard.getNumber("AlignI", 0);
         kD = SmartDashboard.getNumber("AlignD", 0);
         
-        SmartDashboard.putNumber("Xvalue", xValue);
-        SmartDashboard.putNumber("Areavalue", areaValue);
-        SmartDashboard.putNumber("AngularValue", angularValue);
-        SmartDashboard.putNumber("Ts0", limelight.getSkew0());
-        SmartDashboard.putNumber("Ts1", limelight.getSkew1());
-        SmartDashboard.putNumber("Ts2", limelight.getSkew2());
+        // SmartDashboard.putNumber("Xvalue", xValue);
+        // SmartDashboard.putNumber("Areavalue", areaValue);
+        // SmartDashboard.putNumber("AngularValue", angularValue);
+        // SmartDashboard.putNumber("Ts0", limelight.getSkew0());
+        // SmartDashboard.putNumber("Ts1", limelight.getSkew1());
+        // SmartDashboard.putNumber("Ts2", limelight.getSkew2());
 
 
         if (debouncer.calculate(NoteSeen())){

@@ -117,7 +117,7 @@ public class DefaultTeleop extends Command{
         } else if (AlignPosition.getPosition().equals(AlignPosition.AutoPickup)) {
             rotationVal = s_DefaultTeleop.s_Swerve.rotateToNote();
         } else if (AlignPosition.getPosition().equals(AlignPosition.SourcePos)) {
-            rotationVal = s_DefaultTeleop.s_Swerve.rotateToSource();
+            rotationVal = s_DefaultTeleop.s_Swerve.rotateToNote(); //rotateToSource();
         } else {
             rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
         }
@@ -125,19 +125,19 @@ public class DefaultTeleop extends Command{
         
         
 
-        SmartDashboard.putNumber("Translation Val", translationVal);
-        SmartDashboard.putNumber("Strave Val", strafeVal);
-        SmartDashboard.putNumber("Rotation Value", rotationVal);
-        SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
+        // SmartDashboard.putNumber("Translation Val", translationVal);
+        // SmartDashboard.putNumber("Strave Val", strafeVal);
+        // SmartDashboard.putNumber("Rotation Value", rotationVal);
+        // SmartDashboard.putNumber("Gyro", s_DefaultTeleop.s_Swerve.getGyroYaw().getDegrees());
 
         double throttleCalc = throttleLimiter.calculate(throttleAxis);
 
-        SmartDashboard.putNumber("throttle calculation", throttleCalc);
+        //SmartDashboard.putNumber("throttle calculation", throttleCalc);
 
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(-Constants.Swerve.maxSpeed * throttleCalc);
 
         double rotationSpeed = s_DefaultTeleop.s_Swerve.rotateToNote();
-        SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
+        //SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
 
         s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
         // s_DefaultTeleop.s_Swerve.drive(translation, s_DefaultTeleop.s_Swerve.rotateToSpeaker() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);

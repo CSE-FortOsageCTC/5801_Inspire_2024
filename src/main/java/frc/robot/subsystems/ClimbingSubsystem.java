@@ -47,8 +47,8 @@ public class ClimbingSubsystem extends SubsystemBase {
 
   @Override
   public void periodic(){
-    SmartDashboard.putNumber("right Current", rightClimber.getOutputCurrent());
-    SmartDashboard.putNumber("left Current", leftClimber.getOutputCurrent());
+    // SmartDashboard.putNumber("right Current", rightClimber.getOutputCurrent());
+    // SmartDashboard.putNumber("left Current", leftClimber.getOutputCurrent());
   }
   // make a variable which takes the roll, set point proportional to the yaw
 }
