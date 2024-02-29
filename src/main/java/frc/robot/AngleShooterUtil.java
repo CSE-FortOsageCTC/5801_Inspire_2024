@@ -67,7 +67,7 @@ public class AngleShooterUtil {
     this.downPidController.setD(downD);
 
     double headingError = this.m_encoderDiff;
-    SmartDashboard.putNumber("Heading Error", headingError);
+    //SmartDashboard.putNumber("Heading Error", headingError);
     double feedForward = 0.5;
     double speed = 0;
 
@@ -79,7 +79,7 @@ public class AngleShooterUtil {
         speed = downPidController.calculate(m_encoderDiff, 0);
     }
     speed = MathUtil.clamp(speed, -1, 1);
-    SmartDashboard.putNumber(("Elevator Speed"), speed);
+    //SmartDashboard.putNumber(("Elevator Speed"), speed);
 
     if(upPidController.atSetpoint() && downPidController.atSetpoint()){
         speed = 0;

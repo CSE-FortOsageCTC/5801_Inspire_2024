@@ -9,8 +9,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,6 +53,7 @@ public class RobotContainer {
   private PathPlannerPath rotatePath;
   private PathPlannerPath sevenPiecePath;
   private PathPlannerPath fourPieceNoTeamPath;
+  private PathPlannerPath testAutoPath;
 
 
   /* Drive Controls */
@@ -98,16 +102,17 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignmentTransitions.scheduleIntake()));
 
     //Set up PathPlannerPaths
-    // sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
-    // fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
-    // threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
-    // blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
-    // blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
-    // blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
-    // blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
-    // rotatePath = PathPlannerPath.fromPathFile("Rotate");
-    // sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
-    // fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
+    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
+    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
+    threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
+    blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
+    blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
+    blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
+    blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
+    rotatePath = PathPlannerPath.fromPathFile("Rotate");
+    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
+    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
+    testAutoPath = PathPlannerPath.fromPathFile("Test Auto");
 
 
 
@@ -123,6 +128,7 @@ public class RobotContainer {
     autoChooser.addOption("Rotate", "Rotate");
     autoChooser.addOption("7 piece path", "7 piece path");
     autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
+    autoChooser.addOption("Test Auto", "Test Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -132,8 +138,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
 
-    Rotation2d rotation = new Rotation2d();
-    s_Swerve.setHeading(rotation);
+    //Rotation2d rotation = new Rotation2d(-57.6);
+    // s_Swerve.setHeading(rotation);
 
     switch (autoChooser.getSelected()) {
       case "4 piece path left":
@@ -157,11 +163,16 @@ public class RobotContainer {
       case "4 piece auto no team path":
         path = fourPieceNoTeamPath;
         break;
+      case "Test Auto":
+        path = testAutoPath;
+        break;
     }
+
+    path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
 
     Pose2d startingPose = path.getStartingDifferentialPose();
     s_Swerve.setPose(startingPose);
-    s_Swerve.setHeading(rotation);
+    s_Swerve.setHeading(Rotation2d.fromDegrees(180));
 
     return AutoBuilder.followPath(path);
   }

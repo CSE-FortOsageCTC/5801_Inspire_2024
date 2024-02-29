@@ -105,18 +105,14 @@ public final class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         
-        public static final double minElevatorValue = 20; 
-        public static final double maxElevatorValue = 500;
+        public static final double minElevatorValue = 0; 
+        public static final double maxElevatorValue = -61.7;
 
         public static final double minElevatorAngle = 29.6;
         public static final double maxElevatorAngle = 59.9;
 
-        /**
-         * -2.03630363036303630363 was the previous value. it is not equal to maxElevatorAngle/minElevatroAngle but very close, like .01 away.
-         * Where did this value come from?
-         */
-         public static final double degreesToEncoderValue = -(maxElevatorAngle/minElevatorAngle);
-
+        public static final double degreesToEncoderValue = maxElevatorValue/(maxElevatorAngle-minElevatorAngle);
+        
 
         //public static final double 
         /* Module Specific Constants */

@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
 
-        SmartDashboard.putNumber("Shooter Percent Multiplier", 0.4);
+        //SmartDashboard.putNumber("Shooter Percent Multiplier", 0.4);
         
     }
     public void setKicker(){

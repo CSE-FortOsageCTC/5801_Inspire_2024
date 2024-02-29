@@ -65,9 +65,9 @@ public class Navigate extends Command {
 
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
-        SmartDashboard.putNumber("AlignP", 0.3);
-        SmartDashboard.putNumber("AlignI", 0);
-        SmartDashboard.putNumber("AlignD", 0.00035);
+        // SmartDashboard.putNumber("AlignP", 0.3);
+        // SmartDashboard.putNumber("AlignI", 0);
+        // SmartDashboard.putNumber("AlignD", 0.00035);
     }
 
 
@@ -103,12 +103,12 @@ public class Navigate extends Command {
         // sets current position
         Pose2d botPose = s_Swerve.getLimelightBotPose();
 
-        SmartDashboard.putNumber("Limelightta", areaValue);
+        // SmartDashboard.putNumber("Limelightta", areaValue);
 
-        SmartDashboard.putNumber("Xvalue", xValue);
-        SmartDashboard.putNumber("Areavalue", areaValue);
-        SmartDashboard.putNumber("AngularValue", angularValue);
-        SmartDashboard.putNumber("NaviToPosSetpoint", xTranslationPidController.getSetpoint());
+        // SmartDashboard.putNumber("Xvalue", xValue);
+        // SmartDashboard.putNumber("Areavalue", areaValue);
+        // SmartDashboard.putNumber("AngularValue", angularValue);
+        // SmartDashboard.putNumber("NaviToPosSetpoint", xTranslationPidController.getSetpoint());
         //SmartDashboard.putNumber("Ts0", limelight.getSkew0());
         //SmartDashboard.putNumber("Ts1", limelight.getSkew1());
         //SmartDashboard.putNumber("Ts2", limelight.getSkew2());
@@ -124,8 +124,8 @@ public class Navigate extends Command {
         double angularSpeed = autoUtil.calculateRotationSpeed();
         angularSpeed = autoUtil.isFinished() ? 0: angularSpeed;
         
-        SmartDashboard.putNumber("AlignXSpeed", xSpeed);
-        SmartDashboard.putNumber("AlignYSpeed", ySpeed);
+        // SmartDashboard.putNumber("AlignXSpeed", xSpeed);
+        // SmartDashboard.putNumber("AlignYSpeed", ySpeed);
 
         // moves the swerve subsystem
         Translation2d translation = new Translation2d(-xSpeed, -ySpeed).times(Constants.Swerve.maxSpeed); 
@@ -139,8 +139,8 @@ public class Navigate extends Command {
     public boolean isFinished() {
 
         //checks if the Swerve subsystem is within the given position tolerance
-        SmartDashboard.putBoolean("AtSetPoint", yTranslationPidController.atSetpoint());
-        SmartDashboard.putBoolean("AtSetPoint", xTranslationPidController.atSetpoint());
+        // SmartDashboard.putBoolean("AtSetPoint", yTranslationPidController.atSetpoint());
+        // SmartDashboard.putBoolean("AtSetPoint", xTranslationPidController.atSetpoint());
         return yTranslationPidController.atSetpoint() && xTranslationPidController.atSetpoint(); // && autoUtil.isFinished();
     }
 

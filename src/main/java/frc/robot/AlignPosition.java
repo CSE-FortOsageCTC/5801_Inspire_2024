@@ -20,7 +20,7 @@ public enum AlignPosition {
             private static Pose2d alignPose;
 
             public static AlignPosition getPosition(){
-                
+
                 if (alignPosition == null) {
                     alignPosition = SpeakerPos;
                 }
@@ -28,6 +28,7 @@ public enum AlignPosition {
                 if(alignPose == null){
                     boolean isRed = Constants.isRedAlliance;
                     AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+                    //layout.setOrigin(new Pose3d(0,0,0, new Rotation3d()));
                     switch(alignPosition){
                         case AmpPos:
                             alignPose = isRed? new Pose2d(6.35, 4.1, Rotation2d.fromDegrees(90)): new Pose2d(-6.45, 4.1, Rotation2d.fromDegrees(90));
@@ -70,6 +71,7 @@ public enum AlignPosition {
 
             public static void setPosition(AlignPosition alignPos){
                 alignPosition = alignPos;
+                AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
@@ -78,6 +80,7 @@ public enum AlignPosition {
                             break;
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(8.3, 1.45, null): new Pose2d(-8.3, 1.45, null);
+                            //alignPose = isRed? layout.getTagPose(4).get().toPose2d() : layout.getTagPose(7).get().toPose2d();
                             break;
                         case SourcePos:
                             alignPose = isRed? new Pose2d(-7, -3.3, Rotation2d.fromDegrees(-145)): new Pose2d(7.8, -3.8, Rotation2d.fromDegrees(-55));
