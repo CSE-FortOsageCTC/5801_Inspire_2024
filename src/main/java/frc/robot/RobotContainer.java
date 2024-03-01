@@ -90,12 +90,12 @@ public class RobotContainer {
   private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
   private final POVButton upDPad = new POVButton(operator, 0);
   private final POVButton downDPad = new POVButton(operator, 180);
-
  
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
 
     //Register Named Commands
+    
 
     NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
@@ -170,11 +170,17 @@ public class RobotContainer {
 
     path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
 
-    Pose2d startingPose = path.getStartingDifferentialPose();
-    s_Swerve.setPose(startingPose);
-    s_Swerve.setHeading(Rotation2d.fromDegrees(180));
+    // SmartDashboard.putNumber("Ending Point X", path.getPoint(1).position.getX());
+    // SmartDashboard.putNumber("Ending Point Y", path.getPoint(1).position.getY());
+   
+    // SmartDashboard.putNumber("Starting Point X", path.getPoint(0).position.getX());
+    // SmartDashboard.putNumber("Starting Point Y", path.getPoint(0).position.getY());
 
-    return AutoBuilder.followPath(path);
+    Pose2d startingPose = path.getPreviewStartingHolonomicPose();
+    s_Swerve.setPose(startingPose);
+    s_Swerve.setHeading(Rotation2d.fromDegrees(0));
+    // AlignPosition.setPosition(AlignPosition.SpeakerPos);
+    return AutoBuilder.followPath(path);//.alongWith(new FlyWheelCommand());
   }
 
   private void configureBindings() {
@@ -182,7 +188,7 @@ public class RobotContainer {
     elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
     flyWheel.whileTrue(new FlyWheelCommand());
-    zeroGyro.whileTrue(new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(180))));
+    zeroGyro.whileTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());

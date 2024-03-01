@@ -10,29 +10,33 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class AutoShootCommand extends Command {
     private final ShooterSubsystem m_ShooterSubsystem;
-    private boolean finished;
+    private int counter;
 
     public AutoShootCommand(){
         m_ShooterSubsystem = ShooterSubsystem.getInstance();
         addRequirements(m_ShooterSubsystem);
+        counter = 0;
         //initializes this command with the ShooterSubsystem as a requirement
     }
 
     @Override
     public void execute(){
-        m_ShooterSubsystem.resetKicker();
-        finished = true;
+        counter += 1;
+        m_ShooterSubsystem.setKicker();
+        if (counter > 10){
+         m_ShooterSubsystem.resetKicker();}
     }
 
     @Override
     public boolean isFinished(){
-        return finished;
+        return counter > 20;
     }
     
     @Override
     public void end(boolean isFinished){
-        m_ShooterSubsystem.setKicker();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        counter = 0;
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
+        m_ShooterSubsystem.setFlyWheels(0);
         Swerve.getInstance().resetAutoRotateUtil();
     }
 }

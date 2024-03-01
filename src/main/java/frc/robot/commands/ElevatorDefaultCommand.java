@@ -43,8 +43,8 @@ public class ElevatorDefaultCommand extends Command{
 
         //SmartDashboard.putBoolean("Is Red Alliance", isRed);
 
-        double xDiff = botPose.getX() - (isRed? 8.3:-8.3);
-        double yDIff = botPose.getY() - 1.45;
+        double xDiff = botPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
+        double yDIff = botPose.getY() - Units.inchesToMeters(218.42);
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());

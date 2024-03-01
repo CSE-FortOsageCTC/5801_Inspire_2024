@@ -83,7 +83,8 @@ public class Swerve extends SubsystemBase{
         swerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.005, 0.005, Units.degreesToRadians(.5)));
 
          AutoBuilder.configureHolonomic(
-                this::getLimelightBotPose, // Robot pose supplier
+                //this::getLimelightBotPose, // Robot pose supplier
+                this::getPose,
                 this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
                 () -> Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -100,7 +101,7 @@ public class Swerve extends SubsystemBase{
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
                     //var alliance = DriverStation.getAlliance();
-                    return DriverStation.getAlliance().get().equals(Alliance.Red);
+                    return false;
                     // if (alliance.isPresent()) {
                     //     return alliance.get() == DriverStation.Alliance.Red;
                     // }
@@ -199,7 +200,7 @@ public class Swerve extends SubsystemBase{
             //     return currentPose;
             // }
         }
-        SmartDashboard.putNumber("Current Position", currentPose.getX());
+        //SmartDashboard.putNumber("Current Position X", currentPose.getX());
         return currentPose;
         // Pose2d botPose = s_Limelight.getBotPose(); 
         // double botX = botPose.getX();
@@ -265,21 +266,20 @@ public class Swerve extends SubsystemBase{
     
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
 
-        SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
+        // SmartDashboard.putNumber("omega radians per second", robotRelativeSpeeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("x speed", robotRelativeSpeeds.vxMetersPerSecond);
+        // SmartDashboard.putNumber("y speed", robotRelativeSpeeds.vyMetersPerSecond);
 
-        robotRelativeSpeeds.vxMetersPerSecond *= -1;
-        robotRelativeSpeeds.vyMetersPerSecond *= -1;
-
-       // robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
-
+        
+        
+        // robotRelativeSpeeds.vxMetersPerSecond *= -1;
+        // robotRelativeSpeeds.vyMetersPerSecond *= -1; 
         if (AlignPosition.getPosition() == AlignPosition.SpeakerPos){
-            robotRelativeSpeeds.omegaRadiansPerSecond =  rotateToSpeaker();
+            robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
         }
         
         else if (AlignPosition.getPosition() == AlignPosition.AutoPickup){
-            robotRelativeSpeeds.omegaRadiansPerSecond =  rotateToNote();        
+            robotRelativeSpeeds.omegaRadiansPerSecond = rotateToNote();        
         }
 
         else
@@ -336,7 +336,7 @@ public class Swerve extends SubsystemBase{
         noteInView = pieceSeenDebouncer.calculate(noteInView);
 
         if (noteInView){
-            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX()/2); //divided by 2 to account for latency
+            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX()/4); //divided by 2 to account for latency
             return s_AutoRotateUtil.calculateRotationSpeed();
         }
         

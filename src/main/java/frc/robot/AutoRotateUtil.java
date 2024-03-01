@@ -25,9 +25,9 @@ public class AutoRotateUtil {
 
         pidController.setTolerance(0.001);
         pidController.setSetpoint(0);
-        SmartDashboard.putNumber("kP", 0.01);
-        SmartDashboard.putNumber("kI", 0);
-        SmartDashboard.putNumber("kD", 0);
+        // SmartDashboard.putNumber("kP", 0.01);
+        // SmartDashboard.putNumber("kI", 0);
+        // SmartDashboard.putNumber("kD", 0);
    }
 
    public void initialize() {
@@ -41,13 +41,13 @@ public class AutoRotateUtil {
 
    public double calculateRotationSpeed () {
     
-    double kP = SmartDashboard.getNumber("kP", 0.0);
-    double kI = SmartDashboard.getNumber("kI", 0.0);
-    double kD = SmartDashboard.getNumber("kD", 0.0);
+    // double kP = SmartDashboard.getNumber("kP", 0.0);
+    // double kI = SmartDashboard.getNumber("kI", 0.0);
+    // double kD = SmartDashboard.getNumber("kD", 0.0);
 
-    this.pidController.setP(kP);
-    this.pidController.setI(kI);
-    this.pidController.setD(kD);
+    this.pidController.setP(.01);
+    this.pidController.setI(0);
+    this.pidController.setD(0);
 
     double headingError = this.m_angle % 360;
     if (headingError > 180) {

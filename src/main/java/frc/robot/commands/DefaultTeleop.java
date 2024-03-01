@@ -12,9 +12,11 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AlignPosition;
@@ -77,8 +79,8 @@ public class DefaultTeleop extends Command{
         rotationPidController.setP(kD);
 
         
-        double yAxis = -driver.getRawAxis(translationSup);
-        double xAxis = -driver.getRawAxis(strafeSup);
+        double yAxis = DriverStation.getAlliance().get().equals(Alliance.Red) ? -driver.getRawAxis(translationSup) : driver.getRawAxis(translationSup);
+        double xAxis = DriverStation.getAlliance().get().equals(Alliance.Red) ? -driver.getRawAxis(strafeSup) : driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
         alignPose = AlignPosition.getAlignPose();
         

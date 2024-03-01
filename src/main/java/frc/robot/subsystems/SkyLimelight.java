@@ -138,7 +138,7 @@ public class SkyLimelight extends SubsystemBase {
      *  Returns 0 for all values if no Apriltag detected
      */
     public Pose2d getBotPose() {
-        botPoseEntry = table.getEntry("botpose");
+        botPoseEntry = table.getEntry("botpose_wpiblue");
         double[] botpose = botPoseEntry.getDoubleArray(new double[7]);
         Pose2d visionPose = new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees((botpose[5] + 360) % 360));
         this.lastBotPoseTimestamp = Timer.getFPGATimestamp() - (botpose[6] / 1000);
