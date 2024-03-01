@@ -25,15 +25,15 @@ public class AngleShooterUtil {
 
         upPidController.setTolerance(0.2);
         upPidController.setSetpoint(300);
-        SmartDashboard.putNumber("Up P", 0.09);
-        SmartDashboard.putNumber("Up I", 0);
-        SmartDashboard.putNumber("Up D", 0);
+        // SmartDashboard.putNumber("Up P", 0.09);
+        // SmartDashboard.putNumber("Up I", 0);
+        // SmartDashboard.putNumber("Up D", 0);
 
         downPidController.setTolerance(0.2);
         downPidController.setSetpoint(20);
-        SmartDashboard.putNumber("Down P", 0.05);
-        SmartDashboard.putNumber("Down I", 0);
-        SmartDashboard.putNumber("Down D", 0);
+//         SmartDashboard.putNumber("Down P", 0.05);
+//         SmartDashboard.putNumber("Down I", 0);
+//         SmartDashboard.putNumber("Down D", 0);
    }
 
    public void initialize() {
@@ -50,21 +50,21 @@ public class AngleShooterUtil {
    public double calculateElevatorSpeed () {
 
     
-    double upP = SmartDashboard.getNumber("Up P", 0.0);
-    double upI = SmartDashboard.getNumber("Up I", 0.0);
-    double upD = SmartDashboard.getNumber("Up D", 0.0);
+    // double upP = SmartDashboard.getNumber("Up P", 0.0);
+    // double upI = SmartDashboard.getNumber("Up I", 0.0);
+    // double upD = SmartDashboard.getNumber("Up D", 0.0);
 
-    double downP = SmartDashboard.getNumber("Down P", 0.0);
-    double downI = SmartDashboard.getNumber("Down I", 0.0);
-    double downD = SmartDashboard.getNumber("Down D", 0.0);
+    // double downP = SmartDashboard.getNumber("Down P", 0.0);
+    // double downI = SmartDashboard.getNumber("Down I", 0.0);
+    // double downD = SmartDashboard.getNumber("Down D", 0.0);
 
-    this.upPidController.setP(upP);
-    this.upPidController.setI(upI);
-    this.upPidController.setD(upD);
+    this.upPidController.setP(.09);
+    this.upPidController.setI(0);
+    this.upPidController.setD(0);
 
-    this.downPidController.setP(downP);
-    this.downPidController.setI(downI);
-    this.downPidController.setD(downD);
+    this.downPidController.setP(.05);
+    this.downPidController.setI(0);
+    this.downPidController.setD(0);
 
     double headingError = this.m_encoderDiff;
     //SmartDashboard.putNumber("Heading Error", headingError);

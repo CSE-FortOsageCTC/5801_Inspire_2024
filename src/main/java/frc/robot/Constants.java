@@ -28,7 +28,7 @@ public final class Constants {
 
     public static final double feedForwardAngle = 30;
 
-    public static final double speakerHeightMeters = 2.07;
+    public static final double speakerHeightMeters = 2.13;
 
     public static final class Swerve {
         public static final int pigeonID = 10;

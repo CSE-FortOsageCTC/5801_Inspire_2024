@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 public enum AlignPosition {
             AmpPos(),
@@ -31,16 +32,16 @@ public enum AlignPosition {
                     //layout.setOrigin(new Pose3d(0,0,0, new Rotation3d()));
                     switch(alignPosition){
                         case AmpPos:
-                            alignPose = isRed? new Pose2d(6.35, 4.1, Rotation2d.fromDegrees(90)): new Pose2d(-6.45, 4.1, Rotation2d.fromDegrees(90));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323), Rotation2d.fromDegrees(270));
                             break;
                         case SpeakerPos:
-                            alignPose = isRed? layout.getTagPose(4).get().toPose2d() : layout.getTagPose(7).get().toPose2d();
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), null);
                             break;
                         case SourcePos:
-                            alignPose = isRed? new Pose2d(-7, -3.3, Rotation2d.fromDegrees(-145)): new Pose2d(7.8, -3.8, Rotation2d.fromDegrees(-55));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(-145)): new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(-55));
                             break;
                         case ClimbPos:
-                            alignPose = isRed? new Pose2d(3.4, 0, null): new Pose2d(-3.4, 0, null);
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), null): new Pose2d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), null);
                             break;
                         case AutoPickup:
                             alignPose = null;
@@ -49,13 +50,13 @@ public enum AlignPosition {
                             alignPose = null;
                             break;
                         case TrapPos1:
-                            alignPose = isRed? new Pose2d(3.85, -0.85, Rotation2d.fromDegrees(240)): new Pose2d(-3.9, 0.78,  Rotation2d.fromDegrees(60));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), null): new Pose2d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), null);
                             break;
                         case TrapPos2:
-                            alignPose = isRed? new Pose2d(3.85, 0.78, Rotation2d.fromDegrees(120)): new Pose2d(-3.9, -0.85, Rotation2d.fromDegrees(300));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(177.1), Rotation2d.fromDegrees(120)): new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(177.1), Rotation2d.fromDegrees(300));
                             break;
                         case TrapPos3:
-                            alignPose = isRed? new Pose2d(2.45, 0, Rotation2d.fromDegrees(0)): new Pose2d(-2.45, 0, Rotation2d.fromDegrees(180));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(0)): new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(180));
                             break;
                     }
                 }
@@ -76,17 +77,17 @@ public enum AlignPosition {
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
                         case AmpPos:
-                            alignPose = isRed? new Pose2d(6.35, 4.1, Rotation2d.fromDegrees(90)): new Pose2d(-6.45, 4.1, Rotation2d.fromDegrees(90));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323), Rotation2d.fromDegrees(90)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323), Rotation2d.fromDegrees(90));
                             break;
                         case SpeakerPos:
-                            alignPose = isRed? new Pose2d(8.3, 1.45, null): new Pose2d(-8.3, 1.45, null);
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), null);
                             //alignPose = isRed? layout.getTagPose(4).get().toPose2d() : layout.getTagPose(7).get().toPose2d();
                             break;
                         case SourcePos:
-                            alignPose = isRed? new Pose2d(-7, -3.3, Rotation2d.fromDegrees(-145)): new Pose2d(7.8, -3.8, Rotation2d.fromDegrees(-55));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(-145)): new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(-55));
                             break;
                         case ClimbPos:
-                            alignPose = isRed? new Pose2d(3.4, 0, null): new Pose2d(-3.4, 0, null);
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), null): new Pose2d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), null);
                             break;
                         case AutoPickup:
                             alignPose = null;
@@ -95,13 +96,13 @@ public enum AlignPosition {
                             alignPose = null;
                             break;
                         case TrapPos1:
-                            alignPose = isRed? new Pose2d(3.85, -0.85, Rotation2d.fromDegrees(240)): new Pose2d(-3.9, 0.78,  Rotation2d.fromDegrees(60));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), null): new Pose2d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), null);
                             break;
                         case TrapPos2:
-                            alignPose = isRed? new Pose2d(3.85, 0.78, Rotation2d.fromDegrees(120)): new Pose2d(-3.9, -0.85, Rotation2d.fromDegrees(300));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(177.1), Rotation2d.fromDegrees(120)): new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(177.1), Rotation2d.fromDegrees(300));
                             break;
                         case TrapPos3:
-                            alignPose = isRed? new Pose2d(2.45, 0, Rotation2d.fromDegrees(0)): new Pose2d(-2.45, 0, Rotation2d.fromDegrees(180));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(0)): new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(180));
                             break;
                     }
             }

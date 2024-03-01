@@ -22,12 +22,13 @@ public class AutoIntakeCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        return count > 100;
+        return intakeSubsystem.isRingDetected() || count > 200;
     }
     
 
     @Override
     public void end(boolean isFinished) {
+        count = 0;
         intakeSubsystem.intakeStop();
         AlignmentTransitions.scheduleShoot();
     }
