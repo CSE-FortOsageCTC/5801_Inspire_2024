@@ -16,6 +16,7 @@ import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
     private static ShooterSubsystem shooterSubsystem;
+    private static LEDSubsystem ledSubsystem;
 
     private CANSparkMax topShooter;
     private CANSparkMax bottomShooter;
@@ -30,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
         } 
         return (shooterSubsystem);
     }
+
     private ShooterSubsystem(){
         topShooter = new CANSparkMax(20, MotorType.kBrushless);
         bottomShooter = new CANSparkMax(21, MotorType.kBrushless);
@@ -44,12 +46,16 @@ public class ShooterSubsystem extends SubsystemBase {
         
         shooterSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
+        ledSubsystem = LEDSubsystem.getInstance();
+
 
         //SmartDashboard.putNumber("Shooter Percent Multiplier", 0.4);
         
     }
     public void setKicker(){
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
+        ledSubsystem.SetLEDs(-0.57); //"fire large"
+
     }
 
     public void resetKicker(){
