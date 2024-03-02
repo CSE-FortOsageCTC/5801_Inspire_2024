@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,11 +21,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 
 
@@ -32,7 +37,7 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 
@@ -54,6 +59,7 @@ public class RobotContainer {
   private PathPlannerPath sevenPiecePath;
   private PathPlannerPath fourPieceNoTeamPath;
   private PathPlannerPath testAutoPath;
+  private PathPlannerPath testAuto2Path;
 
 
   /* Drive Controls */
@@ -81,6 +87,7 @@ public class RobotContainer {
   private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
   private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
 
@@ -100,6 +107,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
     NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignmentTransitions.scheduleIntake()));
+    
 
     //Set up PathPlannerPaths
     sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
@@ -113,6 +121,8 @@ public class RobotContainer {
     sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
     fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
     testAutoPath = PathPlannerPath.fromPathFile("Test Auto");
+    testAuto2Path = PathPlannerPath.fromPathFile("Test Auto 2");
+  
 
 
 
@@ -128,7 +138,8 @@ public class RobotContainer {
     autoChooser.addOption("Rotate", "Rotate");
     autoChooser.addOption("7 piece path", "7 piece path");
     autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
-    autoChooser.addOption("Test Auto", "Test Auto");
+    autoChooser.addOption("Test Auto", "New Test Auto");
+    autoChooser.addOption("Copy of New Test Auto", "Copy of New Test Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -137,7 +148,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
-
+    PathPlannerAuto auto = null;
     //Rotation2d rotation = new Rotation2d(-57.6);
     // s_Swerve.setHeading(rotation);
 
@@ -163,13 +174,15 @@ public class RobotContainer {
       case "4 piece auto no team path":
         path = fourPieceNoTeamPath;
         break;
-      case "Test Auto":
-        path = testAutoPath;
+      case "New Test Auto":
+        path = testAuto2Path;
+        break;
+      case "Copy of New Test Auto":
+        path = testAuto2Path;
         break;
     }
 
     path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
-
     // SmartDashboard.putNumber("Ending Point X", path.getPoint(1).position.getX());
     // SmartDashboard.putNumber("Ending Point Y", path.getPoint(1).position.getY());
    
@@ -180,21 +193,25 @@ public class RobotContainer {
     s_Swerve.setPose(startingPose);
     s_Swerve.setHeading(Rotation2d.fromDegrees(0));
     // AlignPosition.setPosition(AlignPosition.SpeakerPos);
-    return AutoBuilder.followPath(path);//.alongWith(new FlyWheelCommand());
+    return AutoBuilder.buildAuto("Copy of New Test Auto");
+
+    // return AutoBuilder.followPath(path);
+    
   }
 
   private void configureBindings() {
 
     elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
-    flyWheel.whileTrue(new FlyWheelCommand());
-    zeroGyro.whileTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
+    flyWheel.whileTrue(new FlyWheelCommand(-1));
+    ampFlyWheel.whileTrue(new FlyWheelCommand(-.15));
+    zeroGyro.onTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    autoAlignSpeaker.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
-    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
-    autoAlignNote.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
+    autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
+    autoAlignAmp.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
+    autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
     s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand());
