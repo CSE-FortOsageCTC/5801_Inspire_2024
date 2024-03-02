@@ -50,15 +50,15 @@ public class IntakeSubsystem extends SubsystemBase{
         return !intakeSensor.get();
     }
 
+    //Sets the LEDs to orange when theres a note in the intake
     @Override
     public void periodic(){
         if (isRingDetected()){
             ledSubsystem.SetLEDs(0.65);
-            
         }
         else {
             ledSubsystem.SetLEDs(0.99);
         }
-
+        SmartDashboard.putBoolean("Has Note", isRingDetected());
     }
 }
