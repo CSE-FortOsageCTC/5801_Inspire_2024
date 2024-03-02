@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -70,17 +71,9 @@ public class DefaultTeleop extends Command{
 
     @Override
     public void execute() { 
-
-        double kP = SmartDashboard.getNumber("Auto Rotate kP", 0);
-        double kI = SmartDashboard.getNumber("Auto Rotate kI", 0);
-        double kD = SmartDashboard.getNumber("Auto Rotate kD", 0);
-        rotationPidController.setP(kP);
-        rotationPidController.setP(kI);
-        rotationPidController.setP(kD);
-
-        
-        double yAxis = DriverStation.getAlliance().get().equals(Alliance.Red) ? -driver.getRawAxis(translationSup) : driver.getRawAxis(translationSup);
-        double xAxis = DriverStation.getAlliance().get().equals(Alliance.Red) ? -driver.getRawAxis(strafeSup) : driver.getRawAxis(strafeSup);
+        Alliance alliance = DriverStation.getAlliance().get();
+        double yAxis = alliance.equals(Alliance.Red) ? -driver.getRawAxis(translationSup) : driver.getRawAxis(translationSup);
+        double xAxis = alliance.equals(Alliance.Red) ? -driver.getRawAxis(strafeSup) : driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
         alignPose = AlignPosition.getAlignPose();
         
@@ -103,27 +96,30 @@ public class DefaultTeleop extends Command{
 
         double throttleAxis = driver.getRawAxis(throttle);
 
-        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .1 : throttleAxis;
+        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .15 : throttleAxis;
         rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? 0 : rotationAxis;
 
         if (rotationAxis != 0) {
             AlignPosition.setPosition(AlignPosition.Manual);
         }
 
-        if (AlignPosition.getPosition() == AlignPosition.Manual) {
+        if (AlignPosition.getPosition().equals(AlignPosition.Manual)) {
             rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
+            robotCentricSup = true;
         } else if (AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
             rotationVal = s_DefaultTeleop.s_Swerve.rotateToSpeaker(); // s_AutoRotateUtil.calculateRotationSpeed();
+            robotCentricSup = true;
         } else if (AlignPosition.getPosition().equals(AlignPosition.AmpPos)) {
             rotationVal = s_DefaultTeleop.s_Swerve.rotateToAmp();
+            robotCentricSup = true;
+            
         } else if (AlignPosition.getPosition().equals(AlignPosition.AutoPickup)) {
-            rotationVal = s_DefaultTeleop.s_Swerve.rotateToNote();
-        } else if (AlignPosition.getPosition().equals(AlignPosition.SourcePos)) {
-            rotationVal = s_DefaultTeleop.s_Swerve.rotateToNote(); //rotateToSource();
+           rotationVal = s_DefaultTeleop.s_Swerve.rotateToNote();
+           robotCentricSup = false;
         } else {
             rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
+            robotCentricSup = true;
         }
-
         
         
 
@@ -138,7 +134,6 @@ public class DefaultTeleop extends Command{
 
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(-Constants.Swerve.maxSpeed * throttleCalc);
 
-        double rotationSpeed = s_DefaultTeleop.s_Swerve.rotateToNote();
         //SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
 
         s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
