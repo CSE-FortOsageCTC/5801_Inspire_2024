@@ -23,7 +23,6 @@ public class IntakeInCommand extends Command{
         return false;
 
     }
-    
 
     @Override
     public void end(boolean isFinished) {
