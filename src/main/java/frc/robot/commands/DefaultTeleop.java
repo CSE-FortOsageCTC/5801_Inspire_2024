@@ -59,7 +59,7 @@ public class DefaultTeleop extends Command{
         strafeSup = XboxController.Axis.kLeftX.value;
         rotationSup = XboxController.Axis.kRightX.value;
         robotCentricSup = true;
-        addRequirements(s_DefaultTeleop);
+        addRequirements(s_DefaultTeleop.s_Swerve);
 
     }
 

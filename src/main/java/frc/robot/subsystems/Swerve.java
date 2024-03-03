@@ -89,8 +89,8 @@ public class Swerve extends SubsystemBase{
                 () -> Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(.5,0,0 ), // Translation PID constants
-                        new PIDConstants(.08,0,0), // Rotation PID constants
+                        new PIDConstants(.4,0,0 ), // Translation PID constants
+                        new PIDConstants(7,0,0), // Rotation PID constants
                         Constants.Swerve.maxSpeed, // Max module speed, in m/s
                         Units.inchesToMeters(Constants.Swerve.wheelBase/2), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -100,12 +100,12 @@ public class Swerve extends SubsystemBase{
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    //var alliance = DriverStation.getAlliance();
+                    var alliance = DriverStation.getAlliance();
+                    //return false;
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
                     return false;
-                    // if (alliance.isPresent()) {
-                    //     return alliance.get() == DriverStation.Alliance.Red;
-                    // }
-                    // return false;
                 },
                 this); // Reference to this subsystem to set requirements
 
@@ -274,20 +274,22 @@ public class Swerve extends SubsystemBase{
         
         // robotRelativeSpeeds.vxMetersPerSecond *= -1;
         // robotRelativeSpeeds.vyMetersPerSecond *= -1; 
-        if (AlignPosition.getPosition() == AlignPosition.SpeakerPos){
-            robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
-        }
+        // if (AlignPosition.getPosition() == AlignPosition.SpeakerPos){
+        //     robotRelativeSpeeds.omegaRadiansPerSecond = rotateToSpeaker();
+        // }
         
-        else if (AlignPosition.getPosition() == AlignPosition.AutoPickup){
-            robotRelativeSpeeds.omegaRadiansPerSecond = rotateToNote();        
-        }
+        // else if (AlignPosition.getPosition() == AlignPosition.AutoPickup){
+        //     robotRelativeSpeeds.omegaRadiansPerSecond = rotateToNote();        
+        // }
 
-        else
-        {
-            robotRelativeSpeeds.omegaRadiansPerSecond =  0;
-        }
-        
-        
+        // else
+        // {
+        //     //robotRelativeSpeeds.omegaRadiansPerSecond =  0;
+        //     robotRelativeSpeeds.omegaRadiansPerSecond *=  -1;
+        // }
+
+        robotRelativeSpeeds.omegaRadiansPerSecond *= -1;
+
         ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, .02);
         SwerveModuleState[] setpointStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(discreteSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.Swerve.maxSpeed);
@@ -298,13 +300,14 @@ public class Swerve extends SubsystemBase{
     }
 
     public double rotateToSpeaker(){
-
+        double xDiff = 0;
+        double yDiff = 0;
         Pose2d botPose = getLimelightBotPose();
         SmartDashboard.putNumber("limelightBotPose X", botPose.getX());
         SmartDashboard.putNumber("limelightBotPose Y", botPose.getY());
-
-        double xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
-        double yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();
+        if (AlignPosition.getAlignPose() != null){
+            xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
+            yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();}
        
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
         // double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
@@ -386,9 +389,9 @@ public class Swerve extends SubsystemBase{
         //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         // }
         
-        // double odometryX = swerveEstimator.getEstimatedPosition().getX();
-        // double odometryY = swerveEstimator.getEstimatedPosition().getY();
-        // SmartDashboard.putNumber("Odometry X", odometryX);
-        // SmartDashboard.putNumber("Odometry Y", odometryY);
+        double odometryX = swerveEstimator.getEstimatedPosition().getX();
+        double odometryY = swerveEstimator.getEstimatedPosition().getY();
+        SmartDashboard.putNumber("Odometry X", odometryX);
+        SmartDashboard.putNumber("Odometry Y", odometryY);
     }
 }

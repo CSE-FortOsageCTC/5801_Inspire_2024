@@ -46,9 +46,9 @@ public class ElevatorDefaultCommand extends Command{
         double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
-        // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
-        // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
-        // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
+        ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
+        distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
+        distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
 
 
         double feetDistance = Units.metersToFeet(distance);

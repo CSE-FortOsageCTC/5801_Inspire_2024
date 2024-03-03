@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -102,8 +104,6 @@ public class RobotContainer {
     AlignPosition.setPosition(AlignPosition.Manual);
 
     //Register Named Commands
-    
-
     NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
     NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignmentTransitions.scheduleIntake()));
@@ -132,13 +132,8 @@ public class RobotContainer {
     //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
     autoChooser.setDefaultOption("4 piece path left", "4 piece path left");
     autoChooser.addOption("6 piece path", "6 piece path");
-    autoChooser.addOption("3 piece auto James", "3-Piece Auto");
-    autoChooser.addOption("3 piece auto Matthew", "3 piece pickup by MB");
-    autoChooser.addOption("Blue Top Score", "Blue Top Score");
-    autoChooser.addOption("Rotate", "Rotate");
-    autoChooser.addOption("7 piece path", "7 piece path");
     autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
-    autoChooser.addOption("Test Auto", "New Test Auto");
+    autoChooser.addOption("New Test Auto", "New Test Auto");
     autoChooser.addOption("Copy of New Test Auto", "Copy of New Test Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -148,37 +143,24 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
-    PathPlannerAuto auto = null;
+    String auto = null;
     //Rotation2d rotation = new Rotation2d(-57.6);
     // s_Swerve.setHeading(rotation);
-
     switch (autoChooser.getSelected()) {
       case "4 piece path left":
-        path = fourPiecePathLeft;
+        auto = "4 piece auto left";
         break;
       case "6 piece path":
-        path = sixPiecePath;
-        break;
-      case "3 piece pickup by MB":
-        path = threePiecePathMB;
-        break;
-      case "Blue Top Score":
-        path = blueTopScorePath;
-        break;
-      case "Rotate":
-        path = rotatePath;
-        break;
-      case "7 piece path":
-        path = sevenPiecePath;
+        auto = "6 piece auto";
         break;
       case "4 piece auto no team path":
-        path = fourPieceNoTeamPath;
+        auto = "4 piece no team auto";
         break;
       case "New Test Auto":
-        path = testAuto2Path;
+        auto = "New Test Auto";
         break;
       case "Copy of New Test Auto":
-        path = testAuto2Path;
+        auto = "Copy of New Test Auto";
         break;
     }
 
@@ -188,12 +170,14 @@ public class RobotContainer {
    
     // SmartDashboard.putNumber("Starting Point X", path.getPoint(0).position.getX());
     // SmartDashboard.putNumber("Starting Point Y", path.getPoint(0).position.getY());
+    // Pose2d startingPose = AutoBuilder.getStartingPoseFromJson();//path.getPreviewStartingHolonomicPose();
+    // s_Swerve.setPose(startingPose);
 
-    Pose2d startingPose = path.getPreviewStartingHolonomicPose();
-    s_Swerve.setPose(startingPose);
-    s_Swerve.setHeading(Rotation2d.fromDegrees(0));
+    //s_Swerve.setHeading(Rotation2d.fromDegrees(0));
     // AlignPosition.setPosition(AlignPosition.SpeakerPos);
-    return AutoBuilder.buildAuto("Copy of New Test Auto");
+    Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile(auto);
+    s_Swerve.setHeading(startPose.getRotation());
+    return AutoBuilder.buildAuto(auto);
 
     // return AutoBuilder.followPath(path);
     
@@ -212,7 +196,7 @@ public class RobotContainer {
     autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
     autoAlignAmp.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
     autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
-    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
+    s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand());
     //shootButton.whileTrue(new ShootCommand(operator));
