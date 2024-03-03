@@ -2,19 +2,31 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.1017816321346934,
-      "y": 6.714031713777714
+      "x": 0.8099299203965142,
+      "y": 6.637928410024977
     },
-    "rotation": 50.86960044301473
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.2
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "4 piece auto no team path"
+            "pathName": "WORKING 4 piece auto no team path"
           }
         }
       ]
