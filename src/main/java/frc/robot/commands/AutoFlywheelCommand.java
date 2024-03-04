@@ -19,13 +19,13 @@ public class AutoFlywheelCommand extends Command{
     public void execute(){
         shooterSubsystem.setFlyWheels(-1);
         count += 1;
-        if (count > 60){
+        if (count > 35){
             new AutoShootCommand().schedule();
         }
     }
     @Override
     public boolean isFinished(){
-        return count > 70;
+        return count > 40;
     }
     @Override
     public void end(boolean end){
