@@ -50,18 +50,12 @@ public class RobotContainer {
   private SendableChooser<String> autoChooser;
 
   // Path planner paths
-  private PathPlannerPath sixPiecePath;
-  private PathPlannerPath fourPiecePathLeft;
-  private PathPlannerPath threePiecePathMB;
-  private PathPlannerPath blueCenterScorePath;
-  private PathPlannerPath blueTopStartPath;
-  private PathPlannerPath blueTopScorePath;
-  private PathPlannerPath blueFinishCentralPath;
-  private PathPlannerPath rotatePath;
-  private PathPlannerPath sevenPiecePath;
-  private PathPlannerPath fourPieceNoTeamPath;
-  private PathPlannerPath testAutoPath;
-  private PathPlannerPath testAuto2Path;
+  private PathPlannerPath redLeft4PiecePath;
+  private PathPlannerPath redMid4PiecePath;
+  private PathPlannerPath blueRight4PiecePath;
+  private PathPlannerPath redLeft4CenterPiecePath;
+
+
 
 
   /* Drive Controls */
@@ -107,21 +101,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
     NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignmentTransitions.scheduleIntake()));
+
+    NamedCommands.registerCommand("Intake Only", new InstantCommand(() -> AlignmentTransitions.scheduleOnlyIntake()));
     
 
     //Set up PathPlannerPaths
-    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
-    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
-    threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
-    blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
-    blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
-    blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
-    blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
-    rotatePath = PathPlannerPath.fromPathFile("Rotate");
-    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
-    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
-    testAutoPath = PathPlannerPath.fromPathFile("Test Auto");
-    testAuto2Path = PathPlannerPath.fromPathFile("Test Auto 2");
+    redLeft4PiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 piece path");
+    redMid4PiecePath = PathPlannerPath.fromPathFile("RED MID 4 piece path");
+    blueRight4PiecePath = PathPlannerPath.fromPathFile("BLUE RIGHT 4 piece path");
+    redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
+
   
 
 
@@ -129,12 +118,11 @@ public class RobotContainer {
 
     //Build, Update, and Close the autoChooser
     autoChooser = new SendableChooser<>();
-    //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
-    autoChooser.setDefaultOption("4 piece path left", "4 piece path left");
-    autoChooser.addOption("6 piece path", "6 piece path");
-    autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
-    autoChooser.addOption("New Test Auto", "New Test Auto");
-    autoChooser.addOption("Copy of New Test Auto", "Copy of New Test Auto");
+
+    autoChooser.addOption("BLUE RIGHT 4 piece", "BLUE RIGHT 4 piece auto");
+    autoChooser.addOption("RED LEFT 4 piece", "RED LEFT 4 piece auto");
+    autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
+    autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -147,20 +135,21 @@ public class RobotContainer {
     //Rotation2d rotation = new Rotation2d(-57.6);
     // s_Swerve.setHeading(rotation);
     switch (autoChooser.getSelected()) {
-      case "4 piece path left":
-        auto = "4 piece auto left";
+      case "BLUE RIGHT 4 piece auto":
+        auto = "BLUE RIGHT 4 piece auto";
+        path = blueRight4PiecePath;
         break;
-      case "6 piece path":
-        auto = "6 piece auto";
+      case "RED LEFT 4 piece auto":
+        auto = "RED LEFT 4 piece auto";
+        path = redLeft4PiecePath;
         break;
-      case "4 piece auto no team path":
-        auto = "4 piece no team auto";
+      case "MID 4 piece auto":
+        auto = "MID 4 piece auto";
+        path = redMid4PiecePath;
         break;
-      case "New Test Auto":
-        auto = "New Test Auto";
-        break;
-      case "Copy of New Test Auto":
-        auto = "Copy of New Test Auto";
+      case "RED LEFT 4 center piece auto":
+        auto = "RED LEFT 4 center piece auto";
+        path = redLeft4CenterPiecePath;
         break;
     }
 
@@ -176,7 +165,7 @@ public class RobotContainer {
     //s_Swerve.setHeading(Rotation2d.fromDegrees(0));
     // AlignPosition.setPosition(AlignPosition.SpeakerPos);
     Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile(auto);
-    s_Swerve.setHeading(startPose.getRotation());
+    s_Swerve.setHeading(path.getPreviewStartingHolonomicPose().getRotation());
     return AutoBuilder.buildAuto(auto);
 
     // return AutoBuilder.followPath(path);

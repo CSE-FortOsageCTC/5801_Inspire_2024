@@ -10,6 +10,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import java.sql.Driver;
+
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -80,7 +82,7 @@ public class Swerve extends SubsystemBase{
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
         swerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d(0, 0, new Rotation2d()));
 
-        swerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(.5)));
+        swerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(.5)));
 
          AutoBuilder.configureHolonomic(
                 //this::getLimelightBotPose, // Robot pose supplier
@@ -121,6 +123,7 @@ public class Swerve extends SubsystemBase{
     public double getVelocityCorrectionDistance(double distance, ChassisSpeeds speeds){
         double noteAirTime = distance / 10.415;
         double robotDistance = noteAirTime * speeds.vyMetersPerSecond;
+        robotDistance = DriverStation.getAlliance().equals(Alliance.Red)? robotDistance * 0 : robotDistance;
         return robotDistance + distance;
     }
     public double getVelocityCorrection(double distance, ChassisSpeeds speeds){
@@ -189,8 +192,9 @@ public class Swerve extends SubsystemBase{
         // return swerveEstimator.getEstimatedPosition();
     }
     public Pose2d getLimelightBotPose(){
+        
         Pose2d currentPose = getEstimatedPosition();
-        if (s_Limelight.getArea() >= 0.15 || RobotState.isDisabled()) {
+        if (!DriverStation.isAutonomous() && s_Limelight.getArea() >= 0.2) {
             Pose2d visionPose = s_Limelight.getBotPose();
 
             // if ((visionPose.getX() != 0 && visionPose.getY() != 0 && Math.abs(currentPose.getX() - visionPose.getX()) < 1 && Math.abs(currentPose.getY() - visionPose.getY()) < 1) || RobotState.isDisabled()) {

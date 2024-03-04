@@ -58,11 +58,11 @@ public class AngleShooterUtil {
     // double downI = SmartDashboard.getNumber("Down I", 0.0);
     // double downD = SmartDashboard.getNumber("Down D", 0.0);
 
-    this.upPidController.setP(.09);
+    this.upPidController.setP(.2); // 0.09
     this.upPidController.setI(0);
     this.upPidController.setD(0);
 
-    this.downPidController.setP(.05);
+    this.downPidController.setP(.2); // 0.05
     this.downPidController.setI(0);
     this.downPidController.setD(0);
 
@@ -78,6 +78,7 @@ public class AngleShooterUtil {
     else {
         speed = downPidController.calculate(m_encoderDiff, 0);
     }
+
     speed = MathUtil.clamp(speed, -1, 1);
     //SmartDashboard.putNumber(("Elevator Speed"), speed);
 

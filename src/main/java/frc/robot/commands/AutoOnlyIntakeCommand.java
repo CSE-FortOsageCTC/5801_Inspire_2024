@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
-public class AutoIntakeCommand extends Command{
+public class AutoOnlyIntakeCommand extends Command{
     IntakeSubsystem intakeSubsystem;
     double count;
     int detectedDelayCount;
 
-    public AutoIntakeCommand(){
+    public AutoOnlyIntakeCommand(){
     intakeSubsystem = IntakeSubsystem.getInstance();
     count = 0;
     detectedDelayCount = 0;
@@ -36,7 +36,6 @@ public class AutoIntakeCommand extends Command{
     public void end(boolean isFinished) {
         count = 0;
         intakeSubsystem.intakeStop();
-        AlignmentTransitions.scheduleShoot();
     }
 
 }

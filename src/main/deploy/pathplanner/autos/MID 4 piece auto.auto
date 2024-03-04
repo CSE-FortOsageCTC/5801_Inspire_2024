@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8099299203965142,
-      "y": 6.637928410024977
+      "x": 1.323928801703758,
+      "y": 5.580559282764361
     },
-    "rotation": 60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.2
+            "waitTime": 0.45
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "WORKING 4 piece auto no team path"
+            "pathName": "MID 4 piece path"
           }
         }
       ]
