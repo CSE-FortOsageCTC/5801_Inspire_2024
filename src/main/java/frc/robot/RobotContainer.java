@@ -64,6 +64,7 @@ public class RobotContainer {
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   private ClimbingSubsystem s_ClimbingSubsystem = ClimbingSubsystem.getInstance();
   private ElevatorSubsystem s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
+  private LEDSubsystem s_LEDSubsystem = LEDSubsystem.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -119,7 +120,7 @@ public class RobotContainer {
     //Build, Update, and Close the autoChooser
     autoChooser = new SendableChooser<>();
 
-    autoChooser.addOption("BLUE RIGHT 4 piece", "BLUE RIGHT 4 piece auto");
+    autoChooser.setDefaultOption("BLUE RIGHT 4 piece", "BLUE RIGHT 4 piece auto");
     autoChooser.addOption("RED LEFT 4 piece", "RED LEFT 4 piece auto");
     autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
     autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
@@ -127,6 +128,34 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
     configureBindings();
+  }
+
+  public Pose2d getStartingPosition() {
+    PathPlannerPath path = null;
+    
+    switch (autoChooser.getSelected()) {
+      case "BLUE RIGHT 4 piece auto":
+        path = blueRight4PiecePath;
+        break;
+      case "RED LEFT 4 piece auto":
+        path = redLeft4PiecePath;
+        break;
+      case "MID 4 piece auto":
+        path = redMid4PiecePath;
+        break;
+      case "RED LEFT 4 center piece auto":
+        path = redLeft4CenterPiecePath;
+        break;
+    }
+    return path.getPreviewStartingHolonomicPose();
+  } 
+
+  public Swerve getSwerve() {
+    return s_Swerve;
+  }
+
+  public LEDSubsystem getLEDSub() {
+    return s_LEDSubsystem;
   }
 
   public Command getAutonomousCommand() {
