@@ -28,7 +28,6 @@ public enum AlignPosition {
 
                 if(alignPose == null){
                     boolean isRed = Constants.isRedAlliance;
-                    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
                     //layout.setOrigin(new Pose3d(0,0,0, new Rotation3d()));
                     switch(alignPosition){
                         case AmpPos:
@@ -72,18 +71,17 @@ public enum AlignPosition {
 
             public static void setPosition(AlignPosition alignPos){
                 alignPosition = alignPos;
-                AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
                         case AmpPos:
-                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323), Rotation2d.fromDegrees(90)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323), Rotation2d.fromDegrees(90));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323), Rotation2d.fromDegrees(270));
                             break;
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), null);
                             //alignPose = isRed? layout.getTagPose(4).get().toPose2d() : layout.getTagPose(7).get().toPose2d();
                             break;
                         case SourcePos:
+
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(-145)): new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(-55));
                             break;
                         case ClimbPos:

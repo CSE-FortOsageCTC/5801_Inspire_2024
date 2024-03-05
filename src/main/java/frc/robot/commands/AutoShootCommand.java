@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import javax.swing.GroupLayout.Alignment;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,21 +25,21 @@ public class AutoShootCommand extends Command {
     public void execute(){
         counter += 1;
         m_ShooterSubsystem.setKicker();
-        if (counter > 10){
+        if (counter > 5){
          m_ShooterSubsystem.resetKicker();}
     }
 
     @Override
     public boolean isFinished(){
-        return counter > 20;
+        return counter > 10;
     }
     
     @Override
     public void end(boolean isFinished){
         counter = 0;
-        //AlignPosition.setPosition(AlignPosition.AutoPickup);
+        AlignmentTransitions.transitionToNote();
         m_ShooterSubsystem.setFlyWheels(0);
-        Swerve.getInstance().resetAutoRotateUtil();
+        //Swerve.getInstance().resetAutoRotateUtil();
     }
 }
 

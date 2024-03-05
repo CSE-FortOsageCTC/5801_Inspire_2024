@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class SkyLimelight extends SubsystemBase {
 
     private NetworkTableEntry botPoseEntry;
+    private Pose2d botPose;
     private NetworkTable table;
     private NetworkTableEntry tid, tv, tx, ty, ta, ts;
     public NetworkTableEntry ts0, ts1, ts2;
@@ -34,6 +35,7 @@ public class SkyLimelight extends SubsystemBase {
      * Constructs Limelight Class
      */
     private SkyLimelight() {
+        botPose = new Pose2d();
         table = NetworkTableInstance.getDefault().getTable("limelight-sky");
         table.getEntry("pipeline").setNumber(1);
         botPoseEntry = table.getEntry("botpose");
@@ -138,14 +140,24 @@ public class SkyLimelight extends SubsystemBase {
      *  Returns 0 for all values if no Apriltag detected
      */
     public Pose2d getBotPose() {
+        return botPose;
+    }
+
+    public void UpdateBotPose(){
         botPoseEntry = table.getEntry("botpose_wpiblue");
         double[] botpose = botPoseEntry.getDoubleArray(new double[7]);
         Pose2d visionPose = new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees((botpose[5] + 360) % 360));
         this.lastBotPoseTimestamp = Timer.getFPGATimestamp() - (botpose[6] / 1000);
-        return visionPose;
+        botPose = visionPose;
     }
+
 
     public double getLastBotPoseTimestamp(){
         return this.lastBotPoseTimestamp;
+    }
+
+    @Override
+    public void periodic(){
+        UpdateBotPose();
     }
 }

@@ -4,8 +4,13 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import org.json.simple.JSONObject;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,11 +23,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 
 
@@ -32,7 +39,7 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 
@@ -43,17 +50,12 @@ public class RobotContainer {
   private SendableChooser<String> autoChooser;
 
   // Path planner paths
-  private PathPlannerPath sixPiecePath;
-  private PathPlannerPath fourPiecePathLeft;
-  private PathPlannerPath threePiecePathMB;
-  private PathPlannerPath blueCenterScorePath;
-  private PathPlannerPath blueTopStartPath;
-  private PathPlannerPath blueTopScorePath;
-  private PathPlannerPath blueFinishCentralPath;
-  private PathPlannerPath rotatePath;
-  private PathPlannerPath sevenPiecePath;
-  private PathPlannerPath fourPieceNoTeamPath;
-  private PathPlannerPath testAutoPath;
+  private PathPlannerPath redLeft4PiecePath;
+  private PathPlannerPath redMid4PiecePath;
+  private PathPlannerPath blueRight4PiecePath;
+  private PathPlannerPath redLeft4CenterPiecePath;
+
+
 
 
   /* Drive Controls */
@@ -81,6 +83,7 @@ public class RobotContainer {
   private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
   private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
 
@@ -88,47 +91,38 @@ public class RobotContainer {
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
 
   private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
-  private final POVButton upDPad = new POVButton(operator, 0);
-  private final POVButton downDPad = new POVButton(operator, 180);
+  private final POVButton climbersUp = new POVButton(operator, 0);
+  private final POVButton climbersDown = new POVButton(operator, 180);
  
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
 
     //Register Named Commands
-    
-
     NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
     NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignmentTransitions.scheduleIntake()));
 
+    NamedCommands.registerCommand("IntakeOnly", new InstantCommand(() -> AlignmentTransitions.scheduleOnlyIntake()));
+    
+
     //Set up PathPlannerPaths
-    sixPiecePath = PathPlannerPath.fromPathFile("6 piece path"); 
-    fourPiecePathLeft = PathPlannerPath.fromPathFile("4 piece path left");
-    threePiecePathMB = PathPlannerPath.fromPathFile("3 piece by MB path");
-    blueCenterScorePath = PathPlannerPath.fromPathFile("Blue Center Score");
-    blueTopStartPath = PathPlannerPath.fromPathFile("Blue Top Start");
-    blueTopScorePath = PathPlannerPath.fromPathFile("Blue Top Score");
-    blueFinishCentralPath = PathPlannerPath.fromPathFile("Blue Finish Central");
-    rotatePath = PathPlannerPath.fromPathFile("Rotate");
-    sevenPiecePath = PathPlannerPath.fromPathFile("7 piece path");
-    fourPieceNoTeamPath = PathPlannerPath.fromPathFile("4 piece auto no team path");
-    testAutoPath = PathPlannerPath.fromPathFile("Test Auto");
+    redLeft4PiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 piece path");
+    redMid4PiecePath = PathPlannerPath.fromPathFile("RED MID 4 piece path");
+    blueRight4PiecePath = PathPlannerPath.fromPathFile("BLUE RIGHT 4 piece path");
+    redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
+
+  
 
 
 
 
     //Build, Update, and Close the autoChooser
     autoChooser = new SendableChooser<>();
-    //autoChooser = AutoBuilder.buildAutoChooser("3-Piece Auto");
-    autoChooser.setDefaultOption("4 piece path left", "4 piece path left");
-    autoChooser.addOption("6 piece path", "6 piece path");
-    autoChooser.addOption("3 piece auto James", "3-Piece Auto");
-    autoChooser.addOption("3 piece auto Matthew", "3 piece pickup by MB");
-    autoChooser.addOption("Blue Top Score", "Blue Top Score");
-    autoChooser.addOption("Rotate", "Rotate");
-    autoChooser.addOption("7 piece path", "7 piece path");
-    autoChooser.addOption("4 piece no team path", "4 piece auto no team path");
-    autoChooser.addOption("Test Auto", "Test Auto");
+
+    autoChooser.addOption("BLUE RIGHT 4 piece", "BLUE RIGHT 4 piece auto");
+    autoChooser.addOption("RED LEFT 4 piece", "RED LEFT 4 piece auto");
+    autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
+    autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -137,72 +131,68 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     PathPlannerPath path = null;
-
+    String auto = null;
     //Rotation2d rotation = new Rotation2d(-57.6);
     // s_Swerve.setHeading(rotation);
-
     switch (autoChooser.getSelected()) {
-      case "4 piece path left":
-        path = fourPiecePathLeft;
+      case "BLUE RIGHT 4 piece auto":
+        auto = "BLUE RIGHT 4 piece auto";
+        path = blueRight4PiecePath;
         break;
-      case "6 piece path":
-        path = sixPiecePath;
+      case "RED LEFT 4 piece auto":
+        auto = "RED LEFT 4 piece auto";
+        path = redLeft4PiecePath;
         break;
-      case "3 piece pickup by MB":
-        path = threePiecePathMB;
+      case "MID 4 piece auto":
+        auto = "MID 4 piece auto";
+        path = redMid4PiecePath;
         break;
-      case "Blue Top Score":
-        path = blueTopScorePath;
-        break;
-      case "Rotate":
-        path = rotatePath;
-        break;
-      case "7 piece path":
-        path = sevenPiecePath;
-        break;
-      case "4 piece auto no team path":
-        path = fourPieceNoTeamPath;
-        break;
-      case "Test Auto":
-        path = testAutoPath;
+      case "RED LEFT 4 center piece auto":
+        auto = "RED LEFT 4 center piece auto";
+        path = redLeft4CenterPiecePath;
         break;
     }
 
     path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
-
     // SmartDashboard.putNumber("Ending Point X", path.getPoint(1).position.getX());
     // SmartDashboard.putNumber("Ending Point Y", path.getPoint(1).position.getY());
    
     // SmartDashboard.putNumber("Starting Point X", path.getPoint(0).position.getX());
     // SmartDashboard.putNumber("Starting Point Y", path.getPoint(0).position.getY());
+    // Pose2d startingPose = AutoBuilder.getStartingPoseFromJson();//path.getPreviewStartingHolonomicPose();
+    // s_Swerve.setPose(startingPose);
 
-    Pose2d startingPose = path.getPreviewStartingHolonomicPose();
-    s_Swerve.setPose(startingPose);
-    s_Swerve.setHeading(Rotation2d.fromDegrees(0));
+    //s_Swerve.setHeading(Rotation2d.fromDegrees(0));
     // AlignPosition.setPosition(AlignPosition.SpeakerPos);
-    return AutoBuilder.followPath(path);//.alongWith(new FlyWheelCommand());
+    Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile(auto);
+    s_Swerve.setHeading(path.getPreviewStartingHolonomicPose().getRotation());
+    return AutoBuilder.buildAuto(auto);
+
+    // return AutoBuilder.followPath(path);
+    
   }
 
   private void configureBindings() {
 
     elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
-    flyWheel.whileTrue(new FlyWheelCommand());
-    zeroGyro.whileTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
+    flyWheel.whileTrue(new FlyWheelCommand(-1));
+    ampFlyWheel.whileTrue(new FlyWheelCommand(-.15));
+    zeroGyro.onTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    autoAlignSpeaker.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
-    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
-    autoAlignNote.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
-    s_DefaultTeleopSub.setDefaultCommand(new DefaultTeleop(driver, operator));
+    autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
+    autoAlignAmp.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
+    autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
+    s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand());
     //shootButton.whileTrue(new ShootCommand(operator));
-    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
+    //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     resetClimbers.whileTrue(new ClimbReset(-0.75, -0.75));
-    // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
-    // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
+    climbersUp.whileTrue(new ClimbReset(0.5, 0.5));
+    climbersDown.whileTrue(new ClimbReset(-0.5, -0.5));
   
   }
 

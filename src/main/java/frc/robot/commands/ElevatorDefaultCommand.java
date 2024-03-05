@@ -35,16 +35,15 @@ public class ElevatorDefaultCommand extends Command{
     }    
 
     @Override    
-    public void execute(){
-    
-        Pose2d botPose = s_Swerve.getLimelightBotPose();
+    public void execute(){ 
+        Pose2d lightBotPose = s_Swerve.getLimelightBotPose();
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
         //SmartDashboard.putBoolean("Is Red Alliance", isRed);
 
-        double xDiff = botPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
-        double yDIff = botPose.getY() - Units.inchesToMeters(218.42);
+        double xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
+        double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
@@ -52,7 +51,7 @@ public class ElevatorDefaultCommand extends Command{
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
 
 
-        double feetDistance = Units.metersToFeet(distance);
+        //double feetDistance = Units.metersToFeet(distance);
 
         //SmartDashboard.putNumber("Speaker Distance (ft.)", feetDistance);
 
