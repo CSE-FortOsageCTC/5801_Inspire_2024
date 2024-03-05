@@ -17,7 +17,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
   private LEDSubsystem() {
-    blinkin = new Spark(3);
+    blinkin = new Spark(1);
   }
 
   public void SetLEDs (double color) {
