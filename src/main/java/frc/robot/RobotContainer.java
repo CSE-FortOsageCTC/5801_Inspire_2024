@@ -91,8 +91,8 @@ public class RobotContainer {
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
 
   private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
-  private final POVButton upDPad = new POVButton(operator, 0);
-  private final POVButton downDPad = new POVButton(operator, 180);
+  private final POVButton climbersUp = new POVButton(operator, 0);
+  private final POVButton climbersDown = new POVButton(operator, 180);
  
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
@@ -102,7 +102,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Intake", new InstantCommand(() -> AlignmentTransitions.scheduleIntake()));
 
-    NamedCommands.registerCommand("Intake Only", new InstantCommand(() -> AlignmentTransitions.scheduleOnlyIntake()));
+    NamedCommands.registerCommand("IntakeOnly", new InstantCommand(() -> AlignmentTransitions.scheduleOnlyIntake()));
     
 
     //Set up PathPlannerPaths
@@ -189,10 +189,10 @@ public class RobotContainer {
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand());
     //shootButton.whileTrue(new ShootCommand(operator));
-    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
+    //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     resetClimbers.whileTrue(new ClimbReset(-0.75, -0.75));
-    // upDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(0.5, 0.5)));
-    // downDPad.whileTrue(new InstantCommand(() -> climbingSubsystem.climbControl(-0.5, -0.5)));
+    climbersUp.whileTrue(new ClimbReset(0.5, 0.5));
+    climbersDown.whileTrue(new ClimbReset(-0.5, -0.5));
   
   }
 

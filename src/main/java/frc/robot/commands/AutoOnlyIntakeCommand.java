@@ -7,12 +7,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class AutoOnlyIntakeCommand extends Command{
     IntakeSubsystem intakeSubsystem;
     double count;
-    int detectedDelayCount;
 
     public AutoOnlyIntakeCommand(){
     intakeSubsystem = IntakeSubsystem.getInstance();
     count = 0;
-    detectedDelayCount = 0;
     addRequirements(intakeSubsystem);
     }
 
@@ -20,15 +18,11 @@ public class AutoOnlyIntakeCommand extends Command{
     public void execute(){
         count += 1;
         intakeSubsystem.intakeIn();
-        if (intakeSubsystem.isRingDetected()) {
-            detectedDelayCount += 1;
-        }
-        
     }
 
     @Override
     public boolean isFinished() {
-        return detectedDelayCount > 5 || count > 70;
+        return count > 70;
     }
     
 
