@@ -194,7 +194,7 @@ public class Swerve extends SubsystemBase{
     public Pose2d getLimelightBotPose(){
         
         Pose2d currentPose = getEstimatedPosition();
-        if (!DriverStation.isAutonomous() && s_Limelight.getArea() >= 0.2) {
+        if (!DriverStation.isAutonomous() && s_Limelight.getArea() >= 0.15) {
             Pose2d visionPose = s_Limelight.getBotPose();
 
             // if ((visionPose.getX() != 0 && visionPose.getY() != 0 && Math.abs(currentPose.getX() - visionPose.getX()) < 1 && Math.abs(currentPose.getY() - visionPose.getY()) < 1) || RobotState.isDisabled()) {

@@ -54,7 +54,7 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         if (isRingDetected()){
-            ledSubsystem.SetLEDs(0.65);
+            ledSubsystem.SetLEDs(0.57);
         }
         else {
             ledSubsystem.SetLEDs(0.99);
