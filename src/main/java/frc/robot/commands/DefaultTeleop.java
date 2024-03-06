@@ -96,7 +96,7 @@ public class DefaultTeleop extends Command{
 
         double throttleAxis = driver.getRawAxis(throttle);
 
-        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .15 : throttleAxis;
+        throttleAxis = (Math.abs(throttleAxis) < Constants.stickDeadband) ? .2 : throttleAxis;
         rotationAxis = (Math.abs(rotationAxis) < Constants.stickDeadband) ? 0 : rotationAxis;
 
         if (rotationAxis != 0) {
