@@ -58,11 +58,11 @@ public class AngleShooterUtil {
     // double downI = SmartDashboard.getNumber("Down I", 0.0);
     // double downD = SmartDashboard.getNumber("Down D", 0.0);
 
-    this.upPidController.setP(.2); // 0.09
+    this.upPidController.setP(.15); // 0.09
     this.upPidController.setI(0);
     this.upPidController.setD(0);
 
-    this.downPidController.setP(.2); // 0.05
+    this.downPidController.setP(.15); // 0.05
     this.downPidController.setI(0);
     this.downPidController.setD(0);
 
