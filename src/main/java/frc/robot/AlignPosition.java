@@ -73,8 +73,8 @@ public enum AlignPosition {
                 alignPosition = alignPos;
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
-                        case AmpPos:
-                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323), Rotation2d.fromDegrees(270));
+                        case AmpPos:                                                                                    
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323 - 3), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323 - 3), Rotation2d.fromDegrees(270));
                             break;
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), null);

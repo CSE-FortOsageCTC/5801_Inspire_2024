@@ -1,12 +1,15 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AlignPosition;
@@ -21,10 +24,14 @@ public class ElevatorDefaultCommand extends Command{
     private AngleShooterUtil angleShooterUtil;
     private Swerve s_Swerve;
     private Pair<Double, Double> speakerCoordinate;
+    private int stickSup = XboxController.Axis.kLeftY.value;
+    
+    private Joystick operator;
 
-    public ElevatorDefaultCommand(){
+    public ElevatorDefaultCommand(Joystick operator){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
+        this.operator = operator;
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
     }
@@ -72,8 +79,17 @@ public class ElevatorDefaultCommand extends Command{
 
         //SmartDashboard.putNumber("Encoder Error", target);
     
-        angleShooterUtil.updateTargetDiff(target);
-        elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+        if (Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
+
+            elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+
+        } else if (Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
+
+            angleShooterUtil.updateTargetDiff(target);
+            elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+            
+        }
+        
     }
 
     @Override
