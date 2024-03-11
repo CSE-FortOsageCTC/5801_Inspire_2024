@@ -41,6 +41,11 @@ public class IntakeSubsystem extends SubsystemBase{
         upperIntake.set(TalonSRXControlMode.PercentOutput, 1);
     } 
 
+    public void intakeFix() {
+        lowerIntake.set(-1);
+        upperIntake.set(TalonSRXControlMode.PercentOutput, 0);
+    }
+
     public void intakeStop() {
         lowerIntake.set(0);
         upperIntake.set(TalonSRXControlMode.PercentOutput, 0);

@@ -54,6 +54,7 @@ public class RobotContainer {
   private PathPlannerPath redMid4PiecePath;
   private PathPlannerPath blueRight4PiecePath;
   private PathPlannerPath redLeft4CenterPiecePath;
+  private PathPlannerPath sideShootPassPath;
 
 
 
@@ -87,6 +88,7 @@ public class RobotContainer {
   private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
+  private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
 
   // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
@@ -111,6 +113,7 @@ public class RobotContainer {
     redMid4PiecePath = PathPlannerPath.fromPathFile("RED MID 4 piece path");
     blueRight4PiecePath = PathPlannerPath.fromPathFile("BLUE RIGHT 4 piece path");
     redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
+    sideShootPassPath = PathPlannerPath.fromPathFile("SIDE shoot and pass path");
 
   
 
@@ -124,6 +127,7 @@ public class RobotContainer {
     autoChooser.addOption("RED LEFT 4 piece", "RED LEFT 4 piece auto");
     autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
     autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
+    autoChooser.addOption("SIDE shoot and pass", "SIDE shoot and pass auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -145,6 +149,9 @@ public class RobotContainer {
         break;
       case "RED LEFT 4 center piece auto":
         path = redLeft4CenterPiecePath;
+        break;
+      case "SIDE shoot and pass auto":
+        path = sideShootPassPath;
         break;
     }
     return path.getPreviewStartingHolonomicPose();
@@ -180,6 +187,10 @@ public class RobotContainer {
         auto = "RED LEFT 4 center piece auto";
         path = redLeft4CenterPiecePath;
         break;
+      case "SIDE shoot and pass auto":
+        auto = "SIDE shoot and pass auto";
+        path = sideShootPassPath;
+        break;
     }
 
     path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
@@ -212,16 +223,17 @@ public class RobotContainer {
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
-    autoAlignAmp.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
+    autoAlignAmp.whileTrue(new AmpCommand());
     autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
+    yButton.whileTrue(new FixIntakeCommand());
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
-    s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand());
+    s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand(operator));
     //shootButton.whileTrue(new ShootCommand(operator));
     //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    resetClimbers.whileTrue(new ClimbReset(-0.75, -0.75));
-    climbersUp.whileTrue(new ClimbReset(0.5, 0.5));
-    climbersDown.whileTrue(new ClimbReset(-0.5, -0.5));
+    resetClimbers.whileTrue(new ClimbReset(-1, -1));
+    climbersUp.whileTrue(new ClimbReset(1, 1));
+    climbersDown.whileTrue(new ClimbReset(-1, -1));
   
   }
 
