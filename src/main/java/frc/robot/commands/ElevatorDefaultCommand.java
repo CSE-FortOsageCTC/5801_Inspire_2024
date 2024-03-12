@@ -43,7 +43,7 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){ 
-        Pose2d lightBotPose = s_Swerve.getLimelightBotPose();
+        Pose2d lightBotPose = s_Swerve.getAutoLimelightBotPose();
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
