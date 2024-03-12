@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -20,6 +21,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private boolean isAligned = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -57,11 +59,13 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Pose2d relativePose = m_robotContainer.getSwerve().getLimelightBotPose().relativeTo(m_robotContainer.getStartingPosition());
-    if (relativePose.getX() < 0.1 && relativePose.getY() < 0.1) {
-      m_robotContainer.getLEDSub().SetLEDs(0.77);
+    if (Math.abs(relativePose.getX() - 0.3175) < 0.015 && Math.abs(relativePose.getY() + 0.1651) < 0.015) {
+      isAligned = true;
     } else {
-      m_robotContainer.getLEDSub().SetLEDs(0.61);
+      isAligned = false;
     }
+    
+    SmartDashboard.putBoolean("Auto Start Aligned?", isAligned);
 
   }
 

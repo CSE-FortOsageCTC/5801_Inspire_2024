@@ -210,7 +210,8 @@ public class Swerve extends SubsystemBase{
 
     public Pose2d getLimelightBotPose(){
         
-        if (!DriverStation.isAutonomous() && s_Limelight.getArea() >= 0.15) {
+        //Pose2d currentPose = getEstimatedPosition();
+        if ((DriverStation.isDisabled() || !DriverStation.isAutonomous()) && s_Limelight.getArea() >= 0.18) {
             Pose2d visionPose = s_Limelight.getBotPose();
 
             // if ((visionPose.getX() != 0 && visionPose.getY() != 0 && Math.abs(currentPose.getX() - visionPose.getX()) < 1 && Math.abs(currentPose.getY() - visionPose.getY()) < 1) || RobotState.isDisabled()) {
@@ -340,7 +341,7 @@ public class Swerve extends SubsystemBase{
         double angle = Units.radiansToDegrees(Math.atan2(yDiff, xDiff)) + 0;
         //double angle = (Units.radiansToDegrees(Math.atan2(yDiff, xDiff)+180)+360)%360;
 
-        double output = (((angle - correctedYaw() )) + 360) % 360;
+        double output = (((angle - correctedYaw())) + 360) % 360;
         //SmartDashboard.putNumber("Speaker Diff Output", output);
 
         s_AutoRotateUtil.updateTargetAngle(output); 

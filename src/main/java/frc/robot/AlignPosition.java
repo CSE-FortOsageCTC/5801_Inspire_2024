@@ -77,7 +77,7 @@ public enum AlignPosition {
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323 - 3), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323 - 3), Rotation2d.fromDegrees(270));
                             break;
                         case SpeakerPos:
-                            alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), null);
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42 - 6.5), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42 - 6.5), null);
                             //alignPose = isRed? layout.getTagPose(4).get().toPose2d() : layout.getTagPose(7).get().toPose2d();
                             break;
                         case SourcePos:
