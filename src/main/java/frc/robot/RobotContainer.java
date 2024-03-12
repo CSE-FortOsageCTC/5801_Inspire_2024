@@ -55,6 +55,7 @@ public class RobotContainer {
   private PathPlannerPath blueRight4PiecePath;
   private PathPlannerPath redLeft4CenterPiecePath;
   private PathPlannerPath sideShootPassPath;
+  private PathPlannerPath copyMid4PiecePath;
 
 
 
@@ -111,6 +112,7 @@ public class RobotContainer {
     //Set up PathPlannerPaths
     redLeft4PiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 piece path");
     redMid4PiecePath = PathPlannerPath.fromPathFile("RED MID 4 piece path");
+    copyMid4PiecePath = PathPlannerPath.fromPathFile("Copy of MID 4 piece path");
     blueRight4PiecePath = PathPlannerPath.fromPathFile("BLUE RIGHT 4 piece path");
     redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
     sideShootPassPath = PathPlannerPath.fromPathFile("SIDE shoot and pass path");
@@ -126,6 +128,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("BLUE RIGHT 4 piece", "BLUE RIGHT 4 piece auto");
     autoChooser.addOption("RED LEFT 4 piece", "RED LEFT 4 piece auto");
     autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
+    autoChooser.addOption("Copy of MID 4 piece", "Copy of MID 4 piece auto");
     autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
     autoChooser.addOption("SIDE shoot and pass", "SIDE shoot and pass auto");
 
@@ -147,6 +150,9 @@ public class RobotContainer {
       case "MID 4 piece auto":
         path = redMid4PiecePath;
         break;
+      case "Copy of MID 4 piece auto":
+        path = copyMid4PiecePath;
+        break;
       case "RED LEFT 4 center piece auto":
         path = redLeft4CenterPiecePath;
         break;
@@ -154,6 +160,9 @@ public class RobotContainer {
         path = sideShootPassPath;
         break;
     }
+    
+    path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
+
     return path.getPreviewStartingHolonomicPose();
   } 
 
@@ -183,6 +192,10 @@ public class RobotContainer {
         auto = "MID 4 piece auto";
         path = redMid4PiecePath;
         break;
+      case "Copy of MID 4 piece auto":
+        auto = "Copy of MID 4 piece auto";
+        path = copyMid4PiecePath;
+        break;
       case "RED LEFT 4 center piece auto":
         auto = "RED LEFT 4 center piece auto";
         path = redLeft4CenterPiecePath;
@@ -204,7 +217,7 @@ public class RobotContainer {
 
     //s_Swerve.setHeading(Rotation2d.fromDegrees(0));
     // AlignPosition.setPosition(AlignPosition.SpeakerPos);
-    Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile(auto);
+    // Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile(auto);
     s_Swerve.setHeading(path.getPreviewStartingHolonomicPose().getRotation());
     return AutoBuilder.buildAuto(auto);
 
