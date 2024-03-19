@@ -56,6 +56,8 @@ public class RobotContainer {
   private PathPlannerPath redLeft4CenterPiecePath;
   private PathPlannerPath sideShootPassPath;
   private PathPlannerPath copyMid4PiecePath;
+  private PathPlannerPath mid5PiecePath;
+  private PathPlannerPath copyMid5PiecePath;
 
 
 
@@ -116,6 +118,8 @@ public class RobotContainer {
     blueRight4PiecePath = PathPlannerPath.fromPathFile("BLUE RIGHT 4 piece path");
     redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
     sideShootPassPath = PathPlannerPath.fromPathFile("SIDE shoot and pass path");
+    mid5PiecePath = PathPlannerPath.fromPathFile("MID 5 piece path");
+    copyMid5PiecePath = PathPlannerPath.fromPathFile("Copy of MID 5 piece path");
 
   
 
@@ -131,6 +135,8 @@ public class RobotContainer {
     autoChooser.addOption("Copy of MID 4 piece", "Copy of MID 4 piece auto");
     autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
     autoChooser.addOption("SIDE shoot and pass", "SIDE shoot and pass auto");
+    autoChooser.addOption("MID 5 piece", "MID 5 piece auto");
+    autoChooser.addOption("Copy of MID 5 piece", "Copy of MID 5 piece auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -158,6 +164,12 @@ public class RobotContainer {
         break;
       case "SIDE shoot and pass auto":
         path = sideShootPassPath;
+        break;
+      case "MID 5 piece auto":
+        path = mid5PiecePath;
+        break;
+      case "Copy of MID 5 piece auto":
+        path = copyMid5PiecePath;
         break;
     }
     
@@ -204,6 +216,14 @@ public class RobotContainer {
         auto = "SIDE shoot and pass auto";
         path = sideShootPassPath;
         break;
+      case "MID 5 piece auto":
+        auto = "MID 5 piece auto";
+        path = mid5PiecePath;
+        break;
+      case "Copy of MID 5 piece auto":
+      auto = "Copy of MID 5 piece auto";
+        path = copyMid5PiecePath;
+        break;
     }
 
     path = DriverStation.getAlliance().get().equals(Alliance.Red) ? path.flipPath() : path;
@@ -230,7 +250,7 @@ public class RobotContainer {
     elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
     elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
     flyWheel.whileTrue(new FlyWheelCommand(-1));
-    ampFlyWheel.whileTrue(new FlyWheelCommand(-.15));
+    ampFlyWheel.whileTrue(new FlyWheelCommand(-.17));
     zeroGyro.onTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());

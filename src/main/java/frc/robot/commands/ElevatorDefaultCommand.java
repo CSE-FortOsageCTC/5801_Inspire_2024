@@ -43,7 +43,7 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){ 
-        Pose2d lightBotPose = s_Swerve.getAutoLimelightBotPose();
+        Pose2d lightBotPose = s_Swerve.getLimelightBotPose();
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
@@ -78,18 +78,24 @@ public class ElevatorDefaultCommand extends Command{
         double target = elevatorValue - degreesToEncoderAngle;
 
         //SmartDashboard.putNumber("Encoder Error", target);
+        boolean isAlignedAmp = AlignPosition.getPosition().equals(AlignPosition.AmpPos);
     
-        if (Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
+        if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
             elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
 
-        } else if (Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
+        } else if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
 
             angleShooterUtil.updateTargetDiff(target);
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
             
+        } else if (isAlignedAmp) {
+
+            angleShooterUtil.updateTargetDiff(elevatorValue - Constants.Swerve.maxElevatorValue);
+            elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+
         }
-        
+
     }
 
     @Override

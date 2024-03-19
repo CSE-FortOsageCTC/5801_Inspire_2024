@@ -28,7 +28,7 @@ public class AutoIntakeCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        return detectedDelayCount > 5 || count > 70;
+        return detectedDelayCount > 7 || count > 70;
     }
     
 
