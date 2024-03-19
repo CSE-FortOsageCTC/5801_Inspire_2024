@@ -62,7 +62,9 @@ public class Navigate extends Command {
         
         
     
-
+        if (this.autoUtil == null){
+            this.autoUtil = new AutoRotateUtil(0);
+        }
         // puts the value of P,I and D onto the SmartDashboard
         // Will remove later
         // SmartDashboard.putNumber("AlignP", 0.3);
@@ -78,14 +80,12 @@ public class Navigate extends Command {
         // will be removed
         Pose2d pose = AlignPosition.getAlignPose();
         this.targetRot = pose.getRotation();
-        if (this.targetRot != null){
-            this.autoUtil = new AutoRotateUtil(targetRot.getDegrees());
-        }
+        
         this.targetX = pose.getX();
         this.targetY = pose.getY();
-        double kP = SmartDashboard.getNumber("AlignP", 0);
-        double kI = SmartDashboard.getNumber("AlignI", 0);
-        double kD = SmartDashboard.getNumber("AlignD", 0);
+        double kP = 0.5;
+        double kI = 0;
+        double kD = 0;
 
         double rotationkP = SmartDashboard.getNumber("RotationP", 0);
         double rotationkI = SmartDashboard.getNumber("RotationI", 0);
@@ -113,12 +113,13 @@ public class Navigate extends Command {
         //SmartDashboard.putNumber("Ts1", limelight.getSkew1());
         //SmartDashboard.putNumber("Ts2", limelight.getSkew2());
 
+        autoUtil.updateTargetAngle(targetRot.getDegrees() - botPose.getRotation().getDegrees());
 
         // Calculates the x and y speed values for the translation movement
-        double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(botPose.getY() - targetY), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
+        double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(targetY - botPose.getY(), 0), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
         ySpeed = yTranslationPidController.atSetpoint() ? 0 : ySpeed;
         ySpeed = ySpeedLimiter.calculate(ySpeed);
-        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(botPose.getX() - targetX), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
+        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(targetX - botPose.getX(), 0), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
         xSpeed = xTranslationPidController.atSetpoint() ? 0 : xSpeed;
         xSpeed = xSpeedLimiter.calculate(xSpeed);
         double angularSpeed = autoUtil.calculateRotationSpeed();

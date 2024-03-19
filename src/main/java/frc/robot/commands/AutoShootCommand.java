@@ -25,13 +25,13 @@ public class AutoShootCommand extends Command {
     public void execute(){
         counter += 1;
         m_ShooterSubsystem.setKicker();
-        if (counter > 5){
+        if (counter > 10){
          m_ShooterSubsystem.resetKicker();}
     }
 
     @Override
     public boolean isFinished(){
-        return counter > 10;
+        return counter > 15;
     }
     
     @Override
