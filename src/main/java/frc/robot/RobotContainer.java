@@ -32,7 +32,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-
+import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -57,6 +57,7 @@ public class RobotContainer {
   private PathPlannerPath sideShootPassPath;
   private PathPlannerPath copyMid4PiecePath;
   private PathPlannerPath mid5PiecePath;
+  private PathPlannerPath workingMid5PiecePath;
   private PathPlannerPath copyMid5PiecePath;
 
 
@@ -119,7 +120,8 @@ public class RobotContainer {
     redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
     sideShootPassPath = PathPlannerPath.fromPathFile("SIDE shoot and pass path");
     mid5PiecePath = PathPlannerPath.fromPathFile("MID 5 piece path");
-    copyMid5PiecePath = PathPlannerPath.fromPathFile("Copy of MID 5 piece path");
+    workingMid5PiecePath = PathPlannerPath.fromPathFile("Working MID 5 piece path");
+    copyMid5PiecePath = PathPlannerPath.fromPathFile("Copy of Working MID 5 piece path");
 
   
 
@@ -136,7 +138,8 @@ public class RobotContainer {
     autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
     autoChooser.addOption("SIDE shoot and pass", "SIDE shoot and pass auto");
     autoChooser.addOption("MID 5 piece", "MID 5 piece auto");
-    autoChooser.addOption("Copy of MID 5 piece", "Copy of MID 5 piece auto");
+    autoChooser.addOption("Working MID 5 piece", "Working MID 5 piece auto");
+    autoChooser.addOption("Copy of Working MID 5 piece", "Copy of Working MID 5 piece auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -168,7 +171,10 @@ public class RobotContainer {
       case "MID 5 piece auto":
         path = mid5PiecePath;
         break;
-      case "Copy of MID 5 piece auto":
+      case "Working MID 5 piece auto":
+        path = workingMid5PiecePath;
+        break;
+      case "Copy of Working MID 5 piece auto":
         path = copyMid5PiecePath;
         break;
     }
@@ -220,8 +226,12 @@ public class RobotContainer {
         auto = "MID 5 piece auto";
         path = mid5PiecePath;
         break;
-      case "Copy of MID 5 piece auto":
-      auto = "Copy of MID 5 piece auto";
+      case "Working MID 5 piece auto":
+        auto = "Working MID 5 piece auto";
+        path = workingMid5PiecePath;
+        break;
+      case "Copy of Working MID 5 piece auto":
+        auto = "Copy of Working MID 5 piece auto";
         path = copyMid5PiecePath;
         break;
     }

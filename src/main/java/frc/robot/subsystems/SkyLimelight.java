@@ -37,7 +37,7 @@ public class SkyLimelight extends SubsystemBase {
     private SkyLimelight() {
         botPose = new Pose2d();
         table = NetworkTableInstance.getDefault().getTable("limelight-sky");
-        table.getEntry("pipeline").setNumber(1);
+        table.getEntry("pipeline").setNumber(0);
         botPoseEntry = table.getEntry("botpose");
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");

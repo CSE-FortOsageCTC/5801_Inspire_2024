@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.sql.Driver;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -53,12 +55,11 @@ public class ElevatorDefaultCommand extends Command{
         double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
-        // distance = Units.metersToInches(distance);
-
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
 
+        double distanceInch = Units.metersToInches(distance);
 
         //double feetDistance = Units.metersToFeet(distance);
 
@@ -74,8 +75,11 @@ public class ElevatorDefaultCommand extends Command{
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();  
         
-        // double target = (-0.00384 * (distance * distance)) + (1.17 * distance) - 94.8 + 3;
-        double target = elevatorValue - degreesToEncoderAngle;
+        double equationTarget = (-0.00384 * (distanceInch * distanceInch)) + ((1.17 + 0.01) * distanceInch) - 94.8;
+        equationTarget = elevatorValue - equationTarget;
+        double tangentTarget = elevatorValue - degreesToEncoderAngle;
+
+        double target = (equationTarget + tangentTarget) / 2;
 
         //SmartDashboard.putNumber("Encoder Error", target);
         boolean isAlignedAmp = AlignPosition.getPosition().equals(AlignPosition.AmpPos);
@@ -86,7 +90,16 @@ public class ElevatorDefaultCommand extends Command{
 
         } else if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
 
-            angleShooterUtil.updateTargetDiff(target);
+            if (DriverStation.isAutonomousEnabled()) {
+
+                angleShooterUtil.updateTargetDiff(tangentTarget);
+
+            } else if (DriverStation.isTeleopEnabled()) {
+
+                angleShooterUtil.updateTargetDiff(target);
+
+            }
+
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
             
         } else if (isAlignedAmp) {
@@ -95,6 +108,8 @@ public class ElevatorDefaultCommand extends Command{
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
 
         }
+        boolean inRange = distanceInch < 152.474;
+        SmartDashboard.putBoolean("In Range?", inRange);
 
     }
 
