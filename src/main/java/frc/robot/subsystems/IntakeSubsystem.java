@@ -19,6 +19,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private static DigitalInput intakeSensor = new DigitalInput(1);
 
+    private boolean isIntakeRun = false;
+
     public static IntakeSubsystem getInstance(){
         if (intakeSubsystem == null){
             intakeSubsystem = new IntakeSubsystem();
@@ -34,6 +36,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public void intakeIn(){
         lowerIntake.set(-1);
         upperIntake.set(TalonSRXControlMode.PercentOutput, 1);
+        isIntakeRun = true;
     } 
 
     public void intakeOut(){
@@ -49,20 +52,25 @@ public class IntakeSubsystem extends SubsystemBase{
     public void intakeStop() {
         lowerIntake.set(0);
         upperIntake.set(TalonSRXControlMode.PercentOutput, 0);
+        isIntakeRun = false;
+
     }
 
     public boolean isRingDetected() {
         return !intakeSensor.get();
     }
 
-    //Sets the LEDs to orange when theres a note in the intake
+    //Sets the LEDs
     @Override
     public void periodic(){
         if (isRingDetected()){
-            ledSubsystem.SetLEDs(0.57);
+            ledSubsystem.setLEDs(0.57);
+        }
+        else if (isIntakeRun = true) {
+            ledSubsystem.setLEDs(-0.71); //"Sinelon, Forest Palette"
         }
         else {
-            ledSubsystem.SetLEDs(0.99);
+            ledSubsystem.setDefaultLEDs();
         }
         SmartDashboard.putBoolean("Has Note", isRingDetected());
     }

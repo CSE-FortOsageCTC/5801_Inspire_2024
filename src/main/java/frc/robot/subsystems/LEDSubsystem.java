@@ -23,10 +23,14 @@ public class LEDSubsystem extends SubsystemBase {
     pwm = new PWM(1);
   }
 
-  public void SetLEDs (double color) {
+  public void setLEDs (double color) {
     //blinkin.set(color);
     pwm.setPulseTimeMicroseconds(2125);
     pwm.setSpeed(0.99);
     pwm.setSpeed(color);
+  }
+
+  public void setDefaultLEDs () {
+    ledSubsystem.setLEDs(0.99);
   }
 }
