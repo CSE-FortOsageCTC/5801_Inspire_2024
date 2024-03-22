@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setKicker(){
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
-        ledSubsystem.SetLEDs(-0.57); //"fire large"
+        ledSubsystem.setLEDs(-0.57); //"fire large"
 
     }
 
