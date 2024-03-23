@@ -66,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase{
         if (isRingDetected()){
             ledSubsystem.setLEDs(0.57);
         }
-        else if (isIntakeRun = true) {
+        else if (isIntakeRun) {
             ledSubsystem.setLEDs(-0.71); //"Sinelon, Forest Palette"
         }
         else {

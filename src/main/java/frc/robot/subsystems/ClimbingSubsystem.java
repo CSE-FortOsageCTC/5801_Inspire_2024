@@ -55,7 +55,7 @@ public class ClimbingSubsystem extends SubsystemBase {
 
   @Override
   public void periodic(){
-    if (isClimbing = true) {
+    if (isClimbing) {
       ledSubsystem.setLEDs(-0.99); //"Rainbow, Rainbow Palette" 
     }
     else {
