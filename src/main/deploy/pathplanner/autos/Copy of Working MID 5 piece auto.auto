@@ -26,11 +26,7 @@
         {
           "type": "path",
           "data": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/OLD MID 5 piece auto.auto
-            "pathName": "OLD MID 5 piece path"
-========
-            "pathName": "Working MID 5 piece path"
->>>>>>>> df3895305e0678814eec46652b076e8256402270:src/main/deploy/pathplanner/autos/Working MID 5 piece auto.auto
+            "pathName": "Copy of Working MID 5 piece path"
           }
         }
       ]
