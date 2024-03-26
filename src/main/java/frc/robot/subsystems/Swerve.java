@@ -203,8 +203,11 @@ public class Swerve extends SubsystemBase{
     }
 
     public Pose2d getAutoLimelightBotPose(){
-        Pose2d visionPose = s_Limelight.getBotPose();
-        updateWithVisionLLEsitmator(visionPose, gyroOffset);
+        if (s_Limelight.getArea() >= 0.13) {
+            Pose2d visionPose = s_Limelight.getBotPose();
+            updateWithVisionLLEsitmator(visionPose, s_Limelight.getLastBotPoseTimestamp());
+        }
+        
         return limeLightSwerveEstimator.getEstimatedPosition();
     }
 
@@ -251,7 +254,7 @@ public class Swerve extends SubsystemBase{
     public void setHeading(Rotation2d heading){
         Rotation2d gyroYaw = getGyroYaw();
         swerveEstimator.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
-        limeLightSwerveEstimator.resetPosition(gyroYaw, getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
+        limeLightSwerveEstimator.resetPosition(gyroYaw, getModulePositions(), new Pose2d(limeLightSwerveEstimator.getEstimatedPosition().getTranslation(), heading));
         gyroOffset = gyroYaw.getDegrees() - heading.getDegrees();
     }
 
@@ -326,7 +329,7 @@ public class Swerve extends SubsystemBase{
     public double rotateToSpeaker(){
         double xDiff = 0;
         double yDiff = 0;
-        Pose2d botPose = getLimelightBotPose();
+        Pose2d botPose = getAutoLimelightBotPose();
         SmartDashboard.putNumber("limelightBotPose X", botPose.getX());
         SmartDashboard.putNumber("limelightBotPose Y", botPose.getY());
         if (AlignPosition.getAlignPose() != null){

@@ -30,6 +30,7 @@ public class AutoOnlyIntakeCommand extends Command{
     public void end(boolean isFinished) {
         count = 0;
         intakeSubsystem.intakeStop();
+        AlignmentTransitions.transitionToSpeaker();
     }
 
 }

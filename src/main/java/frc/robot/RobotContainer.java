@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.List;
 
+import javax.swing.GroupLayout.Alignment;
+
 import org.json.simple.JSONObject;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -45,7 +47,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class RobotContainer {
 
-
+  public ElevatorDefaultCommand elevatorDefaultCommand;
   // Sendable Chooser for autos
   private SendableChooser<String> autoChooser;
 
@@ -54,11 +56,12 @@ public class RobotContainer {
   private PathPlannerPath redMid4PiecePath;
   private PathPlannerPath blueRight4PiecePath;
   private PathPlannerPath redLeft4CenterPiecePath;
-  private PathPlannerPath sideShootPassPath;
   private PathPlannerPath copyMid4PiecePath;
   private PathPlannerPath mid5PiecePath;
   private PathPlannerPath workingMid5PiecePath;
   private PathPlannerPath copyMid5PiecePath;
+  private PathPlannerPath farSide3PiecePath;
+  private PathPlannerPath side3PiecePath;
 
 
 
@@ -104,6 +107,8 @@ public class RobotContainer {
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
 
+    elevatorDefaultCommand = new ElevatorDefaultCommand(operator);
+
     //Register Named Commands
     NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
@@ -118,7 +123,8 @@ public class RobotContainer {
     copyMid4PiecePath = PathPlannerPath.fromPathFile("Copy of MID 4 piece path");
     blueRight4PiecePath = PathPlannerPath.fromPathFile("BLUE RIGHT 4 piece path");
     redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
-    sideShootPassPath = PathPlannerPath.fromPathFile("SIDE shoot and pass path");
+    farSide3PiecePath = PathPlannerPath.fromPathFile("Far SIDE 3 piece path");
+    side3PiecePath = PathPlannerPath.fromPathFile("SIDE 3 piece path");
     mid5PiecePath = PathPlannerPath.fromPathFile("MID 5 piece path");
     workingMid5PiecePath = PathPlannerPath.fromPathFile("Working MID 5 piece path");
     copyMid5PiecePath = PathPlannerPath.fromPathFile("Copy of Working MID 5 piece path");
@@ -131,15 +137,11 @@ public class RobotContainer {
     //Build, Update, and Close the autoChooser
     autoChooser = new SendableChooser<>();
 
-    autoChooser.setDefaultOption("BLUE RIGHT 4 piece", "BLUE RIGHT 4 piece auto");
-    autoChooser.addOption("RED LEFT 4 piece", "RED LEFT 4 piece auto");
+    
+    autoChooser.setDefaultOption("MID 5 piece", "MID 5 piece auto");
+    autoChooser.addOption("Far SIDE 3 piece", "Far SIDE 3 piece auto");
+    autoChooser.addOption("SIDE 3 piece", "SIDE 3 piece auto");
     autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
-    autoChooser.addOption("Copy of MID 4 piece", "Copy of MID 4 piece auto");
-    autoChooser.addOption("RED LEFT 4 center piece", "RED LEFT 4 center piece auto");
-    autoChooser.addOption("SIDE shoot and pass", "SIDE shoot and pass auto");
-    autoChooser.addOption("MID 5 piece", "MID 5 piece auto");
-    autoChooser.addOption("Working MID 5 piece", "Working MID 5 piece auto");
-    autoChooser.addOption("Copy of Working MID 5 piece", "Copy of Working MID 5 piece auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -150,32 +152,17 @@ public class RobotContainer {
     PathPlannerPath path = null;
     
     switch (autoChooser.getSelected()) {
-      case "BLUE RIGHT 4 piece auto":
-        path = blueRight4PiecePath;
-        break;
-      case "RED LEFT 4 piece auto":
-        path = redLeft4PiecePath;
-        break;
       case "MID 4 piece auto":
         path = redMid4PiecePath;
         break;
-      case "Copy of MID 4 piece auto":
-        path = copyMid4PiecePath;
+      case "Far SIDE 3 piece auto":
+        path = farSide3PiecePath;
         break;
-      case "RED LEFT 4 center piece auto":
-        path = redLeft4CenterPiecePath;
-        break;
-      case "SIDE shoot and pass auto":
-        path = sideShootPassPath;
+      case "SIDE 3 piece auto":
+        path = side3PiecePath;
         break;
       case "MID 5 piece auto":
         path = mid5PiecePath;
-        break;
-      case "Working MID 5 piece auto":
-        path = workingMid5PiecePath;
-        break;
-      case "Copy of Working MID 5 piece auto":
-        path = copyMid5PiecePath;
         break;
     }
     
@@ -198,41 +185,21 @@ public class RobotContainer {
     //Rotation2d rotation = new Rotation2d(-57.6);
     // s_Swerve.setHeading(rotation);
     switch (autoChooser.getSelected()) {
-      case "BLUE RIGHT 4 piece auto":
-        auto = "BLUE RIGHT 4 piece auto";
-        path = blueRight4PiecePath;
-        break;
-      case "RED LEFT 4 piece auto":
-        auto = "RED LEFT 4 piece auto";
-        path = redLeft4PiecePath;
-        break;
       case "MID 4 piece auto":
         auto = "MID 4 piece auto";
         path = redMid4PiecePath;
         break;
-      case "Copy of MID 4 piece auto":
-        auto = "Copy of MID 4 piece auto";
-        path = copyMid4PiecePath;
+      case "Far SIDE 3 piece auto":
+        auto = "Far SIDE 3 piece auto";
+        path = farSide3PiecePath;
         break;
-      case "RED LEFT 4 center piece auto":
-        auto = "RED LEFT 4 center piece auto";
-        path = redLeft4CenterPiecePath;
-        break;
-      case "SIDE shoot and pass auto":
-        auto = "SIDE shoot and pass auto";
-        path = sideShootPassPath;
+      case "SIDE 3 piece auto":
+        auto = "SIDE 3 piece auto";
+        path = side3PiecePath;
         break;
       case "MID 5 piece auto":
         auto = "MID 5 piece auto";
         path = mid5PiecePath;
-        break;
-      case "Working MID 5 piece auto":
-        auto = "Working MID 5 piece auto";
-        path = workingMid5PiecePath;
-        break;
-      case "Copy of Working MID 5 piece auto":
-        auto = "Copy of Working MID 5 piece auto";
-        path = copyMid5PiecePath;
         break;
     }
 
@@ -257,21 +224,23 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
-    elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
+    // elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
+    // elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
+    elevatorDownButton.whileTrue(new InstantCommand(() -> elevatorDefaultCommand.decrement()));
+    elevatorUpButton.whileTrue(new InstantCommand(() -> elevatorDefaultCommand.increment()));
     flyWheel.whileTrue(new FlyWheelCommand(-1));
-    ampFlyWheel.whileTrue(new FlyWheelCommand(-.17));
+    ampFlyWheel.whileTrue(new FlyWheelCommand(-.35));                                                // 21.76844 degrees
     zeroGyro.onTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
-    autoAlignAmp.whileTrue(new AmpCommand());
+    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
     autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
     yButton.whileTrue(new FixIntakeCommand());
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
-    s_ElevatorSubsystem.setDefaultCommand(new ElevatorDefaultCommand(operator));
+    s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);
     //shootButton.whileTrue(new ShootCommand(operator));
     //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     resetClimbers.whileTrue(new ClimbReset(-1, -1));

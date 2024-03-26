@@ -11,6 +11,8 @@ public class LEDSubsystem extends SubsystemBase {
   private final PWM pwm;
   private static LEDSubsystem ledSubsystem;
 
+  private boolean isClimbing = false;
+
     public static LEDSubsystem getInstance() {
         if (ledSubsystem == null) {
             ledSubsystem = new LEDSubsystem();
@@ -23,6 +25,10 @@ public class LEDSubsystem extends SubsystemBase {
     pwm = new PWM(1);
   }
 
+  public void setClimbing(boolean isClimbing) {
+    this.isClimbing = isClimbing;
+  }
+
   public void setLEDs (double color) {
     //blinkin.set(color);
     pwm.setPulseTimeMicroseconds(2125);
@@ -31,6 +37,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void setDefaultLEDs () {
-    ledSubsystem.setLEDs(0.99);
+    if (isClimbing) {
+      ledSubsystem.setLEDs(-0.87);
+    }
+    else {
+      ledSubsystem.setLEDs(0.99);
+    }
   }
 }

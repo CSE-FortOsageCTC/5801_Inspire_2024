@@ -27,6 +27,9 @@ public class ElevatorDefaultCommand extends Command{
     private Swerve s_Swerve;
     private Pair<Double, Double> speakerCoordinate;
     private int stickSup = XboxController.Axis.kLeftY.value;
+    private double setpoint;
+    private boolean isManual;
+    private AlignPosition lastAlignment;
     
     private Joystick operator;
 
@@ -36,8 +39,29 @@ public class ElevatorDefaultCommand extends Command{
         this.operator = operator;
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
+        setpoint = 0;
     }
-    
+
+    public void increment()
+    {
+        isManual = true;
+        setpoint += .25;
+        lastAlignment = AlignPosition.getPosition();
+    }
+
+    public void decrement()
+    {
+        isManual = true;
+        setpoint -= .25;
+        lastAlignment = AlignPosition.getPosition();
+    }
+
+    public void setToAuto()
+    {
+        isManual = lastAlignment == AlignPosition.getPosition();
+        
+    }
+
     @Override
     public void initialize() {
         angleShooterUtil.initialize();
@@ -45,7 +69,9 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){ 
-        Pose2d lightBotPose = s_Swerve.getLimelightBotPose();
+        setToAuto();
+
+        Pose2d lightBotPose = s_Swerve.getAutoLimelightBotPose();
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
@@ -61,21 +87,21 @@ public class ElevatorDefaultCommand extends Command{
 
         double distanceInch = Units.metersToInches(distance);
 
-        //double feetDistance = Units.metersToFeet(distance);
-
-        //SmartDashboard.putNumber("Speaker Distance (ft.)", feetDistance);
+        SmartDashboard.putNumber("Speaker Distance (in.)", distanceInch);
 
         double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
 
-        //SmartDashboard.putNumber("ElevatorDegrees", angle);
+        SmartDashboard.putNumber("ElevatorDegrees", angle);
 
         double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorAngle) * Constants.Swerve.degreesToEncoderValue;
 
-        //SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
+        SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();  
+
+        SmartDashboard.putNumber("Current Encoder Value", elevatorValue);
         
-        double equationTarget = (-0.00384 * (distanceInch * distanceInch)) + ((1.17 + 0.01) * distanceInch) - 94.8;
+        double equationTarget = (-0.00353 * (distanceInch * distanceInch)) + ((1.18) * distanceInch) - 98.6 - 2; // (-0.00384 * (distanceInch * distanceInch)) + ((1.17 + 0.01) * distanceInch) - 94.8;
         equationTarget = elevatorValue - equationTarget;
         double tangentTarget = elevatorValue - degreesToEncoderAngle;
 
@@ -83,7 +109,14 @@ public class ElevatorDefaultCommand extends Command{
 
         //SmartDashboard.putNumber("Encoder Error", target);
         boolean isAlignedAmp = AlignPosition.getPosition().equals(AlignPosition.AmpPos);
-    
+
+        if (isManual){
+            target = elevatorValue - SmartDashboard.getNumber("Setpoint", 0);
+            SmartDashboard.putNumber("Setpoint", setpoint);
+        } else {
+            setpoint = elevatorValue;
+        }
+
         if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
             elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
@@ -104,7 +137,7 @@ public class ElevatorDefaultCommand extends Command{
             
         } else if (isAlignedAmp) {
 
-            angleShooterUtil.updateTargetDiff(elevatorValue - Constants.Swerve.maxElevatorValue);
+            angleShooterUtil.updateTargetDiff(elevatorValue - (-33.4285)); // -35.8686    new: -30.5
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
 
         }

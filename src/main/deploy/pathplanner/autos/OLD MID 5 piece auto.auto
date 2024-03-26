@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4854713072574635,
-      "y": 5.463073824179848
+      "x": 1.323928801703758,
+      "y": 5.9623870231640295
     },
     "rotation": 0
   },
@@ -20,13 +20,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.45
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Auto 2"
+            "pathName": "OLD MID 5 piece path"
           }
         }
       ]
