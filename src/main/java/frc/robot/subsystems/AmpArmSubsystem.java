@@ -20,8 +20,9 @@ public class AmpArmSubsystem extends SubsystemBase{
     private AmpArmSubsystem(){
         ampArmMotor = new CANSparkMax(0, MotorType.kBrushless);
 
-        ampArmMotor.setIdleMode(IdleMode.kBrake);
+        ampArmMotor.setIdleMode(IdleMode.kCoast);
         ampArmMotor.enableVoltageCompensation(10);
+        ampArmMotor.setSmartCurrentLimit(20);
         ampArmMotor.burnFlash();
     }
 

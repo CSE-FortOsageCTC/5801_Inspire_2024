@@ -94,7 +94,7 @@ public class RobotContainer {
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
-  private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
+  //private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
   private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
   private final JoystickButton ampArmButton = new JoystickButton(operator, XboxController.Button.kB.value);
 
@@ -245,9 +245,9 @@ public class RobotContainer {
     s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);
     //shootButton.whileTrue(new ShootCommand(operator));
     //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    resetClimbers.whileTrue(new ClimbReset(-1, -1));
-    climbersUp.whileTrue(new ClimbReset(1, 1));
-    climbersDown.whileTrue(new ClimbReset(-1, -1));
+    //resetClimbers.whileTrue(new ClimbReset(-1, -1));
+    climbersUp.whileTrue(new Climb(1, 1));
+    climbersDown.whileTrue(new ClimbReset(driver));
     ampArmButton.onTrue(new AmpArmCommand());
   
   }
