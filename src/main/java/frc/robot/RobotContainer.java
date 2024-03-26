@@ -96,6 +96,8 @@ public class RobotContainer {
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
   private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
+  private final JoystickButton ampArmButton = new JoystickButton(operator, XboxController.Button.kB.value);
+
 
   // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
@@ -246,6 +248,7 @@ public class RobotContainer {
     resetClimbers.whileTrue(new ClimbReset(-1, -1));
     climbersUp.whileTrue(new ClimbReset(1, 1));
     climbersDown.whileTrue(new ClimbReset(-1, -1));
+    ampArmButton.onTrue(new AmpArmCommand());
   
   }
 
