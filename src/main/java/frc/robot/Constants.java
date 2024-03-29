@@ -28,7 +28,7 @@ public final class Constants {
 
     public static final double feedForwardAngle = 30;
 
-    public static final double speakerHeightMeters = 2.0425;
+    public static final double speakerHeightMeters = 1.981;
 
     public static final class Swerve {
         public static final int pigeonID = 10;
@@ -107,10 +107,10 @@ public final class Constants {
 
         
         public static final double minElevatorValue = 0; 
-        public static final double maxElevatorValue = -61.7;
+        public static final double maxElevatorValue = -62.5;
 
-        public static final double minElevatorAngle = 29.6;
-        public static final double maxElevatorAngle = 59.9;
+        public static final double minElevatorAngle = 29.2;
+        public static final double maxElevatorAngle = 61.2;
 
         public static final double degreesToEncoderValue = maxElevatorValue/(maxElevatorAngle-minElevatorAngle);
         

@@ -131,7 +131,7 @@ public class ElevatorDefaultCommand extends Command{
 
             } else if (DriverStation.isTeleopEnabled()) {
 
-                angleShooterUtil.updateTargetDiff(target);
+                angleShooterUtil.updateTargetDiff(tangentTarget);
 
             }
 
