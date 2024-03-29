@@ -39,6 +39,7 @@ public class DefaultTeleop extends Command{
     private int rotationSup;
     private int throttle;
     private boolean robotCentricSup;
+    private int back;
     private Joystick driver;
     private Joystick operator;
 
@@ -58,6 +59,7 @@ public class DefaultTeleop extends Command{
         translationSup = XboxController.Axis.kLeftY.value;
         strafeSup = XboxController.Axis.kLeftX.value;
         rotationSup = XboxController.Axis.kRightX.value;
+        back = XboxController.Button.kBack.value;
         robotCentricSup = true;
         addRequirements(s_DefaultTeleop.s_Swerve);
 
@@ -135,8 +137,8 @@ public class DefaultTeleop extends Command{
         Translation2d translation = new Translation2d(translationVal, strafeVal).times(-Constants.Swerve.maxSpeed * throttleCalc);
 
         //SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
-
-        s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        
+        s_DefaultTeleop.s_Swerve.drive(translation,  rotationVal * (driver.getRawButton(back)? Constants.Swerve.panicRotation:Constants.Swerve.maxAngularVelocity), robotCentricSup, true);
         // s_DefaultTeleop.s_Swerve.drive(translation, s_DefaultTeleop.s_Swerve.rotateToSpeaker() * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
 
 

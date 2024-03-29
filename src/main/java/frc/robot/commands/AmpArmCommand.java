@@ -1,65 +1,49 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.AmpArmSubsystem;
 
 public class AmpArmCommand extends Command{
     AmpArmSubsystem ampArmSubsystem;
-    PIDController ampArmPID;
     boolean isUp;
+    Joystick controller;
+    int trigger;
+    double triggerAxis;
+    PIDController ampPIDController;
 
-    public AmpArmCommand(){
+    public AmpArmCommand(Joystick controller){
+        this.controller = controller;
+        ampPIDController = new PIDController(0, 0, 0);
+        trigger = XboxController.Axis.kLeftTrigger.value;
         ampArmSubsystem = AmpArmSubsystem.getInstance();
-        ampArmPID = new PIDController(0, 0, 0);
-        ampArmPID.setSetpoint(0);
-        SmartDashboard.putNumber("Amp Arm P", 0);
-        SmartDashboard.putNumber("Amp Arm I", 0);
-        SmartDashboard.putNumber("Amp Arm D", 0);
-        isUp = false;
         addRequirements(ampArmSubsystem);
-    }
 
-    @Override
-    public void initialize(){
-        isUp = !isUp;
+        ampPIDController.setP(0.02);
+        ampPIDController.setI(0);
+        ampPIDController.setD(0);
     }
 
     @Override
     public void execute(){
-        ampArmPID.setP(SmartDashboard.getNumber("Amp Arm P", 0));
-        ampArmPID.setI(SmartDashboard.getNumber("Amp Arm I", 0));
-        ampArmPID.setD(SmartDashboard.getNumber("Amp Arm D", 0));
-
-        double speed;
-
-        if (isUp){
-            ampArmPID.setSetpoint(0);//TODO change this to the encoder value of the amp arm when it is up
-            speed = ampArmPID.calculate(ampArmPID.getSetpoint() - ampArmSubsystem.getEncoderValue());
-           
-        }
-        else{
-            ampArmPID.setSetpoint(0);
-            speed = ampArmPID.calculate(ampArmSubsystem.getEncoderValue());
+        triggerAxis = controller.getRawAxis(trigger);
+        if (triggerAxis > Constants.stickDeadband){
+            double speed = MathUtil.clamp(ampPIDController.calculate(ampArmSubsystem.getEncoderValue() - (ampArmSubsystem.lowLimit + 42)), -0.15, 0.5);
+            ampArmSubsystem.setSpeed(speed);
+            SmartDashboard.putNumber("PID Amp Output", speed);
+        } else {
+            if (ampArmSubsystem.getEncoderValue() > (ampArmSubsystem.highLimit - 20)) {
+                ampArmSubsystem.setSpeed(-0.15);
+            } else {
+                ampArmSubsystem.setSpeed(0);
+            }
         }
 
-        ampArmSubsystem.setSpeed(speed);
-    }
-
-    @Override
-    public void end(boolean end){
-        ampArmSubsystem.setSpeed(0);
-        ampArmPID.reset();
-    }
-
-    @Override
-    public boolean isFinished(){
-        if (isUp){
-            return ampArmSubsystem.getEncoderValue() >= ampArmPID.getSetpoint();
-        }
-        else{
-            return ampArmSubsystem.getEncoderValue() <= ampArmPID.getSetpoint();
-    }
+        
     }
 }

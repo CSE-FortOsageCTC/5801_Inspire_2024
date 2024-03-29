@@ -18,11 +18,13 @@ import frc.robot.AlignPosition;
 import frc.robot.AngleShooterUtil;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
+import frc.robot.subsystems.AmpArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
 
     private ElevatorSubsystem elevatorSubsystem;
+    private AmpArmSubsystem ampArmSubsystem;
     private AngleShooterUtil angleShooterUtil;
     private Swerve s_Swerve;
     private Pair<Double, Double> speakerCoordinate;
@@ -35,6 +37,7 @@ public class ElevatorDefaultCommand extends Command{
 
     public ElevatorDefaultCommand(Joystick operator){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
+        ampArmSubsystem = AmpArmSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
         addRequirements(elevatorSubsystem);
@@ -107,21 +110,20 @@ public class ElevatorDefaultCommand extends Command{
 
         double target = (equationTarget + tangentTarget) / 2;
 
-        //SmartDashboard.putNumber("Encoder Error", target);
         boolean isAlignedAmp = AlignPosition.getPosition().equals(AlignPosition.AmpPos);
 
-        if (isManual){
-            target = elevatorValue - SmartDashboard.getNumber("Setpoint", 0);
-            SmartDashboard.putNumber("Setpoint", setpoint);
-        } else {
-            setpoint = elevatorValue;
-        }
+        // if (isManual){
+        //     target = elevatorValue - SmartDashboard.getNumber("Setpoint", 0);
+        //     SmartDashboard.putNumber("Setpoint", setpoint);
+        // } else {
+        //     setpoint = elevatorValue;
+        // }
 
-        if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
+        if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
             elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
 
-        } else if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
+        } else if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
 
             if (DriverStation.isAutonomousEnabled()) {
 
@@ -135,14 +137,16 @@ public class ElevatorDefaultCommand extends Command{
 
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
             
-        } else if (isAlignedAmp) {
+        } else if (ampArmSubsystem.isUp) {
 
-            angleShooterUtil.updateTargetDiff(elevatorValue - (-33.4285)); // -35.8686    new: -30.5
+            angleShooterUtil.updateTargetDiff(elevatorValue - (-32.5)); // -35.8686    new: -30.5
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
 
         }
         boolean inRange = distanceInch < 152.474;
         SmartDashboard.putBoolean("In Range?", inRange);
+        
+        SmartDashboard.putNumber("Encoder Error", target);
 
     }
 

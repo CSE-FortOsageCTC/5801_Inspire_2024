@@ -203,7 +203,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public Pose2d getAutoLimelightBotPose(){
-        if (s_Limelight.getArea() >= 0.13) {
+        if (s_Limelight.getArea() >= 0.15) {
             Pose2d visionPose = s_Limelight.getBotPose();
             updateWithVisionLLEsitmator(visionPose, s_Limelight.getLastBotPoseTimestamp());
         }
