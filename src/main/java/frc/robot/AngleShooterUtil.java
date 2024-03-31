@@ -22,7 +22,7 @@ public class AngleShooterUtil {
         this.upPidController = new PIDController(0, 0, 0);
         this.downPidController = new PIDController(0, 0, 0);
 
-        upPidController.setTolerance(0.25);
+        upPidController.setTolerance(0.1);
         upPidController.setSetpoint(300);
         // SmartDashboard.putNumber("Up P", 0.09);
         // SmartDashboard.putNumber("Up I", 0);

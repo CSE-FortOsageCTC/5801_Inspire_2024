@@ -87,8 +87,8 @@ public class Swerve extends SubsystemBase{
         swerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d(0, 0, new Rotation2d()));
         limeLightSwerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d(0, 0, new Rotation2d()));
 
-        swerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(.9)));
-        limeLightSwerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(.9)));
+        swerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(.5)));
+        limeLightSwerveEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(.5)));
 
          AutoBuilder.configureHolonomic(
                 //this::getLimelightBotPose, // Robot pose supplier
@@ -207,8 +207,14 @@ public class Swerve extends SubsystemBase{
 
     public Pose2d getAutoLimelightBotPose(){
         if (s_Limelight.getArea() >= 0.2) {
-            Pose2d visionPose = s_Limelight.getBotPose();
-            updateWithVisionLLEsitmator(visionPose, s_Limelight.getLastBotPoseTimestamp());
+            ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
+            if (Math.abs(speeds.vxMetersPerSecond) < .25 && Math.abs(speeds.vyMetersPerSecond) < 1 && DriverStation.isAutonomous() && DriverStation.isEnabled()){
+                Pose2d visionPose = s_Limelight.getBotPose();
+                updateWithVisionLLEsitmator(visionPose, s_Limelight.getLastBotPoseTimestamp());
+                System.out.println("Updating");
+            } else if (DriverStation.isEnabled() && DriverStation.isAutonomousEnabled()) {
+                System.out.println("NOT");
+            }
         }
         
         return limeLightSwerveEstimator.getEstimatedPosition();
@@ -367,7 +373,7 @@ public class Swerve extends SubsystemBase{
         noteInView = pieceSeenDebouncer.calculate(noteInView);
 
         if (noteInView){
-            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX()/4); //divided by 2 to account for latency
+            s_AutoRotateUtil.updateTargetAngle(-f_Limelight.getX() / 2); //divided by 2 to account for latency
             return s_AutoRotateUtil.calculateRotationSpeed();
         }
         

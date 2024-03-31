@@ -33,10 +33,12 @@ public class AmpArmCommand extends Command{
     public void execute(){
         triggerAxis = controller.getRawAxis(trigger);
         if (triggerAxis > Constants.stickDeadband){
+            ampArmSubsystem.isUp = true;
             double speed = MathUtil.clamp(ampPIDController.calculate(ampArmSubsystem.getEncoderValue() - (ampArmSubsystem.lowLimit + 42)), -0.15, 0.5);
             ampArmSubsystem.setSpeed(speed);
             SmartDashboard.putNumber("PID Amp Output", speed);
         } else {
+            ampArmSubsystem.isUp = false;
             if (ampArmSubsystem.getEncoderValue() > (ampArmSubsystem.highLimit - 20)) {
                 ampArmSubsystem.setSpeed(-0.2);
             } else {

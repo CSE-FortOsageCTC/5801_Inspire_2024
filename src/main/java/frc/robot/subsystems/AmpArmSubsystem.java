@@ -38,11 +38,11 @@ public class AmpArmSubsystem extends SubsystemBase{
         (ampArmMotor.getReverseLimitSwitch(Type.kNormallyOpen).isPressed() && speed < 0)) {
             ampArmMotor.set(0);
         } else {
-            if (speed > 0 || ampArmMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed()) {
-                isUp = true;
-            } else {
-                isUp = false;
-            }
+            // if (speed > 0 || ampArmMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed()) {
+            //     isUp = true;
+            // } else {
+            //     isUp = false;
+            // }
 
             ampArmMotor.set(speed);
         }
