@@ -94,11 +94,11 @@ public class ElevatorDefaultCommand extends Command{
 
         double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
 
-        SmartDashboard.putNumber("ElevatorDegrees", angle);
+        // SmartDashboard.putNumber("ElevatorDegrees", angle);
 
         double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorAngle) * Constants.Swerve.degreesToEncoderValue;
 
-        SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
+        // SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();  
 
@@ -146,7 +146,7 @@ public class ElevatorDefaultCommand extends Command{
         boolean inRange = distanceInch < 152.474;
         SmartDashboard.putBoolean("In Range?", inRange);
         
-        SmartDashboard.putNumber("Encoder Error", target);
+        // SmartDashboard.putNumber("Encoder Error", target);
 
     }
 

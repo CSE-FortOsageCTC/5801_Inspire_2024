@@ -36,7 +36,7 @@ public class AmpArmCommand extends Command{
             ampArmSubsystem.isUp = true;
             double speed = MathUtil.clamp(ampPIDController.calculate(ampArmSubsystem.getEncoderValue() - (ampArmSubsystem.lowLimit + 42)), -0.15, 0.5);
             ampArmSubsystem.setSpeed(speed);
-            SmartDashboard.putNumber("PID Amp Output", speed);
+            // SmartDashboard.putNumber("PID Amp Output", speed);
         } else {
             ampArmSubsystem.isUp = false;
             if (ampArmSubsystem.getEncoderValue() > (ampArmSubsystem.highLimit - 20)) {

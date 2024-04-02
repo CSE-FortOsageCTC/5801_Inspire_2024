@@ -61,6 +61,6 @@ public class AmpArmSubsystem extends SubsystemBase{
         if (ampArmMotor.getReverseLimitSwitch(Type.kNormallyOpen).isPressed()){
             lowLimit = ampArmMotor.getEncoder().getPosition();
         }
-        SmartDashboard.putNumber("Amp Arm Encoder", getEncoderValue());
+        // SmartDashboard.putNumber("Amp Arm Encoder", getEncoderValue());    
     }
 }

@@ -208,12 +208,9 @@ public class Swerve extends SubsystemBase{
     public Pose2d getAutoLimelightBotPose(){
         if (s_Limelight.getArea() >= 0.2) {
             ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
-            if (Math.abs(speeds.vxMetersPerSecond) < .25 && Math.abs(speeds.vyMetersPerSecond) < 1 && DriverStation.isAutonomous() && DriverStation.isEnabled()){
+            if (Math.abs(speeds.vxMetersPerSecond) < .25 && Math.abs(speeds.vyMetersPerSecond) < 1){
                 Pose2d visionPose = s_Limelight.getBotPose();
                 updateWithVisionLLEsitmator(visionPose, s_Limelight.getLastBotPoseTimestamp());
-                System.out.println("Updating");
-            } else if (DriverStation.isEnabled() && DriverStation.isAutonomousEnabled()) {
-                System.out.println("NOT");
             }
         }
         
@@ -430,14 +427,14 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumber("Odometry Y", odometryY);
         SmartDashboard.putNumber("limelightBotPose X", botPose.getX());
         SmartDashboard.putNumber("limelightBotPose Y", botPose.getY());
-        double driftDiffX = odometryX - botPose.getX();
-        double driftDiffY = odometryY - botPose.getY();
-        xDiffSum += driftDiffX;
-        yDiffSum += driftDiffY;
-        SmartDashboard.putNumber("Pos X Drift", driftDiffX);
-        SmartDashboard.putNumber("Pos Y Drift", driftDiffY);
-        SmartDashboard.putNumber("X Diff Sum", xDiffSum);
-        SmartDashboard.putNumber("Y Diff Sum", yDiffSum);
-        SmartDashboard.putNumber("Gyro Yaw", getGyroYaw().getDegrees());
+        // double driftDiffX = odometryX - botPose.getX();
+        // double driftDiffY = odometryY - botPose.getY();
+        // xDiffSum += driftDiffX;
+        // yDiffSum += driftDiffY;
+        // SmartDashboard.putNumber("Pos X Drift", driftDiffX);
+        // SmartDashboard.putNumber("Pos Y Drift", driftDiffY);
+        // SmartDashboard.putNumber("X Diff Sum", xDiffSum);
+        // SmartDashboard.putNumber("Y Diff Sum", yDiffSum);
+        // SmartDashboard.putNumber("Gyro Yaw", getGyroYaw().getDegrees());
     }
 }
