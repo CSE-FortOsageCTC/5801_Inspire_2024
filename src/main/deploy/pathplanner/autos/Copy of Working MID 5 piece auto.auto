@@ -20,13 +20,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.45
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of MID 5 piece path"
+            "pathName": "Copy of Working MID 5 piece path"
           }
         }
       ]

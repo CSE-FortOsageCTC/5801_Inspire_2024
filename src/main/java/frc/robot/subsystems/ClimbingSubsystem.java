@@ -51,16 +51,23 @@ public class ClimbingSubsystem extends SubsystemBase {
     if (leftSpeed != 0 || rightSpeed != 0) {
       isClimbing = true;
     }
+    else {
+      isClimbing = false;
+    }
   }
 
   @Override
   public void periodic(){
     if (isClimbing) {
-      ledSubsystem.setLEDs(-0.99); //"Rainbow, Rainbow Palette" 
+    ledSubsystem.setClimbing(isClimbing);
     }
-    else {
-      ledSubsystem.setDefaultLEDs();
-    }
+    // if (isClimbing) {
+    //   ledSubsystem.setLEDs(-0.87);
+    // }
+    // else {
+    //   ledSubsystem.setDefaultLEDs();
+    // }
+    
     // SmartDashboard.putNumber("right Current", rightClimber.getOutputCurrent());
     // SmartDashboard.putNumber("left Current", leftClimber.getOutputCurrent());
   }

@@ -37,6 +37,7 @@ public class AutoIntakeCommand extends Command{
         count = 0;
         intakeSubsystem.intakeStop();
         AlignmentTransitions.scheduleShoot();
+        AlignmentTransitions.transitionToSpeaker();
     }
 
 }

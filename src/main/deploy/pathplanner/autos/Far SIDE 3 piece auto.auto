@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4707856249343993,
-      "y": 4.523190155503746
+      "x": 0.7218158264581296,
+      "y": 4.376333332273105
     },
-    "rotation": -60.0
+    "rotation": -58.52316065041602
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 0.7
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Auto"
+            "pathName": "Far SIDE 3 piece path"
           }
         }
       ]

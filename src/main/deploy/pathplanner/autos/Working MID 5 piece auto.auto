@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7218158264581296,
-      "y": 4.376333332273105
+      "x": 1.323928801703758,
+      "y": 5.9623870231640295
     },
-    "rotation": -58.52316065041602
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,17 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.7
+            "waitTime": 0.45
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SIDE shoot and pass path"
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/OLD MID 5 piece auto.auto
+            "pathName": "OLD MID 5 piece path"
+========
+            "pathName": "Working MID 5 piece path"
+>>>>>>>> df3895305e0678814eec46652b076e8256402270:src/main/deploy/pathplanner/autos/Working MID 5 piece auto.auto
           }
         }
       ]

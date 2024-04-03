@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4854713072574635,
-      "y": 5.463073824179848
+      "x": 1.323928801703758,
+      "y": 5.9623870231640295
     },
     "rotation": 0
   },
@@ -20,13 +20,17 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.45
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Auto 2"
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/OLD MID 5 piece auto.auto
+            "pathName": "OLD MID 5 piece path"
+========
+            "pathName": "Working MID 5 piece path"
+>>>>>>>> df3895305e0678814eec46652b076e8256402270:src/main/deploy/pathplanner/autos/Working MID 5 piece auto.auto
           }
         }
       ]

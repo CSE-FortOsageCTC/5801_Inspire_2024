@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.sql.Driver;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,26 +18,53 @@ import frc.robot.AlignPosition;
 import frc.robot.AngleShooterUtil;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
+import frc.robot.subsystems.AmpArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
 
     private ElevatorSubsystem elevatorSubsystem;
+    private AmpArmSubsystem ampArmSubsystem;
     private AngleShooterUtil angleShooterUtil;
     private Swerve s_Swerve;
     private Pair<Double, Double> speakerCoordinate;
     private int stickSup = XboxController.Axis.kLeftY.value;
+    private double setpoint;
+    private boolean isManual;
+    private AlignPosition lastAlignment;
     
     private Joystick operator;
 
     public ElevatorDefaultCommand(Joystick operator){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
+        ampArmSubsystem = AmpArmSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
+        setpoint = 0;
     }
-    
+
+    public void increment()
+    {
+        isManual = true;
+        setpoint += .25;
+        lastAlignment = AlignPosition.getPosition();
+    }
+
+    public void decrement()
+    {
+        isManual = true;
+        setpoint -= .25;
+        lastAlignment = AlignPosition.getPosition();
+    }
+
+    public void setToAuto()
+    {
+        isManual = lastAlignment == AlignPosition.getPosition();
+        
+    }
+
     @Override
     public void initialize() {
         angleShooterUtil.initialize();
@@ -43,7 +72,9 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){ 
-        Pose2d lightBotPose = s_Swerve.getLimelightBotPose();
+        setToAuto();
+
+        Pose2d lightBotPose = DriverStation.isAutonomousEnabled()? s_Swerve.getAutoLimelightBotPose():s_Swerve.getTeleopLimelightBotPose();
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
@@ -53,48 +84,69 @@ public class ElevatorDefaultCommand extends Command{
         double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
-        // distance = Units.metersToInches(distance);
-
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
 
+        double distanceInch = Units.metersToInches(distance);
 
-        //double feetDistance = Units.metersToFeet(distance);
-
-        //SmartDashboard.putNumber("Speaker Distance (ft.)", feetDistance);
+        SmartDashboard.putNumber("Speaker Distance (in.)", distanceInch);
 
         double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
 
-        //SmartDashboard.putNumber("ElevatorDegrees", angle);
+        // SmartDashboard.putNumber("ElevatorDegrees", angle);
 
         double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorAngle) * Constants.Swerve.degreesToEncoderValue;
 
-        //SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
+        // SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();  
-        
-        // double target = (-0.00384 * (distance * distance)) + (1.17 * distance) - 94.8 + 3;
-        double target = elevatorValue - degreesToEncoderAngle;
 
-        //SmartDashboard.putNumber("Encoder Error", target);
+        SmartDashboard.putNumber("Current Encoder Value", elevatorValue);
+        
+        double equationTarget = (-0.00353 * (distanceInch * distanceInch)) + ((1.18) * distanceInch) - 98.6 - 2; // (-0.00384 * (distanceInch * distanceInch)) + ((1.17 + 0.01) * distanceInch) - 94.8;
+        equationTarget = elevatorValue - equationTarget;
+        double tangentTarget = elevatorValue - degreesToEncoderAngle;
+
+        double target = (equationTarget + tangentTarget) / 2;
+
         boolean isAlignedAmp = AlignPosition.getPosition().equals(AlignPosition.AmpPos);
-    
-        if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
+
+        // if (isManual){
+        //     target = elevatorValue - SmartDashboard.getNumber("Setpoint", 0);
+        //     SmartDashboard.putNumber("Setpoint", setpoint);
+        // } else {
+        //     setpoint = elevatorValue;
+        // }
+
+        if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
             elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
 
-        } else if (!isAlignedAmp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
+        } else if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
 
-            angleShooterUtil.updateTargetDiff(target);
+            if (DriverStation.isAutonomousEnabled()) {
+
+                angleShooterUtil.updateTargetDiff(tangentTarget);
+
+            } else if (DriverStation.isTeleopEnabled()) {
+
+                angleShooterUtil.updateTargetDiff(tangentTarget);
+
+            }
+
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
             
-        } else if (isAlignedAmp) {
+        } else if (ampArmSubsystem.isUp) {
 
-            angleShooterUtil.updateTargetDiff(elevatorValue - Constants.Swerve.maxElevatorValue);
+            angleShooterUtil.updateTargetDiff(elevatorValue - (-32.5)); // -35.8686    new: -30.5
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
 
         }
+        boolean inRange = distanceInch < 152.474;
+        SmartDashboard.putBoolean("In Range?", inRange);
+        
+        // SmartDashboard.putNumber("Encoder Error", target);
 
     }
 

@@ -28,7 +28,7 @@ public final class Constants {
 
     public static final double feedForwardAngle = 30;
 
-    public static final double speakerHeightMeters = 2.08;
+    public static final double speakerHeightMeters = 1.8;
 
     public static final class Swerve {
         public static final int pigeonID = 10;
@@ -99,6 +99,7 @@ public final class Constants {
 
         /** Radians per Second */
         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+        public static final double panicRotation = 25.0;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -106,10 +107,10 @@ public final class Constants {
 
         
         public static final double minElevatorValue = 0; 
-        public static final double maxElevatorValue = -61.7;
+        public static final double maxElevatorValue = -62.5;
 
-        public static final double minElevatorAngle = 29.6;
-        public static final double maxElevatorAngle = 59.9;
+        public static final double minElevatorAngle = 29.2;
+        public static final double maxElevatorAngle = 61.2;
 
         public static final double degreesToEncoderValue = maxElevatorValue/(maxElevatorAngle-minElevatorAngle);
         

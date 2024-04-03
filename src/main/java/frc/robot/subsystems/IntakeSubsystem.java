@@ -64,10 +64,10 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         if (isRingDetected()){
-            ledSubsystem.setLEDs(0.57);
+            ledSubsystem.setLEDs(-0.99);
         }
         else if (isIntakeRun) {
-            ledSubsystem.setLEDs(-0.71); //"Sinelon, Forest Palette"
+            ledSubsystem.setLEDs(-0.83);
         }
         else {
             ledSubsystem.setDefaultLEDs();
