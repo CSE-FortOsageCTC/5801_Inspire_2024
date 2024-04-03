@@ -217,6 +217,18 @@ public class Swerve extends SubsystemBase{
         return limeLightSwerveEstimator.getEstimatedPosition();
     }
 
+    public Pose2d getTeleopLimelightBotPose(){
+        if (s_Limelight.getArea() >= 0.17) {
+            ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
+            if (Math.abs(speeds.vxMetersPerSecond) < .25 && Math.abs(speeds.vyMetersPerSecond) < 1){
+                Pose2d visionPose = s_Limelight.getBotPose();
+                updateWithVisionLLEsitmator(visionPose, s_Limelight.getLastBotPoseTimestamp());
+            }
+        }
+        
+        return limeLightSwerveEstimator.getEstimatedPosition();
+    }
+
     public Pose2d getLimelightBotPose(){
         
         //Pose2d currentPose = getEstimatedPosition();
@@ -335,7 +347,7 @@ public class Swerve extends SubsystemBase{
     public double rotateToSpeaker(){
         double xDiff = 0;
         double yDiff = 0;
-        Pose2d botPose = getAutoLimelightBotPose();
+        Pose2d botPose = DriverStation.isAutonomousEnabled()? getAutoLimelightBotPose():getTeleopLimelightBotPose();
         if (AlignPosition.getAlignPose() != null){
             xDiff = botPose.getX() - AlignPosition.getAlignPose().getX(); // gets distance of x between robot and target
             yDiff = botPose.getY() - AlignPosition.getAlignPose().getY();}

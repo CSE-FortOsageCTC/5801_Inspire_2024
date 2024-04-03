@@ -74,7 +74,7 @@ public class ElevatorDefaultCommand extends Command{
     public void execute(){ 
         setToAuto();
 
-        Pose2d lightBotPose = s_Swerve.getAutoLimelightBotPose();
+        Pose2d lightBotPose = DriverStation.isAutonomousEnabled()? s_Swerve.getAutoLimelightBotPose():s_Swerve.getTeleopLimelightBotPose();
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
