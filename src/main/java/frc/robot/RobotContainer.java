@@ -223,9 +223,9 @@ public class RobotContainer {
     // AlignPosition.setPosition(AlignPosition.SpeakerPos);
     // Pose2d startPose = PathPlannerAuto.getStaringPoseFromAutoFile(auto);
     s_Swerve.setHeading(path.getPreviewStartingHolonomicPose().getRotation());
-    return AutoBuilder.buildAuto(auto);
+    // return AutoBuilder.buildAuto(auto);
 
-    // return AutoBuilder.followPath(path);
+    return AutoBuilder.followPath(path);
     
   }
 
