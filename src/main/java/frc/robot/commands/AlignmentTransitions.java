@@ -54,7 +54,8 @@ public class AlignmentTransitions extends Command{
         if (DriverStation.getAlliance().get().equals(Alliance.Red)){ 
             Swerve.getInstance().setHeading(Rotation2d.fromDegrees(180));
         }
-        else{Swerve.getInstance().setHeading(Rotation2d.fromDegrees(0));
+        else{
+            Swerve.getInstance().setHeading(Rotation2d.fromDegrees(0));
         }
     }
 }

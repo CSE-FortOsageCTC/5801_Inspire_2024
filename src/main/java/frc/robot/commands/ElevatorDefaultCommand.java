@@ -20,12 +20,14 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
 import frc.robot.subsystems.AmpArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
 
     private ElevatorSubsystem elevatorSubsystem;
     private AmpArmSubsystem ampArmSubsystem;
     private AngleShooterUtil angleShooterUtil;
+    private LEDSubsystem ledSubsystem;
     private Swerve s_Swerve;
     private Pair<Double, Double> speakerCoordinate;
     private int stickSup = XboxController.Axis.kLeftY.value;
@@ -38,6 +40,7 @@ public class ElevatorDefaultCommand extends Command{
     public ElevatorDefaultCommand(Joystick operator){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
         ampArmSubsystem = AmpArmSubsystem.getInstance();
+        ledSubsystem = LEDSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
         addRequirements(elevatorSubsystem);
@@ -47,16 +50,20 @@ public class ElevatorDefaultCommand extends Command{
 
     public void increment()
     {
-        isManual = true;
-        setpoint += .25;
-        lastAlignment = AlignPosition.getPosition();
+        // isManual = true;
+        if (ledSubsystem.ledCycle != 1) {
+            ledSubsystem.ledCycle += .01;
+        }
+        // lastAlignment = AlignPosition.getPosition();
     }
 
     public void decrement()
     {
-        isManual = true;
-        setpoint -= .25;
-        lastAlignment = AlignPosition.getPosition();
+        // isManual = true;
+        if (ledSubsystem.ledCycle != -1) {
+            ledSubsystem.ledCycle -= .01;
+        }
+        // lastAlignment = AlignPosition.getPosition();
     }
 
     public void setToAuto()
@@ -127,11 +134,13 @@ public class ElevatorDefaultCommand extends Command{
 
             if (DriverStation.isAutonomousEnabled()) {
 
-                angleShooterUtil.updateTargetDiff(tangentTarget);
+                elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+                // angleShooterUtil.updateTargetDiff(tangentTarget);
 
             } else if (DriverStation.isTeleopEnabled()) {
 
-                angleShooterUtil.updateTargetDiff(tangentTarget);
+                elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+                // angleShooterUtil.updateTargetDiff(tangentTarget);
 
             }
 

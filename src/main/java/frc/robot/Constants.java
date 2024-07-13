@@ -98,7 +98,7 @@ public final class Constants {
         public static final double maxSpeed = 11; //TODO: This must be tuned to specific robot
 
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 13.0; //TODO: This must be tuned to specific robot
         public static final double panicRotation = 25.0;
 
         /* Neutral Modes */

@@ -62,6 +62,7 @@ public class RobotContainer {
   private PathPlannerPath copyMid5PiecePath;
   private PathPlannerPath farSide3PiecePath;
   private PathPlannerPath side3PiecePath;
+  private PathPlannerPath sideHeart3PiecePath;
 
 
 
@@ -128,9 +129,10 @@ public class RobotContainer {
     redLeft4CenterPiecePath = PathPlannerPath.fromPathFile("RED LEFT 4 center piece path");
     farSide3PiecePath = PathPlannerPath.fromPathFile("Far SIDE 3 piece path");
     side3PiecePath = PathPlannerPath.fromPathFile("SIDE 3 piece path");
+    sideHeart3PiecePath = PathPlannerPath.fromPathFile("SIDE shoot and pass path");
     mid5PiecePath = PathPlannerPath.fromPathFile("MID 5 piece path");
     workingMid5PiecePath = PathPlannerPath.fromPathFile("Working MID 5 piece path");
-    copyMid5PiecePath = PathPlannerPath.fromPathFile("Copy of Working MID 5 piece path");
+    copyMid5PiecePath = PathPlannerPath.fromPathFile("Copy of MID 5 piece path");
 
   
   
@@ -146,6 +148,7 @@ public class RobotContainer {
     autoChooser.addOption("Far SIDE 3 piece", "Far SIDE 3 piece auto");
     autoChooser.addOption("SIDE 3 piece", "SIDE 3 piece auto");
     autoChooser.addOption("MID 4 piece", "MID 4 piece auto");
+
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
@@ -166,7 +169,7 @@ public class RobotContainer {
         path = side3PiecePath;
         break;
       case "MID 5 piece auto":
-        path = mid5PiecePath;
+        path = mid5PiecePath; // copyMid5PiecePath; // 
         break;
     }
     
@@ -202,8 +205,8 @@ public class RobotContainer {
         path = side3PiecePath;
         break;
       case "MID 5 piece auto":
-        auto = "MID 5 piece auto";
-        path = mid5PiecePath;
+        auto = "MID 5 piece auto"; //"MID 5 piece auto";
+        path = mid5PiecePath; // copyMid5PiecePath; // 
         break;
     }
 
@@ -230,8 +233,8 @@ public class RobotContainer {
 
     // elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
     // elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
-    elevatorDownButton.whileTrue(new InstantCommand(() -> elevatorDefaultCommand.decrement()));
-    elevatorUpButton.whileTrue(new InstantCommand(() -> elevatorDefaultCommand.increment()));
+    elevatorDownButton.onTrue(new InstantCommand(() -> s_LEDSubsystem.decrement()));
+    elevatorUpButton.onTrue(new InstantCommand(() -> s_LEDSubsystem.increment()));
     flyWheel.whileTrue(new FlyWheelCommand(-1));
     ampFlyWheel.whileTrue(new FlyWheelCommand(-.35));                                                // 21.76844 degrees
     zeroGyro.onTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
