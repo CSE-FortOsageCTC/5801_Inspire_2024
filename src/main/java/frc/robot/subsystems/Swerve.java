@@ -412,17 +412,18 @@ public class Swerve extends SubsystemBase{
         //SmartDashboard.putNumber("Corrected gyro", correctedYaw());
         updatePoseEstimator();
 
-        // for(SwerveModule mod : mSwerveMods){
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
-        // }
+        for(SwerveModule mod : mSwerveMods){
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
+            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+        }
         
         double odometryX = swerveEstimator.getEstimatedPosition().getX();
         double odometryY = swerveEstimator.getEstimatedPosition().getY();
         Pose2d botPose = getAutoLimelightBotPose();
         SmartDashboard.putNumber("Odometry X", odometryX);
         SmartDashboard.putNumber("Odometry Y", odometryY);
+
         //SmartDashboard.putNumber("limelightBotPose X", botPose.getX());
         //SmartDashboard.putNumber("limelightBotPose Y", botPose.getY());
         //SmartDashboard.putNumber("Drive Gear Ratio", Constants.Swerve.chosenModule.driveGearRatio);

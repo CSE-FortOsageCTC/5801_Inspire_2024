@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import com.choreo.lib.*;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
@@ -47,6 +48,10 @@ public class RobotContainer {
 
   // Initialize Autonomous Choreo Paths
   ChoreoTrajectory choreoTestPath;
+
+  // Choreo Auto Commands
+  
+  // NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
   /* Drive Controls */
   private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
@@ -93,11 +98,13 @@ public class RobotContainer {
     // Set Up Choreo Paths
     choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
 
+    
+
     // Build, Update, and Close the autoChooser
     autoChooser = new SendableChooser<>();
 
     // Add Autonomous Routines To Dashboard Dropdown
-    autoChooser.setDefaultOption("CHOREO PATH!!!!", "Choreo Path");
+    autoChooser.setDefaultOption("SEVEN PIECE", "SevenP");
     autoChooser.addOption("Blank", "Blank");
 
     // Send AutoChooser To Dashboard
@@ -115,19 +122,19 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    ChoreoTrajectory path = null;
+    Command command = null;
     // Check Which Option Is Chosen On The Dashboard
     switch (autoChooser.getSelected()) {
-      case "Choreo Path":
-        path = choreoTestPath;
+      case "SevenP":
+        command = new Auto_SevenP();
         break;
       case "Blank":
-        path = null;
+        command = null;
         break;
     }
 
     // Returns Autonomous Command To Run During Auto In Robot.java
-    return s_ChoreoSubsystem.setupAutonomousChoreoPath(path);
+    return command;
     
   }
 

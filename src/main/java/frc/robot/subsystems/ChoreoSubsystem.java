@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -48,7 +49,8 @@ public class ChoreoSubsystem extends SubsystemBase{
     }
 
     private Pose2d getPose() {
-        s_Swerve.setPose(trajectory.getInitialPose());
+        //s_Swerve.setPose(trajectory.getInitialPose());
+        System.out.println(s_Swerve.getPose().getRotation().toString());
         return s_Swerve.getPose();
     }
 
@@ -62,7 +64,7 @@ public class ChoreoSubsystem extends SubsystemBase{
             autoXPID,
             autoYPID,
             autoThetaPID,
-            (ChassisSpeeds speeds) -> s_Swerve.drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, true),
+            (ChassisSpeeds speeds) -> s_Swerve.drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), -speeds.omegaRadiansPerSecond, false, true),
             this::getFlipped,
             s_Swerve
         );
