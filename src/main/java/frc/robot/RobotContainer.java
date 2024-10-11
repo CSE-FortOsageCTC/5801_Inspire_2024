@@ -96,7 +96,7 @@ public class RobotContainer {
     /* Autonomous Setup */
 
     // Set Up Choreo Paths
-    choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
+    //choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
 
     
 
@@ -105,6 +105,7 @@ public class RobotContainer {
 
     // Add Autonomous Routines To Dashboard Dropdown
     autoChooser.setDefaultOption("SEVEN PIECE", "SevenP");
+    autoChooser.addOption("ChoreoWheelTest", "WheelTest");
     autoChooser.addOption("Blank", "Blank");
 
     // Send AutoChooser To Dashboard
@@ -127,6 +128,9 @@ public class RobotContainer {
     switch (autoChooser.getSelected()) {
       case "SevenP":
         command = new Auto_SevenP();
+        break;
+      case "WheelTest":
+        command = new ChoreoWheelTestAuto();
         break;
       case "Blank":
         command = null;

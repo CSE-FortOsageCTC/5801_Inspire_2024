@@ -87,7 +87,7 @@ public class ElevatorDefaultCommand extends Command{
 
         //SmartDashboard.putBoolean("Is Red Alliance", isRed);
 
-        double xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
+        double xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));//16.5410515
         double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
 
@@ -134,13 +134,13 @@ public class ElevatorDefaultCommand extends Command{
 
             if (DriverStation.isAutonomousEnabled()) {
 
-                elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-                // angleShooterUtil.updateTargetDiff(tangentTarget);
+                // elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+                angleShooterUtil.updateTargetDiff(tangentTarget);
 
             } else if (DriverStation.isTeleopEnabled()) {
 
-                elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-                // angleShooterUtil.updateTargetDiff(tangentTarget);
+                // elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+                angleShooterUtil.updateTargetDiff(tangentTarget);
 
             }
 

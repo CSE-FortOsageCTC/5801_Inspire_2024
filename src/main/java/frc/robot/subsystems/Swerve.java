@@ -184,7 +184,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public Pose2d getAutoLimelightBotPose(){
-        if (s_Limelight.getArea() >= 0.2) {
+        if (s_Limelight.getArea() >= 0.17) {
             // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
             // if (Math.abs(speeds.vxMetersPerSecond) < .25 && Math.abs(speeds.vyMetersPerSecond) < 1){
             //     Pose2d visionPose = s_Limelight.getBotPose();

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import java.sql.Driver;
 import java.util.Optional;
 
 import com.choreo.lib.Choreo;
@@ -45,19 +46,23 @@ public class ChoreoSubsystem extends SubsystemBase{
 
     private boolean getFlipped() {
         Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-        return alliance.isPresent() && alliance.get() == Alliance.Red;
+        // System.out.println(alliance);
+        return alliance.isPresent() && alliance.get().equals(Alliance.Red);
     }
 
     private Pose2d getPose() {
         //s_Swerve.setPose(trajectory.getInitialPose());
-        System.out.println(s_Swerve.getPose().getRotation().toString());
+        // System.out.println(s_Swerve.getPose().getRotation().toString());
         return s_Swerve.getPose();
     }
 
 
     public Command setupAutonomousChoreoPath(ChoreoTrajectory traj) {
-        trajectory = traj;
-        s_Swerve.setPose(traj.getInitialPose());
+        Pose2d initialPose = getFlipped() ? traj.getFlippedInitialPose() : traj.getInitialPose();
+        // initialPose = initialPose.rotateBy(Rotation2d.fromDegrees(180));
+        //trajectory = traj;  ??
+
+        s_Swerve.setPose(initialPose);
         return Choreo.choreoSwerveCommand(
             traj,
             this::getPose,
