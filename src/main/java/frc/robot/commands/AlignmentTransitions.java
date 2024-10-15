@@ -56,6 +56,11 @@ public class AlignmentTransitions extends Command{
         AlignPosition.setPosition(AlignPosition.AmpPos);
     }
 
+    public static void transitionToStage() {
+        Swerve.getInstance().resetAutoRotateUtil();
+        AlignPosition.setPosition(AlignPosition.StagePos);
+    }
+
     public static void transitionToNote() {
         Swerve.getInstance().resetAutoRotateUtil();
         AlignPosition.setPosition(AlignPosition.AutoPickup);

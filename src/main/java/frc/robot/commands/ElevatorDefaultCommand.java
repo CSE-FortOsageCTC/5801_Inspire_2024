@@ -36,13 +36,15 @@ public class ElevatorDefaultCommand extends Command{
     private AlignPosition lastAlignment;
     
     private Joystick operator;
+    private Joystick driver;
 
-    public ElevatorDefaultCommand(Joystick operator){
+    public ElevatorDefaultCommand(Joystick operator, Joystick driver){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
         ampArmSubsystem = AmpArmSubsystem.getInstance();
         ledSubsystem = LEDSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
+        this.driver = driver;
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
         setpoint = 0;
@@ -85,11 +87,24 @@ public class ElevatorDefaultCommand extends Command{
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
-        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
+        boolean feedMode = AlignPosition.getPosition().equals(AlignPosition.StagePos);
 
-        double xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));//16.5410515
-        double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
-        double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
+        double xDiff;
+        double yDiff;
+        
+        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
+        if (AlignPosition.getPosition().equals(AlignPosition.StagePos)) { 
+            xDiff = lightBotPose.getX() - AlignPosition.getAlignPose().getX();
+            yDiff = lightBotPose.getY() - AlignPosition.getAlignPose().getY();
+        } else {
+            xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
+            yDiff = lightBotPose.getY() - Units.inchesToMeters(218.42);
+        }
+        double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+        if (feedMode)  {
+            distance /= 2;
+        }
 
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
@@ -99,7 +114,7 @@ public class ElevatorDefaultCommand extends Command{
 
         SmartDashboard.putNumber("Speaker Distance (in.)", distanceInch);
 
-        double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
+        double angle = Units.radiansToDegrees(Math.atan2(feedMode ? Constants.stageHeightMeters:Constants.speakerHeightMeters, distance));
 
         // SmartDashboard.putNumber("ElevatorDegrees", angle);
 

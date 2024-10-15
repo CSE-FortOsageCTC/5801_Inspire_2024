@@ -330,7 +330,7 @@ public class Swerve extends SubsystemBase{
         }
     }
 
-    public double rotateToSpeaker(){
+    public double rotateToPos(){
         double xDiff = 0;
         double yDiff = 0;
         Pose2d botPose = DriverStation.isAutonomousEnabled()? getAutoLimelightBotPose():getTeleopLimelightBotPose();

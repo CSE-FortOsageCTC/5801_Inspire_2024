@@ -69,7 +69,7 @@ public class RobotContainer {
   /* Driver Buttons */
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton autoAlignSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton autoAlignFeed = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
   private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
@@ -92,7 +92,7 @@ public class RobotContainer {
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
 
-    elevatorDefaultCommand = new ElevatorDefaultCommand(operator);
+    elevatorDefaultCommand = new ElevatorDefaultCommand(operator, driver);
     /* Autonomous Setup */
 
     // Set Up Choreo Paths
@@ -156,8 +156,8 @@ public class RobotContainer {
     autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
     autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
-    autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
-    yButton.whileTrue(new FixIntakeCommand());
+    autoAlignFeed.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToStage()));
+    // yButton.whileTrue(new FixIntakeCommand());
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);

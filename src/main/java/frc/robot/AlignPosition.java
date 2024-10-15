@@ -7,6 +7,7 @@ import edu.wpi.first.math.util.Units;
 public enum AlignPosition {
             AmpPos(),
             SpeakerPos(),
+            StagePos(),
             SourcePos(),
             ClimbPos(),
             AutoPickup(),
@@ -28,6 +29,7 @@ public enum AlignPosition {
                     boolean isRed = Constants.isRedAlliance;
                     //layout.setOrigin(new Pose3d(0,0,0, new Rotation3d()));
                     switch(alignPosition){
+                        case StagePos:
                         case AmpPos:
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270));
                             break;
@@ -71,6 +73,7 @@ public enum AlignPosition {
                 alignPosition = alignPos;
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
+                        case StagePos:
                         case AmpPos:                                                                                    
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270));
                             break;
