@@ -66,6 +66,9 @@ public class RobotContainer {
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
+  private final Auto_SevenP auto_SevenP = new Auto_SevenP();
+  private final Auto_Side auto_Side = new Auto_Side();
+
   /* Driver Buttons */
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton autoAlignSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -105,7 +108,8 @@ public class RobotContainer {
 
     // Add Autonomous Routines To Dashboard Dropdown
     autoChooser.setDefaultOption("SEVEN PIECE", "SevenP");
-    autoChooser.addOption("ChoreoWheelTest", "WheelTest");
+    autoChooser.addOption("SIDE AUTO", "SideAuto");
+    //autoChooser.addOption("ChoreoWheelTest", "WheelTest");
     autoChooser.addOption("Blank", "Blank");
 
     // Send AutoChooser To Dashboard
@@ -127,10 +131,13 @@ public class RobotContainer {
     // Check Which Option Is Chosen On The Dashboard
     switch (autoChooser.getSelected()) {
       case "SevenP":
-        command = new Auto_SevenP();
+        command = auto_SevenP;
         break;
       case "WheelTest":
         command = new ChoreoWheelTestAuto();
+        break;
+      case "SideAuto":
+        command = auto_Side;
         break;
       case "Blank":
         command = null;

@@ -141,6 +141,8 @@ public class ElevatorDefaultCommand extends Command{
         //     setpoint = elevatorValue;
         // }
 
+        elevatorSubsystem.isAligned = false;
+        
         if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
             elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
@@ -159,7 +161,9 @@ public class ElevatorDefaultCommand extends Command{
 
             }
 
-            elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+            double elevatorSpeed = angleShooterUtil.calculateElevatorSpeed();
+            elevatorSubsystem.setElevatorSpeed(elevatorSpeed);
+            elevatorSubsystem.isAligned = Math.abs(elevatorSpeed) <= 0.5;
             
         } else if (ampArmSubsystem.isUp) {
 
@@ -172,6 +176,7 @@ public class ElevatorDefaultCommand extends Command{
         
         // SmartDashboard.putNumber("Encoder Error", target);
 
+        SmartDashboard.putBoolean("Aligned Shoot", elevatorSubsystem.isAligned);
     }
 
     @Override

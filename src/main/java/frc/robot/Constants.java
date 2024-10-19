@@ -28,7 +28,7 @@ public final class Constants {
 
     public static final double feedForwardAngle = 30;
 
-    public static final double speakerHeightMeters = 1.8;
+    public static final double speakerHeightMeters = 1.78;
 
     public static final double stageHeightMeters = 4; // 2.54
 

@@ -12,19 +12,23 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ChoreoSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
 
 public class Auto_SevenP extends SequentialCommandGroup{
 
     public Auto_SevenP() {
-        super(
+        addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance(), ChoreoSubsystem.getInstance());
+        addCommands(
     
-        new ParallelCommandGroup(
+        
 
             
-            new SequentialCommandGroup(
-                new WaitCommand(0.2),
+                new WaitCommand(0.2),//
                 new InstantCommand(() -> AlignmentTransitions.scheduleShoot()),
-                new WaitCommand(0.6),
+                new WaitCommand(0.6),//.6
                 new ParallelCommandGroup(
                     ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(Choreo.getTrajectory("SevenP")),
                     new SequentialCommandGroup(
@@ -50,9 +54,7 @@ public class Auto_SevenP extends SequentialCommandGroup{
                         
                     )
                 )
-            )
-
-        ));
+            );
     
 
     }
