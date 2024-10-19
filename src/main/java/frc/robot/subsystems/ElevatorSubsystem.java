@@ -14,6 +14,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     private static ElevatorSubsystem elevatorSubsystem;
     private CANSparkMax shooterElevator;
 
+    public boolean isAligned = false;
+
     public SkyLimelight s_Limelight = SkyLimelight.getInstance();
     public Swerve s_Swerve = Swerve.getInstance();
 

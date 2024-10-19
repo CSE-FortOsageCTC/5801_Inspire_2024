@@ -108,8 +108,8 @@ public class DefaultTeleop extends Command{
         if (AlignPosition.getPosition().equals(AlignPosition.Manual)) {
             rotationVal = rotationLimiter.calculate(rotationAxis) * (throttleLimiter.calculate(throttleAxis));
             robotCentricSup = true;
-        } else if (AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
-            rotationVal = s_DefaultTeleop.s_Swerve.rotateToSpeaker(); // s_AutoRotateUtil.calculateRotationSpeed();
+        } else if (AlignPosition.getPosition().equals(AlignPosition.SpeakerPos) || AlignPosition.getPosition().equals(AlignPosition.StagePos)){
+            rotationVal = s_DefaultTeleop.s_Swerve.rotateToPos(); // s_AutoRotateUtil.calculateRotationSpeed();
             robotCentricSup = true;
         } else if (AlignPosition.getPosition().equals(AlignPosition.AmpPos)) {
             rotationVal = s_DefaultTeleop.s_Swerve.rotateToAmp();

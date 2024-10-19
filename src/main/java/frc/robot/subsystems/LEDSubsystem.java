@@ -10,6 +10,7 @@ public class LEDSubsystem extends SubsystemBase {
   //private final Spark blinkin;
   private final PWM pwm;
   private static LEDSubsystem ledSubsystem;
+  public double ledCycle = 0;
 
   private boolean isClimbing = false;
 
@@ -34,6 +35,20 @@ public class LEDSubsystem extends SubsystemBase {
     pwm.setPulseTimeMicroseconds(2125);
     pwm.setSpeed(0.99);
     pwm.setSpeed(color);
+  }
+
+  public void increment() {
+    if (ledCycle != 1) {
+      ledCycle += .01;
+      System.out.println("Hi guys!");
+    }
+  }
+
+  public void decrement() {
+    if (ledCycle != -1) {
+      ledCycle -= .01;
+    }
+    
   }
 
   public void setDefaultLEDs () {

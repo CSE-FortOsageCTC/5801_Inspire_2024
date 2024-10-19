@@ -58,15 +58,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    Pose2d relativePose = m_robotContainer.getSwerve().getLimelightBotPose().relativeTo(m_robotContainer.getStartingPosition());
-    if (Math.abs(relativePose.getX() - 0.3175) < 0.015 && Math.abs(relativePose.getY() + 0.1651) < 0.015) {
-      isAligned = true;
-    } else {
-      isAligned = false;
-    }
-    
-    SmartDashboard.putBoolean("Auto Start Aligned?", isAligned);
-
+    // Removed As Previous Hardware Testing Proved This Is Unfortunately Not Possible And Better Abstraction In RobotContainer :)
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

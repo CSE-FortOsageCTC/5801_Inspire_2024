@@ -63,7 +63,10 @@ public class IntakeSubsystem extends SubsystemBase{
     //Sets the LEDs
     @Override
     public void periodic(){
-        if (isRingDetected()){
+        if (ElevatorSubsystem.getInstance().isAligned){
+            ledSubsystem.setLEDs(0.57);
+        }
+        else if (isRingDetected()) {
             ledSubsystem.setLEDs(-0.99);
         }
         else if (isIntakeRun) {
