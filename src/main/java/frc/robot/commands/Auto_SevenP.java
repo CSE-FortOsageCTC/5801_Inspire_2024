@@ -20,8 +20,8 @@ import frc.robot.subsystems.Swerve;
 public class Auto_SevenP extends SequentialCommandGroup{
 
     public Auto_SevenP() {
-        addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance(), ChoreoSubsystem.getInstance());
-        addCommands(
+        // addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance(), ChoreoSubsystem.getInstance());
+        super(
     
         
 

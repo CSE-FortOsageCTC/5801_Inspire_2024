@@ -20,8 +20,8 @@ import frc.robot.subsystems.Swerve;
 public class Auto_Side extends SequentialCommandGroup{
 
     public Auto_Side() {
-        addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance());
-        addCommands(
+        //addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance());
+        super(
     
         new ParallelCommandGroup(
 
