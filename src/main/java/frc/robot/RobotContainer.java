@@ -68,6 +68,7 @@ public class RobotContainer {
 
   private final Auto_SevenP auto_SevenP = new Auto_SevenP();
   private final Auto_Side auto_Side = new Auto_Side();
+  private final NoahsAuto auto_Noah = new NoahsAuto();
 
   /* Driver Buttons */
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
@@ -109,6 +110,7 @@ public class RobotContainer {
     // Add Autonomous Routines To Dashboard Dropdown
     autoChooser.setDefaultOption("SEVEN PIECE", "SevenP");
     autoChooser.addOption("SIDE AUTO", "SideAuto");
+    autoChooser.addOption("NOAH", "NoahsAuto");
     //autoChooser.addOption("ChoreoWheelTest", "WheelTest");
     autoChooser.addOption("Blank", "Blank");
 
@@ -138,6 +140,9 @@ public class RobotContainer {
         break;
       case "SideAuto":
         command = auto_Side;
+        break;
+      case "Noah's auto":
+        command = auto_Noah;
         break;
       case "Blank":
         command = null;
