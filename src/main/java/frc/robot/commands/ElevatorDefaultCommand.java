@@ -151,13 +151,13 @@ public class ElevatorDefaultCommand extends Command{
 
             if (DriverStation.isAutonomousEnabled()) {
 
-                // elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-                angleShooterUtil.updateTargetDiff(tangentTarget);
+                elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+                // angleShooterUtil.updateTargetDiff(tangentTarget);
 
             } else if (DriverStation.isTeleopEnabled()) {
 
-                // elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-                angleShooterUtil.updateTargetDiff(tangentTarget);
+                elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
+                // angleShooterUtil.updateTargetDiff(tangentTarget);
 
             }
 

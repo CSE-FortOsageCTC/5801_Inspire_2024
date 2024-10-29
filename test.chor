@@ -16,8 +16,8 @@
         "WheelTest": {
             "waypoints": [
                 {
-                    "x": 2.89,
-                    "y": 7,
+                    "x": 0.7524656057357788,
+                    "y": 4.4,
                     "heading": 0,
                     "isInitialGuess": false,
                     "translationConstrained": true,
@@ -642,7 +642,7 @@
                     }
                 }
             ],
-            "isTrajectoryStale": false
+            "isTrajectoryStale": true
         },
         "SevenP": {
             "waypoints": [

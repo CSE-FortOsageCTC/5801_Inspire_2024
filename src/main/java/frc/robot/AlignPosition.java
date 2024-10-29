@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public enum AlignPosition {
             AmpPos(),
@@ -70,6 +71,7 @@ public enum AlignPosition {
             }
 
             public static void setPosition(AlignPosition alignPos){
+                SmartDashboard.putString("Align Pos", alignPos.toString());
                 alignPosition = alignPos;
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
@@ -104,6 +106,7 @@ public enum AlignPosition {
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(0)): new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(180));
                             break;
                     }
+
             }
                 
             AlignPosition(){

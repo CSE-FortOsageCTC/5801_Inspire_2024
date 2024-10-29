@@ -19,7 +19,7 @@ import frc.robot.subsystems.Swerve;
 
 public class Auto_SevenP extends SequentialCommandGroup{
 
-    public Auto_SevenP() {
+    public Auto_SevenP(ChoreoTrajectory traj) {
         // addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance(), ChoreoSubsystem.getInstance());
         super(
     
@@ -30,7 +30,7 @@ public class Auto_SevenP extends SequentialCommandGroup{
                 new InstantCommand(() -> AlignmentTransitions.scheduleShoot()),
                 new WaitCommand(0.6),//.6
                 new ParallelCommandGroup(
-                    ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(Choreo.getTrajectory("SevenP")),
+                    ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(traj),
                     new SequentialCommandGroup(
                         new WaitCommand(1.45), // Timestamp: 1
                         new InstantCommand(() -> AlignmentTransitions.scheduleIntake()),

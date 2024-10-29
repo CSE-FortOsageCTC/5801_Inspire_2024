@@ -36,13 +36,13 @@ public class AlignmentTransitions extends Command{
 
     public static void scheduleIntake(){
         // Swerve.getInstance().resetAutoRotateUtil();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
         new AutoIntakeCommand().schedule();
     }
 
     public static void scheduleOnlyIntake(){
         // Swerve.getInstance().resetAutoRotateUtil();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
         new AutoOnlyIntakeCommand().schedule();
     }
 
@@ -63,7 +63,7 @@ public class AlignmentTransitions extends Command{
 
     public static void transitionToNote() {
         Swerve.getInstance().resetAutoRotateUtil();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
     }
     public static void zeroHeading(){
         if (DriverStation.getAlliance().get().equals(Alliance.Red)){ 

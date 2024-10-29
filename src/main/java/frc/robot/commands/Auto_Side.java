@@ -19,7 +19,7 @@ import frc.robot.subsystems.Swerve;
 
 public class Auto_Side extends SequentialCommandGroup{
 
-    public Auto_Side() {
+    public Auto_Side(ChoreoTrajectory traj) {
         //addRequirements(Swerve.getInstance(), IntakeSubsystem.getInstance(), ElevatorSubsystem.getInstance(), ShooterSubsystem.getInstance());
         super(
     
@@ -31,7 +31,7 @@ public class Auto_Side extends SequentialCommandGroup{
                 new InstantCommand(() -> AlignmentTransitions.scheduleShoot()),
                 new WaitCommand(0.6),
                 new ParallelCommandGroup(
-                    ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(Choreo.getTrajectory("SideAuto")),
+                    ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(traj),
                     new SequentialCommandGroup(
                         new WaitCommand(2.4), // Timestamp: 2.4
                         new InstantCommand(() -> AlignmentTransitions.scheduleOnlyIntake()),

@@ -409,7 +409,9 @@ public class Swerve extends SubsystemBase{
     @Override
     public void periodic(){
         //swerveOdometry.update(getGyroYaw(), getModulePositions());
-        //SmartDashboard.putNumber("Corrected gyro", correctedYaw());
+        SmartDashboard.putNumber("Corrected gyro", correctedYaw());
+        SmartDashboard.putNumber("gyro", gyro.getYaw().getValue());
+
         updatePoseEstimator();
 
         for(SwerveModule mod : mSwerveMods){

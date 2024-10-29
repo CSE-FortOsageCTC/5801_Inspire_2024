@@ -78,6 +78,7 @@ public class DefaultTeleop extends Command{
         double xAxis = alliance.equals(Alliance.Red) ? -driver.getRawAxis(strafeSup) : driver.getRawAxis(strafeSup);
         double rotationAxis = driver.getRawAxis(rotationSup);
         alignPose = AlignPosition.getAlignPose();
+        SmartDashboard.putString("Teleop Alignment", alignPose == null ? "" : alignPose.toString());
         
 
         // if(alignPose != null && AlignPosition.getPosition().equals(AlignPosition.SpeakerPos)){
