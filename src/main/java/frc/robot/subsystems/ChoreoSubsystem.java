@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Choreo;
 import frc.robot.Constants;
 
 import java.sql.Driver;
 import java.util.Optional;
 
+import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
 
@@ -67,8 +67,7 @@ public class ChoreoSubsystem extends SubsystemBase{
         // //trajectory = traj;  ??
 
         // s_Swerve.setPose(initialPose);
-        Choreo choreo = new Choreo();
-        return choreo.choreoSwerveCommand(
+        return Choreo.choreoSwerveCommand(
             traj,
             this::getPose,
             autoXPID,

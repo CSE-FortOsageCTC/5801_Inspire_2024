@@ -4791,7 +4791,21 @@
             "defaultControlIntervalCount": 40,
             "usesDefaultFieldObstacles": true,
             "circleObstacles": [],
-            "eventMarkers": [],
+            "eventMarkers": [
+                {
+                    "name": "Marker",
+                    "target": 9,
+                    "trajTargetIndex": 9,
+                    "targetTimestamp": 6.436076101987879,
+                    "offset": 0,
+                    "command": {
+                        "type": "named",
+                        "data": {
+                            "name": "Test"
+                        }
+                    }
+                }
+            ],
             "isTrajectoryStale": false
         },
         "SevenP (1)": {

@@ -66,9 +66,6 @@ public class RobotContainer {
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
-  private final Auto_SevenP auto_SevenP;
-  private final Auto_Side auto_Side;
-
   private final ChoreoTrajectory sevenP;
   private final ChoreoTrajectory sideAuto;
 
@@ -106,11 +103,13 @@ public class RobotContainer {
 
     // Set Up Choreo Paths
     //choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
-    sevenP = new Choreo().getTrajectory("SevenP");
-    sideAuto = new Choreo().getTrajectory("SideAuto");
+    sevenP = Choreo.getTrajectory("SevenP");
+    sideAuto = Choreo.getTrajectory("SideAuto");
 
-    auto_SevenP = new Auto_SevenP(sevenP);
-    auto_Side = new Auto_Side(sideAuto);
+    //s_Swerve.setTrajectory(sevenP);
+
+    // auto_SevenP = new Auto_SevenP(sevenP);
+    // auto_Side = new Auto_Side(sideAuto);
 
 
 
@@ -142,14 +141,15 @@ public class RobotContainer {
     // Check Which Option Is Chosen On The Dashboard
     switch (autoChooser.getSelected()) {
       case "SevenP":
-        command = auto_SevenP;
+        //s_Swerve.setTrajectory(sevenP);
+        command = new Auto_SevenP(sevenP);
         s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? sevenP.getFlippedInitialPose() : sevenP.getInitialPose());
         break;
       case "WheelTest":
         command = new ChoreoWheelTestAuto();
         break;
       case "SideAuto":
-        command = auto_Side;
+        command = new Auto_Side(sideAuto);
         s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? sideAuto.getFlippedInitialPose() : sideAuto.getInitialPose());
         break;
       case "Blank":

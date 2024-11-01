@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.commands.Auto_SevenP;
 import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
@@ -11,7 +12,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import java.sql.Driver;
+import java.util.List;
 
+import com.choreo.lib.ChoreoTrajectory;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -22,14 +25,21 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -55,6 +65,12 @@ public class Swerve extends SubsystemBase{
     public AutoRotateUtil s_AutoRotateUtil;
     private Pair<Double, Double> speakerCoordinate;
     public Debouncer pieceSeenDebouncer;
+    public Field2d field;
+    public StructPublisher<Pose3d> publisher;
+    public StructArrayPublisher<Pose3d> arrayPublisher;
+    public Pose3d poseA = new Pose3d();
+    public Pose3d poseB = new Pose3d();
+
 
     private double xDiffSum = 0;
     private double yDiffSum = 0;
@@ -74,6 +90,10 @@ public class Swerve extends SubsystemBase{
         s_Limelight = SkyLimelight.getInstance();
         f_Limelight = FloorLimelight.getInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0);
+        field = new Field2d();
+        
+        publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
+        arrayPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
 
         
         mSwerveMods = new SwerveModule[] {
@@ -99,6 +119,10 @@ public class Swerve extends SubsystemBase{
 
         swerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModPos);
         limeLightSwerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModPos);
+    }
+
+    public void setTrajectory(ChoreoTrajectory traj) {
+        field.getObject("traj").setTrajectory(TrajectoryGenerator.generateTrajectory(List.of(traj.getPoses()), new TrajectoryConfig(10000, 10000)));
     }
 
     public Pose2d getEstimatedPosition(){
@@ -419,10 +443,16 @@ public class Swerve extends SubsystemBase{
             // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
-        
-        double odometryX = swerveEstimator.getEstimatedPosition().getX();
-        double odometryY = swerveEstimator.getEstimatedPosition().getY();
+        Pose2d estimatedPose = swerveEstimator.getEstimatedPosition();
+        poseA = new Pose3d(getLimelightBotPose());
+        publisher.set(poseA);
+        arrayPublisher.set(new Pose3d[] {poseA, poseB});
+
+        double odometryX = estimatedPose.getX();
+        double odometryY = estimatedPose.getY();
         Pose2d botPose = getAutoLimelightBotPose();
+        field.setRobotPose(estimatedPose);
+        SmartDashboard.putData("Field", field);
         SmartDashboard.putNumber("Odometry X", odometryX);
         SmartDashboard.putNumber("Odometry Y", odometryY);
 
