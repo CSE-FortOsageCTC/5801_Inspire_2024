@@ -68,6 +68,7 @@ public class RobotContainer {
 
   private final ChoreoTrajectory sevenP;
   private final ChoreoTrajectory sideAuto;
+  private final ChoreoTrajectory square;
 
 
   /* Driver Buttons */
@@ -105,6 +106,7 @@ public class RobotContainer {
     //choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
     sevenP = Choreo.getTrajectory("SevenP");
     sideAuto = Choreo.getTrajectory("SideAuto");
+    square = Choreo.getTrajectory( "square");
 
     //s_Swerve.setTrajectory(sevenP);
 
@@ -121,6 +123,7 @@ public class RobotContainer {
     autoChooser.addOption("SIDE AUTO", "SideAuto");
     //autoChooser.addOption("ChoreoWheelTest", "WheelTest");
     autoChooser.addOption("Blank", "Blank");
+    autoChooser.addOption("square", "square");
 
     // Send AutoChooser To Dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -154,6 +157,10 @@ public class RobotContainer {
         break;
       case "Blank":
         command = null;
+        break;
+      case "square":
+        command = new Auto_square(square);
+         s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? square.getFlippedInitialPose() : square.getInitialPose());
         break;
     }
 
