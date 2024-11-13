@@ -74,8 +74,8 @@ public class RobotContainer {
   private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton autoAlignSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton autoAlignFeed = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
   private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
 
   private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
@@ -177,7 +177,7 @@ public class RobotContainer {
     autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
     autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
     autoAlignFeed.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToStage()));
-    autoAlignNote.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToNote()));
+    autoAlignNote.whileTrue(new AutoPickupNote());
     // yButton.whileTrue(new FixIntakeCommand());
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
