@@ -3,10 +3,12 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public enum AlignPosition {
             AmpPos(),
             SpeakerPos(),
+            StagePos(),
             SourcePos(),
             ClimbPos(),
             AutoPickup(),
@@ -29,8 +31,9 @@ public enum AlignPosition {
                     //layout.setOrigin(new Pose3d(0,0,0, new Rotation3d()));
                     switch(alignPosition){
                         case AmpPos:
-                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270));
+                            alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77 + 36), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5 + 36), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270));
                             break;
+                        case StagePos:
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42), null);
                             break;
@@ -68,12 +71,14 @@ public enum AlignPosition {
             }
 
             public static void setPosition(AlignPosition alignPos){
+                SmartDashboard.putString("Align Pos", alignPos.toString());
                 alignPosition = alignPos;
                 boolean isRed = Constants.isRedAlliance;
                     switch(alignPosition){
                         case AmpPos:                                                                                    
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(578.77 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270)): new Pose2d(Units.inchesToMeters(72.5 + 6.5), Units.inchesToMeters(323 - 12), Rotation2d.fromDegrees(270));
                             break;
+                        case StagePos:
                         case SpeakerPos:
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42 - 6.5), null): new Pose2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42 - 6.5), null);
                             //alignPose = isRed? layout.getTagPose(4).get().toPose2d() : layout.getTagPose(7).get().toPose2d();
@@ -101,6 +106,7 @@ public enum AlignPosition {
                             alignPose = isRed? new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(0)): new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(180));
                             break;
                     }
+
             }
                 
             AlignPosition(){

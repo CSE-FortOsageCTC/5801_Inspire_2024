@@ -20,12 +20,14 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
 import frc.robot.subsystems.AmpArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
 
     private ElevatorSubsystem elevatorSubsystem;
     private AmpArmSubsystem ampArmSubsystem;
     private AngleShooterUtil angleShooterUtil;
+    private LEDSubsystem ledSubsystem;
     private Swerve s_Swerve;
     private Pair<Double, Double> speakerCoordinate;
     private int stickSup = XboxController.Axis.kLeftY.value;
@@ -34,12 +36,15 @@ public class ElevatorDefaultCommand extends Command{
     private AlignPosition lastAlignment;
     
     private Joystick operator;
+    private Joystick driver;
 
-    public ElevatorDefaultCommand(Joystick operator){
+    public ElevatorDefaultCommand(Joystick operator, Joystick driver){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
         ampArmSubsystem = AmpArmSubsystem.getInstance();
+        ledSubsystem = LEDSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
+        this.driver = driver;
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
         setpoint = 0;
@@ -47,16 +52,20 @@ public class ElevatorDefaultCommand extends Command{
 
     public void increment()
     {
-        isManual = true;
-        setpoint += .25;
-        lastAlignment = AlignPosition.getPosition();
+        // isManual = true;
+        if (ledSubsystem.ledCycle != 1) {
+            ledSubsystem.ledCycle += .01;
+        }
+        // lastAlignment = AlignPosition.getPosition();
     }
 
     public void decrement()
     {
-        isManual = true;
-        setpoint -= .25;
-        lastAlignment = AlignPosition.getPosition();
+        // isManual = true;
+        if (ledSubsystem.ledCycle != -1) {
+            ledSubsystem.ledCycle -= .01;
+        }
+        // lastAlignment = AlignPosition.getPosition();
     }
 
     public void setToAuto()
@@ -78,11 +87,24 @@ public class ElevatorDefaultCommand extends Command{
 
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
-        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
+        boolean feedMode = AlignPosition.getPosition().equals(AlignPosition.StagePos);
 
-        double xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
-        double yDIff = lightBotPose.getY() - Units.inchesToMeters(218.42);
-        double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDIff, 2));
+        double xDiff;
+        double yDiff;
+        
+        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
+        if (AlignPosition.getPosition().equals(AlignPosition.StagePos)) { 
+            xDiff = lightBotPose.getX() - AlignPosition.getAlignPose().getX();
+            yDiff = lightBotPose.getY() - AlignPosition.getAlignPose().getY();
+        } else {
+            xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
+            yDiff = lightBotPose.getY() - Units.inchesToMeters(218.42);
+        }
+        double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+        if (feedMode)  {
+            distance /= 2;
+        }
 
         // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
         // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
@@ -92,7 +114,7 @@ public class ElevatorDefaultCommand extends Command{
 
         SmartDashboard.putNumber("Speaker Distance (in.)", distanceInch);
 
-        double angle = Units.radiansToDegrees(Math.atan2(Constants.speakerHeightMeters, distance));
+        double angle = Units.radiansToDegrees(Math.atan2(feedMode ? Constants.stageHeightMeters:Constants.speakerHeightMeters, distance));
 
         // SmartDashboard.putNumber("ElevatorDegrees", angle);
 
@@ -119,6 +141,8 @@ public class ElevatorDefaultCommand extends Command{
         //     setpoint = elevatorValue;
         // }
 
+        elevatorSubsystem.isAligned = false;
+        
         if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
             elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
@@ -127,15 +151,19 @@ public class ElevatorDefaultCommand extends Command{
 
             if (DriverStation.isAutonomousEnabled()) {
 
+                //elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
                 angleShooterUtil.updateTargetDiff(tangentTarget);
 
             } else if (DriverStation.isTeleopEnabled()) {
 
+                //elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
                 angleShooterUtil.updateTargetDiff(tangentTarget);
 
             }
 
-            elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
+            double elevatorSpeed = angleShooterUtil.calculateElevatorSpeed();
+            elevatorSubsystem.setElevatorSpeed(elevatorSpeed);
+            elevatorSubsystem.isAligned = Math.abs(elevatorSpeed) <= 0.5;
             
         } else if (ampArmSubsystem.isUp) {
 
@@ -148,6 +176,7 @@ public class ElevatorDefaultCommand extends Command{
         
         // SmartDashboard.putNumber("Encoder Error", target);
 
+        SmartDashboard.putBoolean("Aligned Shoot", elevatorSubsystem.isAligned);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.AutoRotateUtil;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -9,11 +9,14 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.SkyLimelight;
 import frc.robot.Constants;
+import frc.robot.subsystems.ChoreoSubsystem;
+import frc.robot.subsystems.FloorLimelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,10 +24,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class AutoPickupNote extends Command{
-    public SkyLimelight limelight;
+    public FloorLimelight limelight;
     public Swerve swerve;
     public IntakeSubsystem intakeSubsystem;
     public Debouncer debouncer;
+    
+
+    public int detectedDelayCount;
+
+    public double xValue;
+    public double yValue;
+    public double areaValue;
 
     public Rotation2d yaw;
     private AutoRotateUtil autoUtil;
@@ -36,24 +46,30 @@ public class AutoPickupNote extends Command{
 
     public Pose2d position;
 
-    public double limeX;
-    public double limeY;
+    public boolean hasPickedUpNote=false;
 
-    public AutoPickupNote(){
+    public int waitFor=0;
+    public int counter=0;
+
+
+    public AutoPickupNote(int waitFor){
         swerve = Swerve.getInstance();
+        intakeSubsystem = IntakeSubsystem.getInstance();
+        detectedDelayCount = 0;
+        autoUtil = new AutoRotateUtil(0);
+        this.waitFor = waitFor;
 
-        limelight = SkyLimelight.getInstance();
-
+        limelight = FloorLimelight.getInstance();
 
         debouncer = new Debouncer(.5);
 
         // creating yTranslationPidController and setting the toleance and setpoint
-        yTranslationPidController = new PIDController(0, 0, 0);
+        yTranslationPidController = new PIDController(.2, 0, 0);
         yTranslationPidController.setTolerance(1);
         yTranslationPidController.setSetpoint(0);
         
         // creating xTranslationPidController and setting the toleance and setpoint
-        xTranslationPidController = new PIDController(0, 0, 0);
+        xTranslationPidController = new PIDController(.2, 0, 0);
         xTranslationPidController.setTolerance(0);
         xTranslationPidController.setSetpoint(0);
 
@@ -64,7 +80,12 @@ public class AutoPickupNote extends Command{
         // SmartDashboard.putNumber("d", 0);
         //THESE VALUES WILL NEED TO BE MESSED WITH, 0 FOR NOW
 
-        addRequirements(swerve, intakeSubsystem);
+        addRequirements(intakeSubsystem);
+    }
+
+    public AutoPickupNote() {
+        //TODO Auto-generated constructor stub
+        new AutoPickupNote(0);
     }
 
     private boolean NoteSeen(){
@@ -72,10 +93,10 @@ public class AutoPickupNote extends Command{
     }
 
 
-    private double getDistanceMeters(){
-        double focalLength =  2.9272781257541 / 1000;
+    private double getDistanceInches(){
+        double focalLength =  2.9272781257541;
         double d = (14 * .0254 * focalLength)/limelight.getArea();
-        return d;
+        return Units.metersToInches(d);
     }
 
     public double newY(){
@@ -95,13 +116,6 @@ public class AutoPickupNote extends Command{
 
     @Override
     public void execute(){
-        yaw = swerve.getGyroYaw();
-        
-        double xValue = limelight.getX(); //gets the limelight X Coordinate
-        double areaValue = limelight.getArea(); // gets the area percentage from the limelight
-        double angularValue = limelight.getSkew(); 
-
-        autoUtil.updateTargetAngle(xValue);
 
         kP = SmartDashboard.getNumber("AlignP", 0);
         kI = SmartDashboard.getNumber("AlignI", 0);
@@ -114,31 +128,61 @@ public class AutoPickupNote extends Command{
         // SmartDashboard.putNumber("Ts1", limelight.getSkew1());
         // SmartDashboard.putNumber("Ts2", limelight.getSkew2());
 
+        boolean ringDetected = intakeSubsystem.isRingDetected(); //ring is detected in the robot
+        if (ringDetected && hasPickedUpNote){
+            detectedDelayCount++;
+        }
+        System.out.println(detectedDelayCount);
+        counter++;
+        if (debouncer.calculate(NoteSeen()) && !ringDetected && counter>waitFor){
+            xValue = limelight.getX(); //gets the limelight X Coordinate
+            yValue = limelight.getY();
+            areaValue = limelight.getArea(); // gets the area percentage from the limelight
+            SmartDashboard.putNumber("Area", areaValue);
+            autoUtil.updateTargetAngle(-xValue);
 
-        if (debouncer.calculate(NoteSeen())){
-            System.out.println("Note in view");
+            if(yValue <= -20){
+                intakeSubsystem.intakeIn();
+                hasPickedUpNote=true;
+            }
+            // System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
-            double ySpeed = yTranslationPidController.calculate(xValue);
-            double xSpeed = xTranslationPidController.calculate(areaValue);
+            //double ySpeed = yTranslationPidController.calculate(xValue);
+            double xSpeed = xTranslationPidController.calculate(100/-areaValue);
 
             double angularSpeed = autoUtil.calculateRotationSpeed() * Constants.Swerve.maxAngularVelocity;
             
 
             // moves the swerve subsystem
-            Translation2d translation = new Translation2d(xSpeed, ySpeed).times(Constants.Swerve.maxSpeed);
-            double rotation = angularSpeed * Constants.Swerve.maxAngularVelocity;
+            Translation2d translation = new Translation2d(xSpeed, 0);
+            double rotation = angularSpeed;
+            SmartDashboard.putNumber("rotation speed", rotation);
 
-            swerve.drive(translation, rotation, false, true);
-        }
-        else{
-            System.out.println("Note not found");
-
+            swerve.setAutoDriveParams(translation, rotation, false, true);
+            swerve.readyToPickUp = true;
+        } else { //TODO: check for tele-op later cuz you know... kinda important and stuff. ALSO second pickup instance not working
+            //System.out.println("Note not found");
+            // swerve.drive(new Translation2d(0,0), 0, true, true);
+            swerve.readyToPickUp = false;
+            // if (detectedDelayCount >= 5){
+            //     intakeSubsystem.intakeStop();
+            //     detectedDelayCount = 0;
+                
+            // }
         }
     }
-   
-    public void end(){
-        swerve.drive(new Translation2d(0,0), 0, true, true);
+    @Override 
+    public boolean isFinished(){
+        // return false;
+        return detectedDelayCount >= 5;
+    }
 
+    @Override
+    public void end(boolean over){
+        swerve.drive(new Translation2d(0,0), 0, true, true);
+        swerve.readyToPickUp = false;
+        intakeSubsystem.intakeStop();
+        detectedDelayCount = 0;
         xTranslationPidController.reset();
         yTranslationPidController.reset();
         autoUtil.reset();

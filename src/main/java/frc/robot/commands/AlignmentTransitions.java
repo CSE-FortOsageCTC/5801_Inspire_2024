@@ -24,15 +24,25 @@ public class AlignmentTransitions extends Command{
     //     new FlyWheelCommand().schedule();
     // }
 
+    public static void scheduleFlywheels() {
+        AlignPosition.setPosition(AlignPosition.SpeakerPos);
+        new AutoOnlyFlywheelCommand().schedule();
+    }
+
+    public static void stopFlywheels() {
+        AlignPosition.setPosition(AlignPosition.SpeakerPos);
+        new AutoStopFlywheelCommand().schedule();
+    }
+
     public static void scheduleIntake(){
         // Swerve.getInstance().resetAutoRotateUtil();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
         new AutoIntakeCommand().schedule();
     }
 
     public static void scheduleOnlyIntake(){
         // Swerve.getInstance().resetAutoRotateUtil();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
         new AutoOnlyIntakeCommand().schedule();
     }
 
@@ -46,15 +56,21 @@ public class AlignmentTransitions extends Command{
         AlignPosition.setPosition(AlignPosition.AmpPos);
     }
 
+    public static void transitionToStage() {
+        Swerve.getInstance().resetAutoRotateUtil();
+        AlignPosition.setPosition(AlignPosition.StagePos);
+    }
+
     public static void transitionToNote() {
         Swerve.getInstance().resetAutoRotateUtil();
-        AlignPosition.setPosition(AlignPosition.AutoPickup);
+        //AlignPosition.setPosition(AlignPosition.AutoPickup);
     }
     public static void zeroHeading(){
         if (DriverStation.getAlliance().get().equals(Alliance.Red)){ 
             Swerve.getInstance().setHeading(Rotation2d.fromDegrees(180));
         }
-        else{Swerve.getInstance().setHeading(Rotation2d.fromDegrees(0));
+        else{
+            Swerve.getInstance().setHeading(Rotation2d.fromDegrees(0));
         }
     }
 }
