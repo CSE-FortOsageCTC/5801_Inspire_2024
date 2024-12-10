@@ -71,6 +71,8 @@ public class Swerve extends SubsystemBase{
     public Pose3d poseA = new Pose3d();
     public Pose3d poseB = new Pose3d();
 
+    public boolean readyToPickUp = false;
+    public DriveParams autoPickupDriveParams;
 
     private double xDiffSum = 0;
     private double yDiffSum = 0;
@@ -174,6 +176,19 @@ public class Swerve extends SubsystemBase{
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }    
+
+    public void autoDrive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+        if (readyToPickUp) {
+            drive(autoPickupDriveParams.translation, autoPickupDriveParams.rotation, autoPickupDriveParams.fieldRelative, autoPickupDriveParams.isOpenLoop);
+        } else {
+            drive(translation, rotation, fieldRelative, isOpenLoop);
+        }
+        System.out.println(readyToPickUp);
+    }
+
+    public void setAutoDriveParams(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+        this.autoPickupDriveParams = new DriveParams(translation, rotation, fieldRelative, isOpenLoop);
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -468,5 +483,20 @@ public class Swerve extends SubsystemBase{
         // SmartDashboard.putNumber("X Diff Sum", xDiffSum);
         // SmartDashboard.putNumber("Y Diff Sum", yDiffSum);
         // SmartDashboard.putNumber("Gyro Yaw", getGyroYaw().getDegrees());
+    }
+
+    public class DriveParams {
+
+        public Translation2d translation;
+        public double rotation;
+        public boolean fieldRelative;
+        public boolean isOpenLoop;
+
+        public DriveParams(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
+            this.translation = translation;
+            this.rotation = rotation;
+            this.fieldRelative = fieldRelative;
+            this.isOpenLoop = isOpenLoop;
+        }
     }
 }

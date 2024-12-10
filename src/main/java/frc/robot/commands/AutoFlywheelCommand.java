@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AlignPosition;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class AutoFlywheelCommand extends Command{
@@ -10,6 +11,7 @@ public class AutoFlywheelCommand extends Command{
 
     public AutoFlywheelCommand(){
         shooterSubsystem = ShooterSubsystem.getInstance();
+        //IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
         count = 0;
         AlignPosition.setPosition(AlignPosition.SpeakerPos);
         addRequirements(shooterSubsystem);
@@ -29,7 +31,7 @@ public class AutoFlywheelCommand extends Command{
     }
     @Override
     public void end(boolean end){
-        System.out.println("It ended");
+        System.out.println("AutoFlywheelCommand ended");
         //AlignPosition.setPosition(AlignPosition.Manual);
         count = 0;
     }

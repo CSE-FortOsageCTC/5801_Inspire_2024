@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.SkyLimelight;
 import frc.robot.Constants;
+import frc.robot.subsystems.ChoreoSubsystem;
 import frc.robot.subsystems.FloorLimelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.math.filter.Debouncer;
@@ -45,14 +46,20 @@ public class AutoPickupNote extends Command{
 
     public Pose2d position;
 
-    public AutoPickupNote(){
+    public boolean hasPickedUpNote=false;
+
+    public int waitFor=0;
+    public int counter=0;
+
+
+    public AutoPickupNote(int waitFor){
         swerve = Swerve.getInstance();
         intakeSubsystem = IntakeSubsystem.getInstance();
         detectedDelayCount = 0;
         autoUtil = new AutoRotateUtil(0);
+        this.waitFor = waitFor;
 
         limelight = FloorLimelight.getInstance();
-
 
         debouncer = new Debouncer(.5);
 
@@ -62,7 +69,7 @@ public class AutoPickupNote extends Command{
         yTranslationPidController.setSetpoint(0);
         
         // creating xTranslationPidController and setting the toleance and setpoint
-        xTranslationPidController = new PIDController(.3, 0, 0);
+        xTranslationPidController = new PIDController(.2, 0, 0);
         xTranslationPidController.setTolerance(0);
         xTranslationPidController.setSetpoint(0);
 
@@ -73,7 +80,12 @@ public class AutoPickupNote extends Command{
         // SmartDashboard.putNumber("d", 0);
         //THESE VALUES WILL NEED TO BE MESSED WITH, 0 FOR NOW
 
-        addRequirements(swerve, intakeSubsystem);
+        addRequirements(intakeSubsystem);
+    }
+
+    public AutoPickupNote() {
+        //TODO Auto-generated constructor stub
+        new AutoPickupNote(0);
     }
 
     private boolean NoteSeen(){
@@ -117,19 +129,21 @@ public class AutoPickupNote extends Command{
         // SmartDashboard.putNumber("Ts2", limelight.getSkew2());
 
         boolean ringDetected = intakeSubsystem.isRingDetected(); //ring is detected in the robot
-        if (ringDetected){
+        if (ringDetected && hasPickedUpNote){
             detectedDelayCount++;
         }
         System.out.println(detectedDelayCount);
-        if (debouncer.calculate(NoteSeen()) && !ringDetected){
+        counter++;
+        if (debouncer.calculate(NoteSeen()) && !ringDetected && counter>waitFor){
             xValue = limelight.getX(); //gets the limelight X Coordinate
             yValue = limelight.getY();
             areaValue = limelight.getArea(); // gets the area percentage from the limelight
             SmartDashboard.putNumber("Area", areaValue);
             autoUtil.updateTargetAngle(-xValue);
 
-            if( yValue <= -20){
+            if(yValue <= -20){
                 intakeSubsystem.intakeIn();
+                hasPickedUpNote=true;
             }
             // System.out.println("Note in view");
             // Calculates the x and y speed values for the translation movement
@@ -144,11 +158,12 @@ public class AutoPickupNote extends Command{
             double rotation = angularSpeed;
             SmartDashboard.putNumber("rotation speed", rotation);
 
-            swerve.drive(translation, rotation, false, true);
-        }
-        else{
+            swerve.setAutoDriveParams(translation, rotation, false, true);
+            swerve.readyToPickUp = true;
+        } else { //TODO: check for tele-op later cuz you know... kinda important and stuff. ALSO second pickup instance not working
             //System.out.println("Note not found");
-            swerve.drive(new Translation2d(0,0), 0, true, true);
+            // swerve.drive(new Translation2d(0,0), 0, true, true);
+            swerve.readyToPickUp = false;
             // if (detectedDelayCount >= 5){
             //     intakeSubsystem.intakeStop();
             //     detectedDelayCount = 0;
@@ -158,12 +173,14 @@ public class AutoPickupNote extends Command{
     }
     @Override 
     public boolean isFinished(){
+        // return false;
         return detectedDelayCount >= 5;
     }
 
     @Override
     public void end(boolean over){
         swerve.drive(new Translation2d(0,0), 0, true, true);
+        swerve.readyToPickUp = false;
         intakeSubsystem.intakeStop();
         detectedDelayCount = 0;
         xTranslationPidController.reset();

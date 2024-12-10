@@ -73,7 +73,7 @@ public class ChoreoSubsystem extends SubsystemBase{
             autoXPID,
             autoYPID,
             autoThetaPID,
-            (ChassisSpeeds speeds) -> s_Swerve.drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), -speeds.omegaRadiansPerSecond, false, true),
+            (ChassisSpeeds speeds) -> s_Swerve.autoDrive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), -speeds.omegaRadiansPerSecond, false, true),
             this::getFlipped,
             s_Swerve
         );

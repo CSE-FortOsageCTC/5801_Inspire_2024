@@ -30,6 +30,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
+import frc.robot.commands.ChoreoWheelTestAuto.Trajectories;
 import frc.robot.subsystems.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -68,6 +69,11 @@ public class RobotContainer {
 
   private final ChoreoTrajectory sevenP;
   private final ChoreoTrajectory sideAuto;
+  private final ChoreoTrajectory wheelTest;
+  private final ChoreoTrajectory wheelTest2;
+  private final ChoreoWheelTestAuto.Trajectories wheelTestTrajectories;
+  private final Auto_FourP.Trajectories fourPTrajectories;
+  // private final ChoreoWheelTestAuto choreoWheelTestAuto;
 
 
   /* Driver Buttons */
@@ -93,6 +99,7 @@ public class RobotContainer {
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
   private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
   private final POVButton climbersUp = new POVButton(operator, 0);
+
   private final POVButton climbersDown = new POVButton(operator, 180);
  
   public RobotContainer() {
@@ -105,6 +112,12 @@ public class RobotContainer {
     //choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
     sevenP = Choreo.getTrajectory("SevenP");
     sideAuto = Choreo.getTrajectory("SideAuto");
+    wheelTest = Choreo.getTrajectory("WheelTest");
+    wheelTest2 = Choreo.getTrajectory("WheelTest2");
+
+
+    wheelTestTrajectories = new ChoreoWheelTestAuto.Trajectories();
+    fourPTrajectories = new Auto_FourP.Trajectories();
 
     //s_Swerve.setTrajectory(sevenP);
 
@@ -119,8 +132,9 @@ public class RobotContainer {
     // Add Autonomous Routines To Dashboard Dropdown
     autoChooser.setDefaultOption("SEVEN PIECE", "SevenP");
     autoChooser.addOption("SIDE AUTO", "SideAuto");
-    //autoChooser.addOption("ChoreoWheelTest", "WheelTest");
+    autoChooser.addOption("ChoreoWheelTest", "WheelTest");
     autoChooser.addOption("Blank", "Blank");
+    autoChooser.addOption("FourP", "FourP");
 
     // Send AutoChooser To Dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -146,7 +160,8 @@ public class RobotContainer {
         s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? sevenP.getFlippedInitialPose() : sevenP.getInitialPose());
         break;
       case "WheelTest":
-        command = new ChoreoWheelTestAuto();
+        command = new ChoreoWheelTestAuto(wheelTestTrajectories);
+        s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? wheelTest.getFlippedInitialPose() : wheelTest.getInitialPose());
         break;
       case "SideAuto":
         command = new Auto_Side(sideAuto);
@@ -154,6 +169,10 @@ public class RobotContainer {
         break;
       case "Blank":
         command = null;
+        break;
+      case "FourP":
+        command = new Auto_FourP(fourPTrajectories);
+        s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? fourPTrajectories.traj.getFlippedInitialPose() : fourPTrajectories.traj.getInitialPose());
         break;
     }
 

@@ -26,7 +26,7 @@ public class Auto_SevenP extends SequentialCommandGroup{
         
 
             
-                new WaitCommand(0.2),//
+                //new WaitCommand(0.2),//
                 new InstantCommand(() -> AlignmentTransitions.scheduleShoot()),
                 new WaitCommand(0.6),//.6
                 new ParallelCommandGroup(

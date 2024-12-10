@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ChoreoSubsystem;
 
-public class ChoreoWheelTestAuto extends SequentialCommandGroup{
+public class Auto_FourP extends SequentialCommandGroup{
 
     
-public ChoreoWheelTestAuto(Trajectories trajectories) {
+public Auto_FourP(Trajectories trajectories) {
 
     super(
         
@@ -20,9 +20,10 @@ public ChoreoWheelTestAuto(Trajectories trajectories) {
         new SequentialCommandGroup(
             new InstantCommand(() -> AlignmentTransitions.scheduleShoot()),
             new WaitCommand(0.6),
-            new AutoPickupNote().alongWith(ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(trajectories.traj)).withTimeout(5),
+            new AutoPickupNote(40).alongWith(ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(trajectories.traj)),
             new InstantCommand(() -> AlignmentTransitions.scheduleShoot()),
-            new AutoPickupNote().alongWith(ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(trajectories.traj2))
+            new AutoPickupNote(30).alongWith(ChoreoSubsystem.getInstance().setupAutonomousChoreoPath(trajectories.traj2)),
+            new InstantCommand(() -> AlignmentTransitions.scheduleShoot())
         )
         
 
@@ -35,8 +36,8 @@ public static class Trajectories {
     public ChoreoTrajectory traj2;
 
     public Trajectories() {
-        traj = Choreo.getTrajectory("WheelTest");
-        traj2 = Choreo.getTrajectory("WheelTest2");
+        traj = Choreo.getTrajectory("NewFourP1");
+        traj2 = Choreo.getTrajectory("FourP2");
     }
 }
 
