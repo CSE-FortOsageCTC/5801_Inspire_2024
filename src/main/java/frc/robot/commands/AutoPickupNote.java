@@ -1,24 +1,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.AutoRotateUtil;
 import edu.wpi.first.math.controller.PIDController;
 
 
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.SkyLimelight;
 import frc.robot.Constants;
-import frc.robot.subsystems.ChoreoSubsystem;
 import frc.robot.subsystems.FloorLimelight;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -84,7 +78,6 @@ public class AutoPickupNote extends Command{
     }
 
     public AutoPickupNote() {
-        //TODO Auto-generated constructor stub
         new AutoPickupNote(0);
     }
 
@@ -92,12 +85,6 @@ public class AutoPickupNote extends Command{
         return limelight.hasTag();
     }
 
-
-    private double getDistanceInches(){
-        double focalLength =  2.9272781257541;
-        double d = (14 * .0254 * focalLength)/limelight.getArea();
-        return Units.metersToInches(d);
-    }
 
     public double newY(){
         return limelight.getY() > 0 ? 1.0 : 0;

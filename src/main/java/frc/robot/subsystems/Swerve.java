@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.commands.Auto_SevenP;
 import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
@@ -11,19 +10,16 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
-import java.sql.Driver;
 import java.util.List;
 
 import com.choreo.lib.ChoreoTrajectory;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,16 +32,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 
 
@@ -63,7 +54,6 @@ public class Swerve extends SubsystemBase{
     public SkyLimelight s_Limelight;
     public FloorLimelight f_Limelight;
     public AutoRotateUtil s_AutoRotateUtil;
-    private Pair<Double, Double> speakerCoordinate;
     public Debouncer pieceSeenDebouncer;
     public Field2d field;
     public StructPublisher<Pose3d> publisher;
@@ -73,9 +63,6 @@ public class Swerve extends SubsystemBase{
 
     public boolean readyToPickUp = false;
     public DriveParams autoPickupDriveParams;
-
-    private double xDiffSum = 0;
-    private double yDiffSum = 0;
 
     public static Swerve getInstance() {
         if (swerve == null) {
@@ -465,7 +452,6 @@ public class Swerve extends SubsystemBase{
 
         double odometryX = estimatedPose.getX();
         double odometryY = estimatedPose.getY();
-        Pose2d botPose = getAutoLimelightBotPose();
         field.setRobotPose(estimatedPose);
         SmartDashboard.putData("Field", field);
         SmartDashboard.putNumber("Odometry X", odometryX);

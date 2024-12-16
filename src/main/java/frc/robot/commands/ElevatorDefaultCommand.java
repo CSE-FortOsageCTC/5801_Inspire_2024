@@ -1,16 +1,10 @@
 package frc.robot.commands;
 
-import java.sql.Driver;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,51 +23,34 @@ public class ElevatorDefaultCommand extends Command{
     private AngleShooterUtil angleShooterUtil;
     private LEDSubsystem ledSubsystem;
     private Swerve s_Swerve;
-    private Pair<Double, Double> speakerCoordinate;
     private int stickSup = XboxController.Axis.kLeftY.value;
-    private double setpoint;
-    private boolean isManual;
-    private AlignPosition lastAlignment;
-    
     private Joystick operator;
-    private Joystick driver;
-
     public ElevatorDefaultCommand(Joystick operator, Joystick driver){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
         ampArmSubsystem = AmpArmSubsystem.getInstance();
         ledSubsystem = LEDSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
-        this.driver = driver;
         addRequirements(elevatorSubsystem);
         angleShooterUtil = new AngleShooterUtil(0);
-        setpoint = 0;
     }
 
     public void increment()
     {
-        // isManual = true;
         if (ledSubsystem.ledCycle != 1) {
             ledSubsystem.ledCycle += .01;
         }
-        // lastAlignment = AlignPosition.getPosition();
     }
 
     public void decrement()
     {
-        // isManual = true;
+        
         if (ledSubsystem.ledCycle != -1) {
             ledSubsystem.ledCycle -= .01;
         }
-        // lastAlignment = AlignPosition.getPosition();
     }
 
-    public void setToAuto()
-    {
-        isManual = lastAlignment == AlignPosition.getPosition();
-        
-    }
-
+   
     @Override
     public void initialize() {
         angleShooterUtil.initialize();
@@ -81,7 +58,7 @@ public class ElevatorDefaultCommand extends Command{
 
     @Override    
     public void execute(){ 
-        setToAuto();
+        
 
         Pose2d lightBotPose = DriverStation.isAutonomousEnabled()? s_Swerve.getAutoLimelightBotPose():s_Swerve.getTeleopLimelightBotPose();
 
@@ -92,7 +69,6 @@ public class ElevatorDefaultCommand extends Command{
         double xDiff;
         double yDiff;
         
-        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
         if (AlignPosition.getPosition().equals(AlignPosition.StagePos)) { 
             xDiff = lightBotPose.getX() - AlignPosition.getAlignPose().getX();
             yDiff = lightBotPose.getY() - AlignPosition.getAlignPose().getY();
@@ -106,40 +82,21 @@ public class ElevatorDefaultCommand extends Command{
             distance /= 2;
         }
 
-        // ChassisSpeeds speeds = Constants.Swerve.swerveKinematics.toChassisSpeeds(s_Swerve.getModuleStates());
-        // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds);
-        // distance = s_Swerve.getVelocityCorrectionDistance(distance, speeds); // called twice for better accuracy
-
         double distanceInch = Units.metersToInches(distance);
 
         SmartDashboard.putNumber("Speaker Distance (in.)", distanceInch);
 
         double angle = Units.radiansToDegrees(Math.atan2(feedMode ? Constants.stageHeightMeters:Constants.speakerHeightMeters, distance));
 
-        // SmartDashboard.putNumber("ElevatorDegrees", angle);
-
         double degreesToEncoderAngle = (angle - Constants.Swerve.minElevatorAngle) * Constants.Swerve.degreesToEncoderValue;
-
-        // SmartDashboard.putNumber("Final Encoder Value", degreesToEncoderAngle);
 
         double elevatorValue = elevatorSubsystem.getElevatorValue();  
 
         SmartDashboard.putNumber("Current Encoder Value", elevatorValue);
         
-        double equationTarget = (-0.00353 * (distanceInch * distanceInch)) + ((1.18) * distanceInch) - 98.6 - 2; // (-0.00384 * (distanceInch * distanceInch)) + ((1.17 + 0.01) * distanceInch) - 94.8;
+        double equationTarget = (-0.00353 * (distanceInch * distanceInch)) + ((1.18) * distanceInch) - 98.6 - 2;
         equationTarget = elevatorValue - equationTarget;
         double tangentTarget = elevatorValue - degreesToEncoderAngle;
-
-        double target = (equationTarget + tangentTarget) / 2;
-
-        boolean isAlignedAmp = AlignPosition.getPosition().equals(AlignPosition.AmpPos);
-
-        // if (isManual){
-        //     target = elevatorValue - SmartDashboard.getNumber("Setpoint", 0);
-        //     SmartDashboard.putNumber("Setpoint", setpoint);
-        // } else {
-        //     setpoint = elevatorValue;
-        // }
 
         elevatorSubsystem.isAligned = false;
         
@@ -151,12 +108,10 @@ public class ElevatorDefaultCommand extends Command{
 
             if (DriverStation.isAutonomousEnabled()) {
 
-                //elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
                 angleShooterUtil.updateTargetDiff(tangentTarget);
 
             } else if (DriverStation.isTeleopEnabled()) {
 
-                //elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
                 angleShooterUtil.updateTargetDiff(tangentTarget);
 
             }
@@ -167,14 +122,12 @@ public class ElevatorDefaultCommand extends Command{
             
         } else if (ampArmSubsystem.isUp) {
 
-            angleShooterUtil.updateTargetDiff(elevatorValue - (-32.5)); // -35.8686    new: -30.5
+            angleShooterUtil.updateTargetDiff(elevatorValue - (-32.5));
             elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
 
         }
         boolean inRange = distanceInch < 152.474;
         SmartDashboard.putBoolean("In Range?", inRange);
-        
-        // SmartDashboard.putNumber("Encoder Error", target);
 
         SmartDashboard.putBoolean("Aligned Shoot", elevatorSubsystem.isAligned);
     }

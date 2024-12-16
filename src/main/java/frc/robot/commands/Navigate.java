@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import com.ctre.phoenix6.Timestamp;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -10,15 +8,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.AlignPosition;
 
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
-import frc.robot.subsystems.SkyLimelight;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -32,7 +27,6 @@ public class Navigate extends Command {
     private PIDController xTranslationPidController;
     
     private Swerve s_Swerve;
-    private SkyLimelight limelight = SkyLimelight.getInstance();
     private AutoRotateUtil autoUtil;
     private double targetX;
     private double targetY;
@@ -87,19 +81,11 @@ public class Navigate extends Command {
         double kI = 0;
         double kD = 0;
 
-        double rotationkP = SmartDashboard.getNumber("RotationP", 0);
-        double rotationkI = SmartDashboard.getNumber("RotationI", 0);
-        double rotationkD = SmartDashboard.getNumber("RotationD", 0);
-        
         // sets the PID values for the PIDControllers
         yTranslationPidController.setPID(kP, kI, kD);
         xTranslationPidController.setPID(kP, kI, kD);
         // xTranslationPidController.setPID(kP, kI, kD);
 
-        double xValue = limelight.getX(); //gets the limelight X Coordinate
-        double areaValue = limelight.getArea(); // gets the area percentage from the limelight
-        double angularValue = limelight.getSkew();
-        
         // sets current position
         Pose2d botPose = s_Swerve.getLimelightBotPose();
 
@@ -116,10 +102,10 @@ public class Navigate extends Command {
         autoUtil.updateTargetAngle(targetRot.getDegrees() - botPose.getRotation().getDegrees());
 
         // Calculates the x and y speed values for the translation movement
-        double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(targetY - botPose.getY(), 0), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); //TODO:should be changed to max speed at some point 
+        double ySpeed = MathUtil.clamp(yTranslationPidController.calculate(targetY - botPose.getY(), 0), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed); 
         ySpeed = yTranslationPidController.atSetpoint() ? 0 : ySpeed;
         ySpeed = ySpeedLimiter.calculate(ySpeed);
-        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(targetX - botPose.getX(), 0), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);//TODO:should be changed to max speed at some point
+        double xSpeed = MathUtil.clamp(xTranslationPidController.calculate(targetX - botPose.getX(), 0), -Constants.Swerve.maxSpeed, Constants.Swerve.maxSpeed);
         xSpeed = xTranslationPidController.atSetpoint() ? 0 : xSpeed;
         xSpeed = xSpeedLimiter.calculate(xSpeed);
         double angularSpeed = autoUtil.calculateRotationSpeed();

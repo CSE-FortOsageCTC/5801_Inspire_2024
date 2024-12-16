@@ -6,11 +6,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class AutoStopFlywheelCommand extends Command{
     private final ShooterSubsystem shooterSubsystem;
-    private double count;
-
     public AutoStopFlywheelCommand(){
         shooterSubsystem = ShooterSubsystem.getInstance();
-        count = 0;
         AlignPosition.setPosition(AlignPosition.SpeakerPos);
         addRequirements(shooterSubsystem);
 
@@ -23,8 +20,6 @@ public class AutoStopFlywheelCommand extends Command{
     @Override
     public void end(boolean end){
         System.out.println("It ended");
-        //AlignPosition.setPosition(AlignPosition.Manual);
-        count = 0;
     }
 }
 

@@ -4,40 +4,18 @@
 
 package frc.robot;
 
-import java.util.List;
-
-import javax.swing.GroupLayout.Alignment;
-
-import org.json.simple.JSONObject;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import com.choreo.lib.*;
-import com.pathplanner.lib.auto.NamedCommands;
-
-import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
-import frc.robot.commands.ChoreoWheelTestAuto.Trajectories;
 import frc.robot.subsystems.*;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 
 public class RobotContainer {
@@ -54,11 +32,8 @@ public class RobotContainer {
   
   // NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
-  /* Drive Controls */
-  private DefaultTeleopSub s_DefaultTeleopSub = DefaultTeleopSub.getInstance();
   private Swerve s_Swerve = Swerve.getInstance();
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
-  private ClimbingSubsystem s_ClimbingSubsystem = ClimbingSubsystem.getInstance();
   private ElevatorSubsystem s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
   private LEDSubsystem s_LEDSubsystem = LEDSubsystem.getInstance();
   private AmpArmSubsystem s_AmpArmSubsystem = AmpArmSubsystem.getInstance();
@@ -70,7 +45,6 @@ public class RobotContainer {
   private final ChoreoTrajectory sevenP;
   private final ChoreoTrajectory sideAuto;
   private final ChoreoTrajectory wheelTest;
-  private final ChoreoTrajectory wheelTest2;
   private final ChoreoWheelTestAuto.Trajectories wheelTestTrajectories;
   private final Auto_FourP.Trajectories fourPTrajectories;
   // private final ChoreoWheelTestAuto choreoWheelTestAuto;
@@ -86,15 +60,10 @@ public class RobotContainer {
   private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   
-  /* Operator Buttons */
-  private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
   private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
-  // private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
-  private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
-  private final JoystickButton ampArmButton = new JoystickButton(operator, XboxController.Button.kB.value);
   // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
   private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
@@ -113,7 +82,7 @@ public class RobotContainer {
     sevenP = Choreo.getTrajectory("SevenP");
     sideAuto = Choreo.getTrajectory("SideAuto");
     wheelTest = Choreo.getTrajectory("WheelTest");
-    wheelTest2 = Choreo.getTrajectory("WheelTest2");
+    Choreo.getTrajectory("WheelTest2");
 
 
     wheelTestTrajectories = new ChoreoWheelTestAuto.Trajectories();

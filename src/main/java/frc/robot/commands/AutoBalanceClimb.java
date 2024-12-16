@@ -13,7 +13,6 @@ public class AutoBalanceClimb extends Command{
     public AutoBalanceClimb(){
         s_climbingSubsystem = ClimbingSubsystem.getInstance();
         addRequirements(s_climbingSubsystem);
-        int timer = 0;
     }
 
     @Override

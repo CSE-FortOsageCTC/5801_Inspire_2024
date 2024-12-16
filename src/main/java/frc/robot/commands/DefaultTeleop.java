@@ -1,21 +1,11 @@
 package frc.robot.commands;
 
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix6.Timestamp;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,10 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.AlignPosition;
 import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
-import frc.robot.Constants.Swerve;
 import frc.robot.subsystems.DefaultTeleopSub;
-import com.ctre.phoenix6.Timestamp;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class DefaultTeleop extends Command{
 
@@ -41,12 +28,9 @@ public class DefaultTeleop extends Command{
     private boolean robotCentricSup;
     private int back;
     private Joystick driver;
-    private Joystick operator;
-
     private SlewRateLimiter rotationLimiter = new SlewRateLimiter(5.0); 
     private SlewRateLimiter throttleLimiter = new SlewRateLimiter(2);
 
-    private PIDController rotationPidController = new PIDController(0, 0, 0);
     private Pose2d alignPose;
 
 
@@ -54,7 +38,6 @@ public class DefaultTeleop extends Command{
         s_DefaultTeleop = DefaultTeleopSub.getInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0); 
         this.driver = driver;
-        this.operator = operator;
         throttle = XboxController.Axis.kRightTrigger.value;
         translationSup = XboxController.Axis.kLeftY.value;
         strafeSup = XboxController.Axis.kLeftX.value;

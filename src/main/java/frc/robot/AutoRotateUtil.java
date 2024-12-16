@@ -4,12 +4,8 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Swerve;
 
 public class AutoRotateUtil {
-
-    private final Swerve s_Swerve = null;
 
     private final PIDController pidController;
 

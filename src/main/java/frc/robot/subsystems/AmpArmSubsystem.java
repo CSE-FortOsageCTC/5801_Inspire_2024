@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch.Type;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AmpArmSubsystem extends SubsystemBase{
@@ -56,11 +55,9 @@ public class AmpArmSubsystem extends SubsystemBase{
     public void periodic(){
         if (ampArmMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed()){
             highLimit = ampArmMotor.getEncoder().getPosition();
-            // ampArmMotor.getEncoder().setPosition(0);//TODO change this to the encoder value when amp arm is up
         }
         if (ampArmMotor.getReverseLimitSwitch(Type.kNormallyOpen).isPressed()){
             lowLimit = ampArmMotor.getEncoder().getPosition();
-        }
-        // SmartDashboard.putNumber("Amp Arm Encoder", getEncoderValue());    
+        } 
     }
 }

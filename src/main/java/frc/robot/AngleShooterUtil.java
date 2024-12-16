@@ -8,15 +8,13 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class AngleShooterUtil {
     
-    private final ElevatorSubsystem s_ElevatorSubsystem;
-
     private double m_encoderDiff;
     private final PIDController upPidController;
     private final PIDController downPidController;
 
     public AngleShooterUtil(double encoderDiff) {
 
-        s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
+        ElevatorSubsystem.getInstance();
         m_encoderDiff = encoderDiff;
 
         this.upPidController = new PIDController(0, 0, 0);
@@ -61,9 +59,6 @@ public class AngleShooterUtil {
     this.downPidController.setI(0);
     this.downPidController.setD(0);
 
-    double headingError = this.m_encoderDiff;
-    //SmartDashboard.putNumber("Heading Error", headingError);
-    double feedForward = 0.5;
     double speed = 0;
 
     // if (m_encoderDiff < 0) {

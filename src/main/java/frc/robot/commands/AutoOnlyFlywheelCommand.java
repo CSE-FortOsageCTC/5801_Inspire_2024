@@ -33,7 +33,6 @@ public class AutoOnlyFlywheelCommand extends Command{
         }
     }
 
-    //TODO: no elevator input until limit is hit
 
     @Override
     public void end(boolean end){
