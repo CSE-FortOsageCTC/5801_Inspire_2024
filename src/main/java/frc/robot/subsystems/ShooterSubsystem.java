@@ -2,8 +2,15 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.LimitSwitchConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -18,8 +25,12 @@ public class ShooterSubsystem extends SubsystemBase {
     private static ShooterSubsystem shooterSubsystem;
     private static LEDSubsystem ledSubsystem;
 
-    private CANSparkMax topShooter;
-    private CANSparkMax bottomShooter;
+    private SparkMax topShooter;
+    private SparkMax bottomShooter;
+
+    private SparkMaxConfig configurations;
+
+    private LimitSwitchConfig limitSwitchConfig;
 
     private DoubleSolenoid shooterSolenoid;
 
@@ -33,21 +44,22 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private ShooterSubsystem(){
-        topShooter = new CANSparkMax(20, MotorType.kBrushless);
-        bottomShooter = new CANSparkMax(21, MotorType.kBrushless);
+        topShooter = new SparkMax(20, MotorType.kBrushless);
+        bottomShooter = new SparkMax(21, MotorType.kBrushless);
+
+        limitSwitchConfig.forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyClosed);
+
+        configurations.idleMode(IdleMode.kBrake);
+        configurations.follow(topShooter);
+        configurations.voltageCompensation(10);
+        configurations.apply(limitSwitchConfig);
         
-        bottomShooter.enableVoltageCompensation(10);
-        topShooter.enableVoltageCompensation(10);
-        bottomShooter.follow(topShooter, true);
-        topShooter.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        bottomShooter.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        topShooter.burnFlash();
-        bottomShooter.burnFlash();
+        bottomShooter.configure(configurations, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        topShooter.configure(configurations, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         shooterSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
         ledSubsystem = LEDSubsystem.getInstance();
-
 
         //SmartDashboard.putNumber("Shooter Percent Multiplier", 0.4);
         

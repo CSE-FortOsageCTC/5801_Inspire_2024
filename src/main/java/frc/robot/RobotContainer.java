@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.swing.GroupLayout.Alignment;
 
-import org.json.simple.JSONObject;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,12 +23,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
-import com.choreo.lib.*;
+import choreo.Choreo.*;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
-import frc.robot.commands.ChoreoWheelTestAuto.Trajectories;
 import frc.robot.subsystems.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -46,11 +43,6 @@ public class RobotContainer {
 
   // Sendable Chooser for autos
   private SendableChooser<String> autoChooser;
-
-  // Initialize Autonomous Choreo Paths
-  ChoreoTrajectory choreoTestPath;
-
-  // Choreo Auto Commands
   
   // NamedCommands.registerCommand("Shoot", new InstantCommand(() -> AlignmentTransitions.scheduleShoot()));
 
@@ -61,18 +53,10 @@ public class RobotContainer {
   private ClimbingSubsystem s_ClimbingSubsystem = ClimbingSubsystem.getInstance();
   private ElevatorSubsystem s_ElevatorSubsystem = ElevatorSubsystem.getInstance();
   private LEDSubsystem s_LEDSubsystem = LEDSubsystem.getInstance();
-  private AmpArmSubsystem s_AmpArmSubsystem = AmpArmSubsystem.getInstance();
-  private ChoreoSubsystem s_ChoreoSubsystem = ChoreoSubsystem.getInstance();
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
-  private final ChoreoTrajectory sevenP;
-  private final ChoreoTrajectory sideAuto;
-  private final ChoreoTrajectory wheelTest;
-  private final ChoreoTrajectory wheelTest2;
-  private final ChoreoWheelTestAuto.Trajectories wheelTestTrajectories;
-  private final Auto_FourP.Trajectories fourPTrajectories;
   // private final ChoreoWheelTestAuto choreoWheelTestAuto;
 
 
@@ -107,18 +91,6 @@ public class RobotContainer {
 
     elevatorDefaultCommand = new ElevatorDefaultCommand(operator, driver);
     /* Autonomous Setup */
-
-    // Set Up Choreo Paths
-    //choreoTestPath = Choreo.getTrajectory("Choreo1Meter");
-    sevenP = Choreo.getTrajectory("SevenP");
-    sideAuto = Choreo.getTrajectory("SideAuto");
-    wheelTest = Choreo.getTrajectory("WheelTest");
-    wheelTest2 = Choreo.getTrajectory("WheelTest2");
-
-
-    wheelTestTrajectories = new ChoreoWheelTestAuto.Trajectories();
-    fourPTrajectories = new Auto_FourP.Trajectories();
-
     //s_Swerve.setTrajectory(sevenP);
 
     // auto_SevenP = new Auto_SevenP(sevenP);
@@ -151,33 +123,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    Command command = null;
-    // Check Which Option Is Chosen On The Dashboard
-    switch (autoChooser.getSelected()) {
-      case "SevenP":
-        //s_Swerve.setTrajectory(sevenP);
-        command = new Auto_SevenP(sevenP);
-        s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? sevenP.getFlippedInitialPose() : sevenP.getInitialPose());
-        break;
-      case "WheelTest":
-        command = new ChoreoWheelTestAuto(wheelTestTrajectories);
-        s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? wheelTest.getFlippedInitialPose() : wheelTest.getInitialPose());
-        break;
-      case "SideAuto":
-        command = new Auto_Side(sideAuto);
-        s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? sideAuto.getFlippedInitialPose() : sideAuto.getInitialPose());
-        break;
-      case "Blank":
-        command = null;
-        break;
-      case "FourP":
-        command = new Auto_FourP(fourPTrajectories);
-        s_Swerve.setPose(s_ChoreoSubsystem.getFlipped() ? fourPTrajectories.traj.getFlippedInitialPose() : fourPTrajectories.traj.getInitialPose());
-        break;
-    }
 
     // Returns Autonomous Command To Run During Auto In Robot.java
-    return command;
+    return null;
     
   }
 
@@ -196,12 +144,10 @@ public class RobotContainer {
     autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
     autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
     autoAlignFeed.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToStage()));
-    autoAlignNote.whileTrue(new AutoPickupNote());
     // yButton.whileTrue(new FixIntakeCommand());
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);
-    s_AmpArmSubsystem.setDefaultCommand(new AmpArmCommand(operator));
     //shootButton.whileTrue(new ShootCommand(operator));
     //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     //resetClimbers.whileTrue(new ClimbReset(-1, -1));

@@ -18,14 +18,12 @@ import frc.robot.AlignPosition;
 import frc.robot.AngleShooterUtil;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
-import frc.robot.subsystems.AmpArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 
 public class ElevatorDefaultCommand extends Command{
 
     private ElevatorSubsystem elevatorSubsystem;
-    private AmpArmSubsystem ampArmSubsystem;
     private AngleShooterUtil angleShooterUtil;
     private LEDSubsystem ledSubsystem;
     private Swerve s_Swerve;
@@ -40,7 +38,6 @@ public class ElevatorDefaultCommand extends Command{
 
     public ElevatorDefaultCommand(Joystick operator, Joystick driver){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
-        ampArmSubsystem = AmpArmSubsystem.getInstance();
         ledSubsystem = LEDSubsystem.getInstance();
         s_Swerve = Swerve.getInstance();
         this.operator = operator;
@@ -83,23 +80,12 @@ public class ElevatorDefaultCommand extends Command{
     public void execute(){ 
         setToAuto();
 
-        Pose2d lightBotPose = DriverStation.isAutonomousEnabled()? s_Swerve.getAutoLimelightBotPose():s_Swerve.getTeleopLimelightBotPose();
-
         boolean isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
 
         boolean feedMode = AlignPosition.getPosition().equals(AlignPosition.StagePos);
 
-        double xDiff;
-        double yDiff;
-        
-        //SmartDashboard.putBoolean("Is Red Alliance", isRed);
-        if (AlignPosition.getPosition().equals(AlignPosition.StagePos)) { 
-            xDiff = lightBotPose.getX() - AlignPosition.getAlignPose().getX();
-            yDiff = lightBotPose.getY() - AlignPosition.getAlignPose().getY();
-        } else {
-            xDiff = lightBotPose.getX() - (isRed? Units.inchesToMeters(652.73):Units.inchesToMeters(-1.5));
-            yDiff = lightBotPose.getY() - Units.inchesToMeters(218.42);
-        }
+        double xDiff = 0;
+        double yDiff = 0;
         double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
 
         if (feedMode)  {
@@ -142,35 +128,7 @@ public class ElevatorDefaultCommand extends Command{
         // }
 
         elevatorSubsystem.isAligned = false;
-        
-        if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) > Constants.stickDeadband) {
 
-            elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-
-        } else if (!ampArmSubsystem.isUp && Math.abs(operator.getRawAxis(stickSup)) < Constants.stickDeadband) {
-
-            if (DriverStation.isAutonomousEnabled()) {
-
-                //elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-                angleShooterUtil.updateTargetDiff(tangentTarget);
-
-            } else if (DriverStation.isTeleopEnabled()) {
-
-                //elevatorSubsystem.setElevatorSpeed(operator.getRawAxis(stickSup) < 0? -0.5 : 0.5);
-                angleShooterUtil.updateTargetDiff(tangentTarget);
-
-            }
-
-            double elevatorSpeed = angleShooterUtil.calculateElevatorSpeed();
-            elevatorSubsystem.setElevatorSpeed(elevatorSpeed);
-            elevatorSubsystem.isAligned = Math.abs(elevatorSpeed) <= 0.5;
-            
-        } else if (ampArmSubsystem.isUp) {
-
-            angleShooterUtil.updateTargetDiff(elevatorValue - (-32.5)); // -35.8686    new: -30.5
-            elevatorSubsystem.setElevatorSpeed(angleShooterUtil.calculateElevatorSpeed());
-
-        }
         boolean inRange = distanceInch < 152.474;
         SmartDashboard.putBoolean("In Range?", inRange);
         

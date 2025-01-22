@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,8 +16,8 @@ public class ClimbingSubsystem extends SubsystemBase {
   private static LEDSubsystem ledSubsystem;
   public static Swerve s_Swerve;
   
-  public static CANSparkMax leftClimber;
-  public static CANSparkMax rightClimber;
+  public static SparkMax leftClimber;
+  public static SparkMax rightClimber;
 
 
   public boolean isClimbing = false;
@@ -32,17 +32,6 @@ public class ClimbingSubsystem extends SubsystemBase {
   public ClimbingSubsystem(){
     s_Swerve = Swerve.getInstance();
     ledSubsystem = LEDSubsystem.getInstance();
-
-
-    leftClimber = new CANSparkMax(22, MotorType.kBrushless);
-    rightClimber = new CANSparkMax(23, MotorType.kBrushless);
-
-    leftClimber.setSmartCurrentLimit(12);
-    rightClimber.setSmartCurrentLimit(12);
-
-    rightClimber.burnFlash();
-    leftClimber.burnFlash();
-
   }
 
   public void climbControl(double leftSpeed, double rightSpeed){

@@ -1,9 +1,10 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,7 +15,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private static IntakeSubsystem intakeSubsystem;
     private static LEDSubsystem ledSubsystem;
 
-    private static CANSparkMax lowerIntake = new CANSparkMax(26, MotorType.kBrushless);
+    private static SparkMax lowerIntake = new SparkMax(26, MotorType.kBrushless);
     private static TalonSRX upperIntake = new TalonSRX(27);
 
     private static DigitalInput intakeSensor = new DigitalInput(1);
