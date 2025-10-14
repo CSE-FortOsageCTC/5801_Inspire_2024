@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
-import choreo.Choreo.*;
+//import choreo.Choreo.*;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
@@ -60,10 +60,10 @@ public class RobotContainer {
 
 
   /* Driver Buttons */
-  private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton autoAlignSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton autoAlignFeed = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
+  // private final JoystickButton autoAlignAmp = new JoystickButton(driver, XboxController.Button.kX.value);
+  // private final JoystickButton autoAlignSpeaker = new JoystickButton(driver, XboxController.Button.kB.value);
+  // private final JoystickButton autoAlignFeed = new JoystickButton(driver, XboxController.Button.kY.value);
+  //private final JoystickButton autoAlignNote = new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
 
   private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
@@ -73,22 +73,22 @@ public class RobotContainer {
   private final JoystickButton shootButton = new JoystickButton(operator, XboxController.Axis.kRightTrigger.value);
   private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-  private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
+  // private final JoystickButton ampFlyWheel = new JoystickButton(operator, XboxController.Button.kX.value);
   private final JoystickButton flyWheel = new JoystickButton(operator, XboxController.Button.kA.value);
   // private final JoystickButton resetClimbers = new JoystickButton(operator, XboxController.Button.kBack.value);
-  private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
-  private final JoystickButton ampArmButton = new JoystickButton(operator, XboxController.Button.kB.value);
+  // private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
+  // private final JoystickButton ampArmButton = new JoystickButton(operator, XboxController.Button.kB.value);
   // private final JoystickButton climbExtention = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad up
   // private final JoystickButton climbRetraction = new JoystickButton(operator, XboxController.Button.kA.value);  change this to d-pad down
-  private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
-  private final POVButton climbersUp = new POVButton(operator, 0);
+  // private final JoystickButton autoBalanceClimb = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
+  // private final POVButton climbersUp = new POVButton(operator, 0);
 
-  private final POVButton climbersDown = new POVButton(operator, 180);
+  //private final POVButton climbersDown = new POVButton(operator, 180);
  
   public RobotContainer() {
     AlignPosition.setPosition(AlignPosition.Manual);
 
-    elevatorDefaultCommand = new ElevatorDefaultCommand(operator, driver);
+    //elevatorDefaultCommand = new ElevatorDefaultCommand(operator, driver);
     /* Autonomous Setup */
     //s_Swerve.setTrajectory(sevenP);
 
@@ -132,26 +132,26 @@ public class RobotContainer {
 
     // elevatorUpButton.whileTrue(new ElevatorCommand(0.5)); //setpoint is subject to change.
     // elevatorDownButton.whileTrue(new ElevatorCommand(-0.5)); //setpoint is subject to change
-    elevatorDownButton.onTrue(new InstantCommand(() -> s_LEDSubsystem.decrement()));
-    elevatorUpButton.onTrue(new InstantCommand(() -> s_LEDSubsystem.increment()));
+    elevatorDownButton.whileTrue(new ElevatorCommand(0.75));
+    elevatorUpButton.whileTrue(new ElevatorCommand(-0.75));
     flyWheel.whileTrue(new FlyWheelCommand(-1));
-    ampFlyWheel.whileTrue(new FlyWheelCommand(-.35));                                                // 21.76844 degrees
+    //ampFlyWheel.whileTrue(new FlyWheelCommand(-.35));                                                // 21.76844 degrees
     zeroGyro.onTrue(new InstantCommand(() -> AlignmentTransitions.zeroHeading()));
     intakeIn.whileTrue(new IntakeInCommand());
     intakeOut.whileTrue(new IntakeOutCommand());
-    autoBalanceClimb.whileTrue(new AutoBalanceClimb());
-    autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
-    autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
-    autoAlignFeed.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToStage()));
+    // autoBalanceClimb.whileTrue(new AutoBalanceClimb());
+    // autoAlignSpeaker.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToSpeaker()));
+    // autoAlignAmp.whileTrue(new InstantCommand(() -> AlignmentTransitions.transitionToAmp()));
+    // autoAlignFeed.onTrue(new InstantCommand(() -> AlignmentTransitions.transitionToStage()));
     // yButton.whileTrue(new FixIntakeCommand());
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
-    s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);
+    //s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);
     shootButton.whileTrue(new ShootCommand(operator));
     //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     //resetClimbers.whileTrue(new ClimbReset(-1, -1));
-    climbersUp.whileTrue(new Climb(1, 1));
-    climbersDown.whileTrue(new ClimbReset(driver));
+    // climbersUp.whileTrue(new Climb(1, 1));
+    // climbersDown.whileTrue(new ClimbReset(driver));
 
   
   }

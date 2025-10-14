@@ -58,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
         topConfigurations.idleMode(IdleMode.kBrake);
         bottomConfigurations.idleMode(IdleMode.kBrake);
 
-        bottomConfigurations.follow(topShooter);
+        bottomConfigurations.follow(topShooter, true);
 
         topConfigurations.voltageCompensation(10);
         bottomConfigurations.voltageCompensation(10);

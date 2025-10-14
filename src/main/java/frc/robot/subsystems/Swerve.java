@@ -5,8 +5,11 @@ import java.util.List;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
+// import com.ctre.phoenix6.configs.Pigeon2Configuration;
+// import com.ctre.phoenix6.hardware.Pigeon2;
+
+//import choreo.trajectory.SwerveSample;
+//import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -103,9 +106,9 @@ public class Swerve extends SubsystemBase{
         limeLightSwerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModPos);
     }
 
-    public void setTrajectory(Trajectory<SwerveSample> traj) {
-        field.getObject("traj").setTrajectory(TrajectoryGenerator.generateTrajectory(List.of(traj.getPoses()), new TrajectoryConfig(10000, 10000)));
-    }
+    // public void setTrajectory(Trajectory<SwerveSample> traj) {
+    //     field.getObject("traj").setTrajectory(TrajectoryGenerator.generateTrajectory(List.of(traj.getPoses()), new TrajectoryConfig(10000, 10000)));
+    // }
 
     public Pose2d getEstimatedPosition(){
         return swerveEstimator.getEstimatedPosition();
