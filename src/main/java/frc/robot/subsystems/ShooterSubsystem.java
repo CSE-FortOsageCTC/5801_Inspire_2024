@@ -28,7 +28,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private SparkMax topShooter;
     private SparkMax bottomShooter;
 
-    private SparkMaxConfig configurations;
+    private SparkMaxConfig topConfigurations;
+    private SparkMaxConfig bottomConfigurations;
 
     private LimitSwitchConfig limitSwitchConfig;
 
@@ -47,16 +48,27 @@ public class ShooterSubsystem extends SubsystemBase {
         topShooter = new SparkMax(20, MotorType.kBrushless);
         bottomShooter = new SparkMax(21, MotorType.kBrushless);
 
-        limitSwitchConfig.forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyClosed);
+        topConfigurations = new SparkMaxConfig();
+        bottomConfigurations = new SparkMaxConfig();
 
-        configurations.idleMode(IdleMode.kBrake);
-        configurations.follow(topShooter);
-        configurations.voltageCompensation(10);
-        configurations.apply(limitSwitchConfig);
+        limitSwitchConfig = new LimitSwitchConfig();
+
+        limitSwitchConfig.forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyClosed);
+    
+        topConfigurations.idleMode(IdleMode.kBrake);
+        bottomConfigurations.idleMode(IdleMode.kBrake);
+
+        bottomConfigurations.follow(topShooter);
+
+        topConfigurations.voltageCompensation(10);
+        bottomConfigurations.voltageCompensation(10);
+
+        topConfigurations.apply(limitSwitchConfig);
+        bottomConfigurations.apply(limitSwitchConfig);
         
-        bottomShooter.configure(configurations, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        topShooter.configure(configurations, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+        bottomShooter.configure(bottomConfigurations, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        topShooter.configure(topConfigurations, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
         shooterSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
         ledSubsystem = LEDSubsystem.getInstance();

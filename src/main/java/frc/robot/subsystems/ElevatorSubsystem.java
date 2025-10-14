@@ -39,6 +39,9 @@ public class ElevatorSubsystem extends SubsystemBase{
         
         // shooterElevator.setIdleMode();
         // shooterElevator.enableVoltageCompensation(10);
+        
+        configurations = new SparkMaxConfig();
+        limitSwitchConfig = new LimitSwitchConfig();
 
         limitSwitchConfig.forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyClosed);
 
@@ -46,7 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         configurations.voltageCompensation(10);
         configurations.apply(limitSwitchConfig);
 
-        shooterElevator.configure(configurations, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterElevator.configure(configurations, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public double getElevatorValue(){

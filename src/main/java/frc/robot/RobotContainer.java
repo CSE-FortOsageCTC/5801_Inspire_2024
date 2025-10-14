@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import choreo.Choreo.*;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.*;
@@ -148,7 +147,7 @@ public class RobotContainer {
     s_Swerve.setDefaultCommand(new DefaultTeleop(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShootCommand(operator));
     s_ElevatorSubsystem.setDefaultCommand(elevatorDefaultCommand);
-    //shootButton.whileTrue(new ShootCommand(operator));
+    shootButton.whileTrue(new ShootCommand(operator));
     //autoBalanceClimb.whileTrue(new AutoBalanceClimb());
     //resetClimbers.whileTrue(new ClimbReset(-1, -1));
     climbersUp.whileTrue(new Climb(1, 1));
